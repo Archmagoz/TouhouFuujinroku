@@ -10,7 +10,7 @@ size = Vector2(26, 424)
 size = Vector2(20, 424)
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_4tne8"]
-size = Vector2(305, 20)
+size = Vector2(313.5, 20)
 
 [node name="Debug" type="Node2D" unique_id=641409104]
 
@@ -19,7 +19,6 @@ position = Vector2(-46, -12)
 
 [node name="Reimu" parent="." unique_id=2024202319 instance=ExtResource("1_b5fef")]
 position = Vector2(-120, 130)
-collision_mask = 22
 
 [node name="Camera" type="Camera2D" parent="." unique_id=1545325962]
 zoom = Vector2(1.7, 1.7)
@@ -40,5 +39,5 @@ position = Vector2(-101.5, 222)
 shape = SubResource("RectangleShape2D_4tne8")
 
 [node name="Up" type="CollisionShape2D" parent="Corners" unique_id=428785116]
-position = Vector2(-103, -222)
+position = Vector2(-101.75, -222)
 shape = SubResource("RectangleShape2D_4tne8")

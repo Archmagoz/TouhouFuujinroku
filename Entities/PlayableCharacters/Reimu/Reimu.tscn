@@ -193,17 +193,16 @@ animations = [{
 }]
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_118g0"]
-radius = 9.055386
+radius = 7.0
 
 [node name="Reimu" type="CharacterBody2D" unique_id=2024202319 node_paths=PackedStringArray("_sprite", "_health", "_speed")]
-collision_mask = 23
+collision_mask = 22
 script = ExtResource("1_v87c3")
 _sprite = NodePath("SpriteComponent")
 _health = NodePath("HealthComponent")
 _speed = NodePath("SpeedComponent")
 
 [node name="AnimatedSprite" type="AnimatedSprite2D" parent="." unique_id=1329335674]
-position = Vector2(1, 0)
 sprite_frames = SubResource("SpriteFrames_yem7q")
 animation = &"right"
 autoplay = "default"
@@ -212,11 +211,14 @@ autoplay = "default"
 shape = SubResource("CircleShape2D_118g0")
 
 [node name="SpriteComponent" parent="." unique_id=972550612 node_paths=PackedStringArray("_sprite") instance=ExtResource("6_6xvey")]
+position = Vector2(-1, 0)
 _sprite = NodePath("../AnimatedSprite")
 
 [node name="HealthComponent" parent="." unique_id=1821635083 instance=ExtResource("4_dhsxb")]
+position = Vector2(-1, 0)
 _maxHealth = 5
 
 [node name="SpeedComponent" parent="." unique_id=1899239882 instance=ExtResource("3_buwra")]
+position = Vector2(-1, 0)
 _currentSpeed = 350.0
 _maxSpeed = 500.0
