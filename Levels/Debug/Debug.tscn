@@ -18,7 +18,7 @@ size = Vector2(313.5, 20)
 position = Vector2(-46, -12)
 
 [node name="Reimu" parent="." unique_id=2024202319 instance=ExtResource("1_b5fef")]
-position = Vector2(-120, 130)
+position = Vector2(-108, 164)
 
 [node name="Camera" type="Camera2D" parent="." unique_id=1545325962]
 zoom = Vector2(1.7, 1.7)
