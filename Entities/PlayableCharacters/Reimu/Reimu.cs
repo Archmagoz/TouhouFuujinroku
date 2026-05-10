@@ -26,7 +26,11 @@ namespace TohouFuuujinoku.Entities.PlayableCharacters
 			if (Input.IsActionPressed("left")) input.X -= 1;
 			if (Input.IsActionPressed("right")) input.X += 1;
 
-			Velocity = input.Normalized() * _speed.CurrentSpeed;
+			var speed = Input.IsActionPressed("shift")
+				? _speed.CurrentSpeed * 0.5f
+				: _speed.CurrentSpeed;
+
+			Velocity = input.Normalized() * speed;
 
 			MoveAndSlide();
 			UpdateSprite(input.X);
