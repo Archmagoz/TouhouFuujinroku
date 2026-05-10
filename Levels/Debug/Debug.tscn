@@ -1,0 +1,44 @@
+[gd_scene format=3 uid="uid://dlmfa3n5gmsjs"]
+
+[ext_resource type="PackedScene" uid="uid://ldiv54j5b0m3" path="res://Entities/PlayableCharacters/Reimu/Reimu.tscn" id="1_b5fef"]
+[ext_resource type="PackedScene" uid="uid://cljfb1nrmidxw" path="res://UI/Hud/Hud.tscn" id="2_3beo8"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_3beo8"]
+size = Vector2(26, 424)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_8yi1q"]
+size = Vector2(20, 424)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_4tne8"]
+size = Vector2(305, 20)
+
+[node name="Debug" type="Node2D" unique_id=641409104]
+
+[node name="Reimu" parent="." unique_id=2024202319 instance=ExtResource("1_b5fef")]
+position = Vector2(-120, 130)
+collision_mask = 22
+
+[node name="Hud" parent="." unique_id=712697274 instance=ExtResource("2_3beo8")]
+position = Vector2(-46, -12)
+
+[node name="Camera" type="Camera2D" parent="." unique_id=1545325962]
+zoom = Vector2(1.7, 1.7)
+
+[node name="Corners" type="StaticBody2D" parent="." unique_id=1958889644]
+collision_layer = 2
+
+[node name="Left" type="CollisionShape2D" parent="Corners" unique_id=787142925]
+position = Vector2(-271, 1)
+shape = SubResource("RectangleShape2D_3beo8")
+
+[node name="Right" type="CollisionShape2D" parent="Corners" unique_id=880642155]
+position = Vector2(66, 1)
+shape = SubResource("RectangleShape2D_8yi1q")
+
+[node name="Down" type="CollisionShape2D" parent="Corners" unique_id=311504753]
+position = Vector2(-101.5, 222)
+shape = SubResource("RectangleShape2D_4tne8")
+
+[node name="Up" type="CollisionShape2D" parent="Corners" unique_id=428785116]
+position = Vector2(-103, -222)
+shape = SubResource("RectangleShape2D_4tne8")

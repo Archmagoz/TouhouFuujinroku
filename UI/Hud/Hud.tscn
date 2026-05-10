@@ -1,0 +1,17 @@
+[gd_scene format=3 uid="uid://cljfb1nrmidxw"]
+
+[ext_resource type="Texture2D" uid="uid://budlklb30n4lx" path="res://UI/Hud/Assets/Hud.tres" id="1_pa3cw"]
+
+[node name="Hud" type="Node2D" unique_id=712697274]
+
+[node name="BG1" type="Sprite2D" parent="." unique_id=2047024349]
+position = Vector2(-231, 0)
+texture = ExtResource("1_pa3cw")
+region_enabled = true
+region_rect = Rect2(27.893692, 27.15561, 36.494034, 519.2676)
+
+[node name="BG2" type="Sprite2D" parent="." unique_id=1763591875]
+position = Vector2(217, 0)
+texture = ExtResource("1_pa3cw")
+region_enabled = true
+region_rect = Rect2(58.68013, 0, 230.00468, 576)
