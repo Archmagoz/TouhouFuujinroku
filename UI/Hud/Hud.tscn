@@ -1,23 +1,57 @@
 [gd_scene format=3 uid="uid://cljfb1nrmidxw"]
 
-[ext_resource type="Texture2D" uid="uid://budlklb30n4lx" path="res://UI/Hud/Assets/Hud.tres" id="1_pa3cw"]
+[ext_resource type="Texture2D" uid="uid://bhesd5w5ub3or" path="res://UI/Hud/Assets/Hud.png" id="1_pa3cw"]
 
-[node name="Hud" type="Node2D" unique_id=712697274]
+[sub_resource type="AtlasTexture" id="AtlasTexture_pa3cw"]
+atlas = ExtResource("1_pa3cw")
+region = Rect2(31.700735, 0, 30.336061, 576)
 
-[node name="BG1" type="Sprite2D" parent="." unique_id=2047024349]
-position = Vector2(-231, 0)
-texture = ExtResource("1_pa3cw")
-region_enabled = true
-region_rect = Rect2(27.893692, 27.15561, 36.494034, 519.2676)
+[sub_resource type="AtlasTexture" id="AtlasTexture_rt2hf"]
+atlas = ExtResource("1_pa3cw")
+region = Rect2(64.598236, 0, 223.63037, 576)
 
-[node name="BG2" type="Sprite2D" parent="." unique_id=1763591875]
-position = Vector2(217, 0)
-texture = ExtResource("1_pa3cw")
-region_enabled = true
-region_rect = Rect2(58.68013, 0, 230.00468, 576)
+[sub_resource type="AtlasTexture" id="AtlasTexture_hdg5h"]
+atlas = ExtResource("1_pa3cw")
+region = Rect2(289.04794, 32.99499, 63.789948, 40.306835)
 
-[node name="Score" type="Sprite2D" parent="." unique_id=1379347059]
-position = Vector2(146, -128)
-texture = ExtResource("1_pa3cw")
-region_enabled = true
-region_rect = Rect2(288.60248, 31.349533, 64.77127, 22.747047)
+[sub_resource type="AtlasTexture" id="AtlasTexture_7ha4p"]
+atlas = ExtResource("1_pa3cw")
+region = Rect2(298.00137, 72.6156, 56.77426, 38.838554)
+
+[node name="Control" type="Control" unique_id=1689239087]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+metadata/_edit_vertical_guides_ = [432.0]
+
+[node name="BG01" type="TextureRect" parent="." unique_id=1025087550]
+layout_mode = 0
+offset_right = 40.0
+offset_bottom = 576.0
+texture = SubResource("AtlasTexture_pa3cw")
+
+[node name="BG02" type="TextureRect" parent="." unique_id=444110596]
+layout_mode = 0
+offset_left = 353.0
+offset_right = 576.0
+offset_bottom = 576.0
+texture = SubResource("AtlasTexture_rt2hf")
+
+[node name="Score" type="TextureRect" parent="." unique_id=1426060026]
+layout_mode = 0
+offset_left = 368.0
+offset_top = 104.0
+offset_right = 431.0
+offset_bottom = 144.0
+texture = SubResource("AtlasTexture_hdg5h")
+
+[node name="PlayerStats" type="TextureRect" parent="." unique_id=1208189582]
+layout_mode = 0
+offset_left = 376.0
+offset_top = 164.0
+offset_right = 432.0
+offset_bottom = 204.0
+texture = SubResource("AtlasTexture_7ha4p")

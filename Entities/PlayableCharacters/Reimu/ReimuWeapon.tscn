@@ -1,0 +1,28 @@
+[gd_scene format=3 uid="uid://bd843vt4pvk5p"]
+
+[ext_resource type="Texture2D" uid="uid://jveli1y7vv" path="res://Entities/PlayableCharacters/Assets/Spritesheet.png" id="1_6gpg3"]
+[ext_resource type="Script" uid="uid://cy8lwx16qqjgy" path="res://Entities/PlayableCharacters/Reimu/ReimuWeapon.cs" id="1_vk55m"]
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_vk55m"]
+atlas = ExtResource("1_6gpg3")
+region = Rect2(80.073616, 143.74896, 16.104568, 17.192719)
+
+[node name="ReimuWeapon" type="Node2D" unique_id=150880922 node_paths=PackedStringArray("_sprites")]
+script = ExtResource("1_vk55m")
+_sprites = [NodePath("LeftDown"), NodePath("LeftUp"), NodePath("RightUp"), NodePath("RightDown")]
+
+[node name="LeftDown" type="Sprite2D" parent="." unique_id=253914502]
+position = Vector2(-24, 0)
+texture = SubResource("AtlasTexture_vk55m")
+
+[node name="LeftUp" type="Sprite2D" parent="." unique_id=1448772117]
+position = Vector2(-16, -26)
+texture = SubResource("AtlasTexture_vk55m")
+
+[node name="RightUp" type="Sprite2D" parent="." unique_id=635511654]
+position = Vector2(17, -26)
+texture = SubResource("AtlasTexture_vk55m")
+
+[node name="RightDown" type="Sprite2D" parent="." unique_id=2136742581]
+position = Vector2(25, 0)
+texture = SubResource("AtlasTexture_vk55m")

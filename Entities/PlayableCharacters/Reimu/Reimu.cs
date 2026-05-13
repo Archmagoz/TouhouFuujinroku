@@ -11,6 +11,10 @@ namespace TohouFuuujinoku.Entities.PlayableCharacters
 		[Export] private SpriteComponent _sprite;
 		[Export] private HealthComponent _health;
 		[Export] private SpeedComponent _speed;
+		[Export] private ReimuWeapon _weapon;
+
+		// Focus mode movement multiplier.
+		private const float FocusSpeedMultiplier = 0.5f;
 
 		public override void _PhysicsProcess(double delta)
 		{
@@ -19,6 +23,7 @@ namespace TohouFuuujinoku.Entities.PlayableCharacters
 
 		private void HandleMovement()
 		{
+			// Build raw movement input vector.
 			var input = Vector2.Zero;
 
 			if (Input.IsActionPressed("up")) input.Y -= 1;
@@ -26,14 +31,31 @@ namespace TohouFuuujinoku.Entities.PlayableCharacters
 			if (Input.IsActionPressed("left")) input.X -= 1;
 			if (Input.IsActionPressed("right")) input.X += 1;
 
-			var speed = Input.IsActionPressed("shift")
-				? _speed.CurrentSpeed * 0.5f
-				: _speed.CurrentSpeed;
+			// Handle focus state separately to allow
+			// additional focus-related behaviors.
+			var speed = _speed.CurrentSpeed;
 
+			if (Input.IsActionPressed("shift"))
+			{
+				speed = HandleFocusMode(speed);
+			}
+
+			// Apply normalized movement velocity.
 			Velocity = input.Normalized() * speed;
 
 			MoveAndSlide();
+
+			// Update visual state.
 			UpdateSprite(input.X);
+		}
+
+		private float HandleFocusMode(float speed)
+		{
+			// Enable focus-specific weapon behavior.
+			_weapon.SetFocusMode(true);
+
+			// Reduce movement speed while focusing.
+			return speed * FocusSpeedMultiplier;
 		}
 
 		private void UpdateSprite(float inputX)

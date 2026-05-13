@@ -5,6 +5,7 @@
 [ext_resource type="PackedScene" uid="uid://dxj0lkshro5gy" path="res://Components/SpeedComponent/SpeedComponent.tscn" id="3_buwra"]
 [ext_resource type="PackedScene" uid="uid://qnkfyeixmb6m" path="res://Components/HealthComponent/HealthComponent.tscn" id="4_dhsxb"]
 [ext_resource type="PackedScene" uid="uid://dm63m0eqn6g68" path="res://Components/SpriteComponent/SpriteComponent.tscn" id="6_6xvey"]
+[ext_resource type="PackedScene" uid="uid://bd843vt4pvk5p" path="res://Entities/PlayableCharacters/Reimu/ReimuWeapon.tscn" id="6_e10mn"]
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_v87c3"]
 atlas = ExtResource("1_118g0")
@@ -195,12 +196,13 @@ animations = [{
 [sub_resource type="CircleShape2D" id="CircleShape2D_118g0"]
 radius = 7.0
 
-[node name="Reimu" type="CharacterBody2D" unique_id=2024202319 node_paths=PackedStringArray("_sprite", "_health", "_speed")]
+[node name="Reimu" type="CharacterBody2D" unique_id=2024202319 node_paths=PackedStringArray("_sprite", "_health", "_speed", "_weapon")]
 collision_mask = 22
 script = ExtResource("1_v87c3")
 _sprite = NodePath("SpriteComponent")
 _health = NodePath("HealthComponent")
 _speed = NodePath("SpeedComponent")
+_weapon = NodePath("ReimuWeapon")
 
 [node name="AnimatedSprite" type="AnimatedSprite2D" parent="." unique_id=1329335674]
 sprite_frames = SubResource("SpriteFrames_yem7q")
@@ -209,6 +211,9 @@ autoplay = "default"
 
 [node name="Hitbox" type="CollisionShape2D" parent="." unique_id=227582417]
 shape = SubResource("CircleShape2D_118g0")
+
+[node name="ReimuWeapon" parent="." unique_id=150880922 instance=ExtResource("6_e10mn")]
+position = Vector2(-1, 0)
 
 [node name="SpriteComponent" parent="." unique_id=972550612 node_paths=PackedStringArray("_sprite") instance=ExtResource("6_6xvey")]
 position = Vector2(-1, 0)
