@@ -1,7 +1,6 @@
 using TohouFuuujinoku.Components;
 
 using Godot;
-using System.Reflection.Metadata;
 
 namespace TohouFuuujinoku.Entities.PlayableCharacters
 {
@@ -13,9 +12,6 @@ namespace TohouFuuujinoku.Entities.PlayableCharacters
 		[Export] private HealthComponent _health;
 		[Export] private SpeedComponent _speed;
 		[Export] private ReimuWeapon _weapon;
-
-		// Focus mode movement multiplier.
-		private const float FocusSpeedMultiplier = 0.5f;
 
 		public override void _PhysicsProcess(double delta)
 		{
