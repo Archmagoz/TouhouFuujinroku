@@ -13,32 +13,36 @@ namespace TohouFuuujinoku.Entities.PlayableCharacters
 		[Export] private SpeedComponent _speed;
 		[Export] private ReimuWeapon _weapon;
 
+		private Vector2 _movementInput;
+
+		// ------------------------------------- Godot overrides ------------------------------------
+
 		public override void _PhysicsProcess(double delta)
 		{
 			HandleMovement();
+			UpdateSprite();
 		}
+
+		// ----------------------------------------- Helpers ----------------------------------------
 
 		private void HandleMovement()
 		{
 			// Build raw movement input vector.
-			var input = Vector2.Zero;
+			_movementInput = Vector2.Zero;
 
-			if (Input.IsActionPressed("up")) input.Y -= 1;
-			if (Input.IsActionPressed("down")) input.Y += 1;
-			if (Input.IsActionPressed("left")) input.X -= 1;
-			if (Input.IsActionPressed("right")) input.X += 1;
+			if (Input.IsActionPressed("up")) _movementInput.Y -= 1;
+			if (Input.IsActionPressed("down")) _movementInput.Y += 1;
+			if (Input.IsActionPressed("left")) _movementInput.X -= 1;
+			if (Input.IsActionPressed("right")) _movementInput.X += 1;
 
-			Velocity = input.Normalized() * _speed.CurrentSpeed;
+			Velocity = _movementInput.Normalized() * _speed.CurrentSpeed;
 
 			MoveAndSlide();
-			UpdateSprite(input.X);
 		}
 
-		private void UpdateSprite(float inputX)
+		private void UpdateSprite()
 		{
-			if (inputX < 0) _sprite.PlayLeft();
-			else if (inputX > 0) _sprite.PlayRight();
-			else _sprite.PlayDefault();
+			_sprite.UpdateSprite(_movementInput.X);
 		}
 	}
 }

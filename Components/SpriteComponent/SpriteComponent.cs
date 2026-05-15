@@ -20,28 +20,38 @@ namespace TohouFuuujinoku.Components
 
 		// ------------------------------------- Godot overrides ------------------------------------
 
-		public override void _Ready() => _sprite.AnimationFinished += OnAnimationFinished;
+		public override void _Ready()
+		{
+			_sprite.AnimationFinished += OnAnimationFinished;
+		}
 
 		// ---------------------------------------- Public API --------------------------------------
 
-		public void PlayDefault()
+		public void UpdateSprite(float inputX)
+		{
+			if (inputX < 0) PlayLeft();
+			else if (inputX > 0) PlayRight();
+			else PlayDefault();
+		}
+
+		// ----------------------------------------- Helpers ----------------------------------------
+
+		private void PlayDefault()
 		{
 			_sprite.Play(_defaultAnimation);
 		}
 
-		public void PlayLeft()
+		private void PlayLeft()
 		{
 			if (_sprite.Animation == _leftAnimation && !_looping) return;
 			_sprite.Play(_leftAnimation);
 		}
 
-		public void PlayRight()
+		private void PlayRight()
 		{
 			if (_sprite.Animation == _rightAnimation && !_looping) return;
 			_sprite.Play(_rightAnimation);
 		}
-
-		// ----------------------------------------- Helpers ----------------------------------------
 
 		private void OnAnimationFinished()
 		{
