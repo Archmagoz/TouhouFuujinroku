@@ -25,6 +25,11 @@ namespace TohouFuuujinoku.Components
 			_sprite.AnimationFinished += OnAnimationFinished;
 		}
 
+		public override void _ExitTree()
+		{
+			_sprite.AnimationFinished -= OnAnimationFinished;
+		}
+
 		// ---------------------------------------- Public API --------------------------------------
 
 		public void UpdateSprite(float inputX)
