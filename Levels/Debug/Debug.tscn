@@ -32,7 +32,7 @@ offset_bottom = -288.0
 collision_layer = 2
 
 [node name="Left" type="CollisionShape2D" parent="Corners" unique_id=787142925]
-position = Vector2(-268, 0)
+position = Vector2(-267, 0)
 shape = SubResource("RectangleShape2D_3beo8")
 
 [node name="Right" type="CollisionShape2D" parent="Corners" unique_id=880642155]
