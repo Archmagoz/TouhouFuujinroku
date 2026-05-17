@@ -23,9 +23,9 @@ position = Vector2(-97, 0)
 position = Vector2(-108, 164)
 
 [node name="Hud" parent="." unique_id=712697274 instance=ExtResource("2_3beo8")]
-offset_left = -294.0
+offset_left = -293.0
 offset_top = -288.0
-offset_right = -294.0
+offset_right = -293.0
 offset_bottom = -288.0
 
 [node name="Corners" type="StaticBody2D" parent="." unique_id=1958889644]
