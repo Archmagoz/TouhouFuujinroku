@@ -1,0 +1,66 @@
+[gd_scene format=3 uid="uid://b5rqan2nxnd3j"]
+
+[ext_resource type="Texture2D" uid="uid://plkopf0tvunh" path="res://Levels/Assets/StageTilesetsAndTextures.png" id="1_vrqqt"]
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_lbhh7"]
+atlas = ExtResource("1_vrqqt")
+region = Rect2(36.920868, 318.44925, 261.05887, 261.3306)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_vrqqt"]
+atlas = ExtResource("1_vrqqt")
+region = Rect2(36.49755, 53.464115, 262.2773, 260.9113)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_f1uwa"]
+atlas = ExtResource("1_vrqqt")
+region = Rect2(307.2715, 54.913372, 125.45465, 122.7274)
+
+[node name="DebugBackground" type="Node2D" unique_id=1237811369]
+
+[node name="ParallaxLayer01" type="Parallax2D" parent="." unique_id=586420831]
+repeat_size = Vector2(0, 480)
+autoscroll = Vector2(0, 20)
+repeat_times = 5
+
+[node name="Sprite" type="Sprite2D" parent="ParallaxLayer01" unique_id=1728959342]
+scale = Vector2(1.8726053, 1.8726053)
+texture = SubResource("AtlasTexture_lbhh7")
+
+[node name="ParallaxLayer02" type="Parallax2D" parent="." unique_id=657426003]
+repeat_size = Vector2(0, 478)
+autoscroll = Vector2(0, 80)
+repeat_times = 5
+
+[node name="Sprite" type="Sprite2D" parent="ParallaxLayer02" unique_id=1387135649]
+position = Vector2(0.04614687, -3.0000029)
+scale = Vector2(1.8692307, 1.8692309)
+texture = SubResource("AtlasTexture_vrqqt")
+
+[node name="ParallaxLayer03" type="Parallax2D" parent="." unique_id=824187364]
+scroll_offset = Vector2(-7, 2032)
+repeat_size = Vector2(0, 500)
+autoscroll = Vector2(0, 200)
+repeat_times = 7
+
+[node name="Sprite1" type="Sprite2D" parent="ParallaxLayer03" unique_id=1064209177]
+position = Vector2(59, 17)
+rotation = -0.10969646
+scale = Vector2(1.8770492, 1.8770492)
+texture = SubResource("AtlasTexture_f1uwa")
+
+[node name="Sprite2" type="Sprite2D" parent="ParallaxLayer03" unique_id=2126234291]
+position = Vector2(-70, 403)
+rotation = 0.039438825
+scale = Vector2(1.8770492, 1.8770492)
+texture = SubResource("AtlasTexture_f1uwa")
+
+[node name="Sprite3" type="Sprite2D" parent="ParallaxLayer03" unique_id=294740390]
+position = Vector2(104, -346)
+rotation = 0.24590552
+scale = Vector2(1.8770492, 1.8770492)
+texture = SubResource("AtlasTexture_f1uwa")
+
+[node name="Sprite4" type="Sprite2D" parent="ParallaxLayer03" unique_id=298865674]
+position = Vector2(-89, -998)
+rotation = -0.5733074
+scale = Vector2(1.8770492, 1.8770492)
+texture = SubResource("AtlasTexture_f1uwa")

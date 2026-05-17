@@ -2,6 +2,8 @@
 
 [ext_resource type="PackedScene" uid="uid://ldiv54j5b0m3" path="res://Entities/PlayableCharacters/Reimu/Reimu.tscn" id="1_b5fef"]
 [ext_resource type="PackedScene" uid="uid://cljfb1nrmidxw" path="res://UI/Hud/Hud.tscn" id="2_3beo8"]
+[ext_resource type="AudioStream" uid="uid://r55uke54y2vk" path="res://Levels/Debug/Assets/DebugLevelSoundtrack.ogg" id="3_8yi1q"]
+[ext_resource type="PackedScene" uid="uid://b5rqan2nxnd3j" path="res://Levels/Debug/DebugBackground.tscn" id="4_4tne8"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_3beo8"]
 size = Vector2(26, 422)
@@ -13,6 +15,9 @@ size = Vector2(20, 422)
 size = Vector2(314, 20)
 
 [node name="Debug" type="Node2D" unique_id=641409104]
+
+[node name="DebugBackground" parent="." unique_id=1237811369 instance=ExtResource("4_4tne8")]
+position = Vector2(-97, 0)
 
 [node name="Reimu" parent="." unique_id=2024202319 instance=ExtResource("1_b5fef")]
 position = Vector2(-108, 164)
@@ -44,3 +49,8 @@ shape = SubResource("RectangleShape2D_4tne8")
 
 [node name="Camera" type="Camera2D" parent="." unique_id=1545325962]
 zoom = Vector2(1.7, 1.7)
+
+[node name="Soundtrack" type="AudioStreamPlayer2D" parent="." unique_id=1250787388]
+stream = ExtResource("3_8yi1q")
+volume_db = -5.0
+autoplay = true
