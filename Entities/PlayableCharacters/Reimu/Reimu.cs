@@ -23,6 +23,12 @@ namespace TohouFuuujinoku.Entities.PlayableCharacters
 			UpdateSprite();
 		}
 
+		public override void _Process(double delta)
+		{
+			HandleFocus(delta);
+		}
+
+
 		// ----------------------------------------- Helpers ----------------------------------------
 
 		private void HandleMovement()
@@ -38,6 +44,13 @@ namespace TohouFuuujinoku.Entities.PlayableCharacters
 			Velocity = _movementInput.Normalized() * _speed.CurrentSpeed;
 
 			MoveAndSlide();
+		}
+
+		private void HandleFocus(double delta)
+		{
+			bool focused = Input.IsActionPressed("focus");
+			_weapon.ToggleFocusMode(focused, delta);
+			_speed.SetSpeed(focused ? _speed.MaxSpeed / 2 : _speed.MaxSpeed);
 		}
 
 		private void UpdateSprite()

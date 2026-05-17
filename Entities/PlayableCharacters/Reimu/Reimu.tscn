@@ -258,5 +258,5 @@ _maxHealth = 5
 
 [node name="SpeedComponent" parent="." unique_id=1899239882 instance=ExtResource("3_buwra")]
 position = Vector2(-1, 0)
-_currentSpeed = 350.0
-_maxSpeed = 500.0
+_currentSpeed = 300.0
+_maxSpeed = 300.0
