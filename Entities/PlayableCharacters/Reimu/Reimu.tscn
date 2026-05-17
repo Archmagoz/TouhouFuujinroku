@@ -165,6 +165,23 @@ animations = [{
 }, {
 "frames": [{
 "duration": 1.0,
+"texture": SubResource("AtlasTexture_haayh")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_a1mha")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_p8qlt")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_ayv21")
+}],
+"loop": true,
+"name": &"left_loop",
+"speed": 10.0
+}, {
+"frames": [{
+"duration": 1.0,
 "texture": SubResource("AtlasTexture_5qskh")
 }, {
 "duration": 1.0,
@@ -191,6 +208,23 @@ animations = [{
 "loop": false,
 "name": &"right",
 "speed": 10.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_0q6nc")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_eugsv")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_4eybt")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_8jcv6")
+}],
+"loop": true,
+"name": &"right_loop",
+"speed": 10.0
 }]
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_118g0"]
@@ -206,7 +240,6 @@ _weapon = NodePath("ReimuWeapon")
 
 [node name="AnimatedSprite" type="AnimatedSprite2D" parent="." unique_id=1329335674]
 sprite_frames = SubResource("SpriteFrames_yem7q")
-animation = &"right"
 autoplay = "default"
 
 [node name="Hitbox" type="CollisionShape2D" parent="." unique_id=227582417]

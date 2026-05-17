@@ -9,14 +9,12 @@ namespace TohouFuuujinoku.Components
 		[ExportGroup("Components")]
 		[Export] private AnimatedSprite2D _sprite;
 
-		// Base values (assigned via editor).
-		[ExportGroup("Settings")]
-		[Export] private StringName _defaultAnimation = "default";
-		[Export] private StringName _leftAnimation = "left";
-		[Export] private StringName _rightAnimation = "right";
-
-		// Runtime state — managed internally by the component.
-		private bool _looping;
+		// Animation name constants — must match the names defined in the AnimatedSprite2D resource.
+		private const string DefaultAnimation = "default";
+		private const string LeftAnimation = "left";
+		private const string RightAnimation = "right";
+		private const string LeftLoopAnimation = "left_loop";
+		private const string RightLoopAnimation = "right_loop";
 
 		// ------------------------------------- Godot overrides ------------------------------------
 
@@ -43,29 +41,28 @@ namespace TohouFuuujinoku.Components
 
 		private void PlayDefault()
 		{
-			_sprite.Play(_defaultAnimation);
+			_sprite.Play(DefaultAnimation);
 		}
 
 		private void PlayLeft()
 		{
-			if (_sprite.Animation == _leftAnimation && !_looping) return;
-			_sprite.Play(_leftAnimation);
+			// Already in the left cycle — let it finish naturally.
+			if (_sprite.Animation == LeftAnimation || _sprite.Animation == LeftLoopAnimation) return;
+			_sprite.Play(LeftAnimation);
 		}
 
 		private void PlayRight()
 		{
-			if (_sprite.Animation == _rightAnimation && !_looping) return;
-			_sprite.Play(_rightAnimation);
+			// Already in the right cycle — let it finish naturally.
+			if (_sprite.Animation == RightAnimation || _sprite.Animation == RightLoopAnimation) return;
+			_sprite.Play(RightAnimation);
 		}
 
 		private void OnAnimationFinished()
 		{
-			// After the first pass, loops from frame 4 onwards indefinitely.
-			if (_sprite.Animation == _defaultAnimation) return;
-
-			_looping = true;
-			_sprite.Play(_sprite.Animation);
-			_sprite.Frame = 4;
+			// Transition from the intro clip to its corresponding loop.
+			if (_sprite.Animation == LeftAnimation) _sprite.Play(LeftLoopAnimation);
+			else if (_sprite.Animation == RightAnimation) _sprite.Play(RightLoopAnimation);
 		}
 	}
 }
