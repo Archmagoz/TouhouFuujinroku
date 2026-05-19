@@ -1,9 +1,10 @@
 [gd_scene format=3 uid="uid://dlmfa3n5gmsjs"]
 
+[ext_resource type="Script" uid="uid://di8lk710vvgtk" path="res://Levels/Debug/Debug.cs" id="1_5nf4i"]
 [ext_resource type="PackedScene" uid="uid://ldiv54j5b0m3" path="res://Entities/PlayableCharacters/Reimu/Reimu.tscn" id="1_b5fef"]
 [ext_resource type="PackedScene" uid="uid://cljfb1nrmidxw" path="res://UI/Hud/Hud.tscn" id="2_3beo8"]
 [ext_resource type="AudioStream" uid="uid://r55uke54y2vk" path="res://Levels/Debug/Assets/DebugLevelSoundtrack.ogg" id="3_8yi1q"]
-[ext_resource type="PackedScene" uid="uid://b5rqan2nxnd3j" path="res://Levels/Debug/DebugBackground.tscn" id="4_4tne8"]
+[ext_resource type="PackedScene" uid="uid://b5rqan2nxnd3j" path="res://Levels/Debug/Background.tscn" id="4_4tne8"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_3beo8"]
 size = Vector2(26, 422)
@@ -14,9 +15,11 @@ size = Vector2(20, 422)
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_4tne8"]
 size = Vector2(314, 20)
 
-[node name="Debug" type="Node2D" unique_id=641409104]
+[node name="Debug" type="Node2D" unique_id=641409104 node_paths=PackedStringArray("_label")]
+script = ExtResource("1_5nf4i")
+_label = NodePath("Label")
 
-[node name="DebugBackground" parent="." unique_id=1237811369 instance=ExtResource("4_4tne8")]
+[node name="Background" parent="." unique_id=1237811369 instance=ExtResource("4_4tne8")]
 position = Vector2(-97, 0)
 
 [node name="Reimu" parent="." unique_id=2024202319 instance=ExtResource("1_b5fef")]
@@ -28,6 +31,14 @@ offset_top = -288.0
 offset_right = -293.0
 offset_bottom = -288.0
 
+[node name="Label" type="RichTextLabel" parent="." unique_id=1823657325]
+offset_left = -250.0
+offset_top = -211.0
+offset_right = -142.0
+offset_bottom = -155.0
+text = "DEBUG
+FPS: 666"
+
 [node name="Corners" type="StaticBody2D" parent="." unique_id=1958889644]
 collision_layer = 2
 
@@ -36,7 +47,7 @@ position = Vector2(-267, 0)
 shape = SubResource("RectangleShape2D_3beo8")
 
 [node name="Right" type="CollisionShape2D" parent="Corners" unique_id=880642155]
-position = Vector2(70, 0)
+position = Vector2(71, 0)
 shape = SubResource("RectangleShape2D_8yi1q")
 
 [node name="Down" type="CollisionShape2D" parent="Corners" unique_id=311504753]
@@ -47,10 +58,10 @@ shape = SubResource("RectangleShape2D_4tne8")
 position = Vector2(-97, -222)
 shape = SubResource("RectangleShape2D_4tne8")
 
-[node name="Camera" type="Camera2D" parent="." unique_id=1545325962]
-zoom = Vector2(1.7, 1.7)
-
 [node name="Soundtrack" type="AudioStreamPlayer2D" parent="." unique_id=1250787388]
 stream = ExtResource("3_8yi1q")
 volume_db = -5.0
 autoplay = true
+
+[node name="Camera" type="Camera2D" parent="." unique_id=1545325962]
+zoom = Vector2(1.7, 1.7)
