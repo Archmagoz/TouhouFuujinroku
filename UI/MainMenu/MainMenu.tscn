@@ -1,0 +1,79 @@
+[gd_scene format=3 uid="uid://cj5118oxipcj6"]
+
+[ext_resource type="Texture2D" uid="uid://dmand0bis1vhi" path="res://UI/MainMenu/Assets/MainMenuSpritesheet.png" id="1_8fkdr"]
+[ext_resource type="Script" uid="uid://yym15kl5lpkb" path="res://UI/MainMenu/MainMenu.cs" id="1_fw0vt"]
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_fw0vt"]
+atlas = ExtResource("1_8fkdr")
+region = Rect2(39.957764, 47.967968, 640.17786, 480.04315)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_8fkdr"]
+atlas = ExtResource("1_8fkdr")
+region = Rect2(44.107605, 540.2565, 511.5708, 114.8761)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_8x0bb"]
+atlas = ExtResource("1_8fkdr")
+region = Rect2(851.78046, 47.7007, 149.50256, 29.371368)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_nahvw"]
+atlas = ExtResource("1_8fkdr")
+region = Rect2(691.8448, 47.899464, 149.13458, 29.261242)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_4elqj"]
+atlas = ExtResource("1_8fkdr")
+region = Rect2(770.88855, 303.83066, 63.30603, 31.341919)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_ri767"]
+atlas = ExtResource("1_8fkdr")
+region = Rect2(690.88257, 304.05157, 63.018982, 31.118988)
+
+[node name="MainMenu" type="Control" unique_id=1993999925 node_paths=PackedStringArray("_gameStartButton", "_quitButton")]
+layout_mode = 3
+anchors_preset = 0
+script = ExtResource("1_fw0vt")
+_gameStartButton = NodePath("GameStart")
+_quitButton = NodePath("Quit")
+
+[node name="Background" type="TextureRect" parent="." unique_id=94049739]
+layout_mode = 0
+offset_left = -320.0
+offset_top = -240.0
+offset_right = 320.0
+offset_bottom = 240.0
+texture = SubResource("AtlasTexture_fw0vt")
+
+[node name="Title" type="TextureRect" parent="." unique_id=752346984]
+layout_mode = 0
+offset_left = -302.00003
+offset_top = -38.999996
+offset_right = 208.99997
+offset_bottom = 75.0
+scale = Vector2(0.70156556, 0.7015655)
+texture = SubResource("AtlasTexture_8fkdr")
+
+[node name="GameStart" type="TextureButton" parent="." unique_id=2135349243]
+layout_mode = 0
+offset_left = 94.0
+offset_top = -84.0
+offset_right = 247.0
+offset_bottom = -44.0
+texture_normal = SubResource("AtlasTexture_8x0bb")
+texture_pressed = SubResource("AtlasTexture_nahvw")
+texture_hover = SubResource("AtlasTexture_nahvw")
+texture_disabled = SubResource("AtlasTexture_8x0bb")
+texture_focused = SubResource("AtlasTexture_nahvw")
+
+[node name="Quit" type="TextureButton" parent="." unique_id=1000945232]
+layout_mode = 0
+offset_left = 159.0
+offset_top = 141.0
+offset_right = 222.0
+offset_bottom = 181.0
+texture_normal = SubResource("AtlasTexture_4elqj")
+texture_pressed = SubResource("AtlasTexture_ri767")
+texture_hover = SubResource("AtlasTexture_ri767")
+texture_disabled = SubResource("AtlasTexture_4elqj")
+texture_focused = SubResource("AtlasTexture_ri767")
+
+[node name="Camera" type="Camera2D" parent="." unique_id=1373273738]
+zoom = Vector2(1.5, 1.5)

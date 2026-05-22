@@ -11,13 +11,14 @@ config_version=5
 [application]
 
 config/name="Touhou Fuujinroku"
-run/main_scene="uid://dlmfa3n5gmsjs"
+run/main_scene="uid://cj5118oxipcj6"
 config/features=PackedStringArray("4.6", "C#", "Forward Plus")
 config/icon="res://icon.svg"
 
 [autoload]
 
 Fullscreen="*uid://c5qwaxiekp4ye"
+SceneController="*uid://gmfyv628gegv"
 
 [display]
 
