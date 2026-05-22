@@ -5,10 +5,6 @@ namespace TohouFuuujinoku.Entities.PlayableCharacters
 {
 	public partial class ReimuWeapon : Node2D
 	{
-		[ExportGroup("Components")]
-		// Node references (assigned via editor).
-		[Export] private Array<Sprite2D> _sprites;
-
 		[ExportGroup("Configuration")]
 		// How fast each sprite chases its target — higher = snappier.
 		[Export] private float _followSpeed = 64f;
@@ -25,6 +21,9 @@ namespace TohouFuuujinoku.Entities.PlayableCharacters
 		// One full clockwise rotation per second.
 		private const float RotationSpeed = Mathf.Tau;
 
+		// Sprites (loaded in _ready) — order: 0 bottom-left, 1 top-left, 2 top-right, 3 bottom-right.
+		private Array<Sprite2D> _sprites = new Array<Sprite2D>();
+
 		// Runtime state.
 		private Vector2[] _positions;
 		private Vector2[] _normalOffsets;
@@ -35,6 +34,13 @@ namespace TohouFuuujinoku.Entities.PlayableCharacters
 
 		public override void _Ready()
 		{
+			// Cache sprites and their editor offsets as the normal formation.
+			foreach (Node child in GetChildren())
+			{
+				if (child is Sprite2D sprite)
+					_sprites.Add(sprite);
+			}
+
 			_positions = new Vector2[_sprites.Count];
 			_normalOffsets = new Vector2[_sprites.Count];
 			_offsets = new Vector2[_sprites.Count];
