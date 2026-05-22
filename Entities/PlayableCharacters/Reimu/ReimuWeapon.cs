@@ -1,8 +1,10 @@
 using Godot;
 using Godot.Collections;
+using System.Collections.Generic;
 
 namespace TohouFuuujinoku.Entities.PlayableCharacters
 {
+	[GlobalClass]
 	public partial class ReimuWeapon : Node2D
 	{
 		[ExportGroup("Configuration")]
@@ -79,7 +81,7 @@ namespace TohouFuuujinoku.Entities.PlayableCharacters
 
 		// ------------------------------------- Public API -------------------------------------
 
-		///Smoothly shifts sprite offsets toward the focused or normal formation.
+		// Smoothly shifts sprite offsets toward the focused or normal formation.
 		// Call every frame while the focus state may be changing.
 		public void ToggleFocusMode(bool focused, double delta)
 		{
@@ -90,6 +92,16 @@ namespace TohouFuuujinoku.Entities.PlayableCharacters
 				Vector2 targetOffset = focused ? _normalOffsets[i] + _focusDeltas[i] : _normalOffsets[i];
 				_offsets[i] = _offsets[i].Lerp(targetOffset, weight);
 			}
+		}
+
+		// Yields the GlobalPosition of every Marker2D child found across all weapon sprites.
+		// Markers rotate with their parent sprite, so positions already reflect current formation.
+		public IEnumerable<Vector2> GetFireOrigins()
+		{
+			foreach (var sprite in _sprites)
+				foreach (var child in sprite.GetChildren())
+					if (child is Marker2D marker)
+						yield return marker.GlobalPosition;
 		}
 
 		// ---------------------------------- Private helpers -----------------------------------

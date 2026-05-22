@@ -14,14 +14,38 @@ script = ExtResource("1_vk55m")
 position = Vector2(-24, 0)
 texture = SubResource("AtlasTexture_vk55m")
 
+[node name="Left" type="Marker2D" parent="BottomLeft" unique_id=1838309365]
+position = Vector2(-7, 0)
+
+[node name="Right" type="Marker2D" parent="BottomLeft" unique_id=1887853405]
+position = Vector2(8, 0)
+
 [node name="TopLeft" type="Sprite2D" parent="." unique_id=1448772117]
 position = Vector2(-16, -26)
 texture = SubResource("AtlasTexture_vk55m")
+
+[node name="Left" type="Marker2D" parent="TopLeft" unique_id=1849202596]
+position = Vector2(-7, 0)
+
+[node name="Right" type="Marker2D" parent="TopLeft" unique_id=1619859245]
+position = Vector2(8, 0)
 
 [node name="TopRight" type="Sprite2D" parent="." unique_id=635511654]
 position = Vector2(17, -26)
 texture = SubResource("AtlasTexture_vk55m")
 
+[node name="Left" type="Marker2D" parent="TopRight" unique_id=1510852633]
+position = Vector2(-7, 0)
+
+[node name="Right" type="Marker2D" parent="TopRight" unique_id=320804811]
+position = Vector2(8, 0)
+
 [node name="BottomRight" type="Sprite2D" parent="." unique_id=2136742581]
 position = Vector2(25, 0)
 texture = SubResource("AtlasTexture_vk55m")
+
+[node name="Left" type="Marker2D" parent="BottomRight" unique_id=2112558065]
+position = Vector2(-7, 0)
+
+[node name="Right" type="Marker2D" parent="BottomRight" unique_id=457214114]
+position = Vector2(8, 0)

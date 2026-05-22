@@ -1,0 +1,6 @@
+[gd_scene format=3 uid="uid://bwh36mwlh8s1t"]
+
+[ext_resource type="Script" uid="uid://c5fkupb13gquw" path="res://Entities/Projectile/Projectile.cs" id="1_cafpg"]
+
+[node name="Projectile" type="Area2D" unique_id=910705936]
+script = ExtResource("1_cafpg")

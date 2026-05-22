@@ -1,0 +1,27 @@
+[gd_scene format=3 uid="uid://b6la2jobdl0tv"]
+
+[ext_resource type="Texture2D" uid="uid://jveli1y7vv" path="res://Entities/PlayableCharacters/Assets/Spritesheet.png" id="1_70rho"]
+[ext_resource type="Script" uid="uid://c5fkupb13gquw" path="res://Entities/Projectile/Projectile.cs" id="1_r1q6k"]
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_r1q6k"]
+atlas = ExtResource("1_70rho")
+region = Rect2(67.87124, 176.94495, 56.172707, 6.1097565)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_70rho"]
+size = Vector2(29, 6)
+
+[node name="ReimuBullet" type="Area2D" unique_id=1837741841]
+z_index = 1
+rotation = -1.5707964
+collision_layer = 4
+collision_mask = 16
+script = ExtResource("1_r1q6k")
+Speed = 1000.0
+metadata/_custom_type_script = "uid://c5fkupb13gquw"
+
+[node name="Sprite" type="Sprite2D" parent="." unique_id=1961293480]
+texture = SubResource("AtlasTexture_r1q6k")
+
+[node name="CollisionShape" type="CollisionShape2D" parent="." unique_id=943714919]
+position = Vector2(12.5, 0)
+shape = SubResource("RectangleShape2D_70rho")

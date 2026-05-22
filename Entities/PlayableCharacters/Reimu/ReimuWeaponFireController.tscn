@@ -1,0 +1,6 @@
+[gd_scene format=3 uid="uid://bwcpglrmexbd"]
+
+[ext_resource type="Script" uid="uid://b4xl8u15l8fix" path="res://Entities/PlayableCharacters/Reimu/ReimuWeaponFireController.cs" id="1_jp576"]
+
+[node name="ReimuWeaponFireController" type="Node2D" unique_id=1196119377]
+script = ExtResource("1_jp576")
