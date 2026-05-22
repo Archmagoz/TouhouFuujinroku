@@ -19,33 +19,32 @@ namespace TohouFuuujinoku.Entities.PlayableCharacters
 		[Export] private float _focusForwardY = -15f;
 
 		// One full clockwise rotation per second.
-		private const float RotationSpeed = Mathf.Tau;
+		private static readonly float RotationSpeed = Mathf.Tau;
 
-		// Sprites (loaded in _ready) — order: 0 bottom-left, 1 top-left, 2 top-right, 3 bottom-right.
-		private Array<Sprite2D> _sprites = new Array<Sprite2D>();
+		// Sprites (loaded in _Ready()) — order: 0 bottom-left, 1 top-left, 2 top-right, 3 bottom-right.
+		private Array<Sprite2D> _sprites = [];
 
-		// Runtime state.
-		private Vector2[] _positions;
-		private Vector2[] _normalOffsets;
-		private Vector2[] _focusDeltas;
-		private Vector2[] _offsets;
+		// Per-sprite positions and offsets, sized in _Ready() after sprites are loaded.
+		private Vector2[] _positions = [];
+		private Vector2[] _normalOffsets = [];
+		private Vector2[] _focusDeltas = [];
+		private Vector2[] _offsets = [];
 
-		// ------------------------------------- Godot overrides ------------------------------------
+		// ---------------------------------- Godot overrides -----------------------------------
 
 		public override void _Ready()
 		{
 			// Cache sprites and their editor offsets as the normal formation.
 			foreach (Node child in GetChildren())
-			{
 				if (child is Sprite2D sprite)
 					_sprites.Add(sprite);
-			}
 
-			_positions = new Vector2[_sprites.Count];
-			_normalOffsets = new Vector2[_sprites.Count];
-			_offsets = new Vector2[_sprites.Count];
+			int count = _sprites.Count;
+			_positions = new Vector2[count];
+			_normalOffsets = new Vector2[count];
+			_offsets = new Vector2[count];
 
-			for (int i = 0; i < _sprites.Count; i++)
+			for (int i = 0; i < count; i++)
 			{
 				// Bake each sprite's editor position as its resting offset.
 				_normalOffsets[i] = _sprites[i].Position;
@@ -55,34 +54,36 @@ namespace TohouFuuujinoku.Entities.PlayableCharacters
 
 			// Per-sprite focus deltas — sprite order: 0 bottom-left, 1 top-left, 2 top-right, 3 bottom-right.
 			// Side sprites shift inward; bottom sprites also shift forward.
-			_focusDeltas = new Vector2[]
-			{
+			_focusDeltas =
+			[
 				new Vector2( _focusInwardX, _focusForwardY), // 0: bottom-left  → right + forward
 				new Vector2( _focusInwardX, 0f),             // 1: top-left     → right only
 				new Vector2(-_focusInwardX, 0f),             // 2: top-right    → left only
 				new Vector2(-_focusInwardX, _focusForwardY), // 3: bottom-right → left + forward
-			};
+			];
 		}
 
 		public override void _Process(double delta)
 		{
-			float lagWeight = 1f - Mathf.Exp(-_followSpeed * (float)delta);
+			// Cast once; reused for both lag weight and rotation step.
+			float f = (float)delta;
+			float lagWeight = ExponentialLerp(_followSpeed, f);
 
 			for (int i = 0; i < _sprites.Count; i++)
 			{
-				Vector2 target = GlobalPosition + _offsets[i];
-
-				_positions[i] = _positions[i].Lerp(target, lagWeight);
+				_positions[i] = _positions[i].Lerp(GlobalPosition + _offsets[i], lagWeight);
 				_sprites[i].GlobalPosition = _positions[i];
-				_sprites[i].Rotate(RotationSpeed * (float)delta);
+				_sprites[i].Rotate(RotationSpeed * f);
 			}
 		}
 
-		// ---------------------------------------- Public API --------------------------------------
+		// ------------------------------------- Public API -------------------------------------
 
+		///Smoothly shifts sprite offsets toward the focused or normal formation.
+		// Call every frame while the focus state may be changing.
 		public void ToggleFocusMode(bool focused, double delta)
 		{
-			float weight = 1f - Mathf.Exp(-_focusTransitionSpeed * (float)delta);
+			float weight = ExponentialLerp(_focusTransitionSpeed, (float)delta);
 
 			for (int i = 0; i < _sprites.Count; i++)
 			{
@@ -90,5 +91,11 @@ namespace TohouFuuujinoku.Entities.PlayableCharacters
 				_offsets[i] = _offsets[i].Lerp(targetOffset, weight);
 			}
 		}
+
+		// ---------------------------------- Private helpers -----------------------------------
+
+		// Frame-rate-independent lerp weight via exponential decay — 1 - e^(-speed * delta).
+		private static float ExponentialLerp(float speed, float delta) =>
+			1f - Mathf.Exp(-speed * delta);
 	}
 }

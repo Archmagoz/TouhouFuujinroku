@@ -1,6 +1,5 @@
-using TohouFuuujinoku.Components;
-
 using Godot;
+using TohouFuuujinoku.Components;
 
 namespace TohouFuuujinoku.Entities.PlayableCharacters
 {
@@ -13,9 +12,10 @@ namespace TohouFuuujinoku.Entities.PlayableCharacters
 		[Export] private SpeedComponent _speed;
 		[Export] private ReimuWeapon _weapon;
 
+		// Raw directional input built each physics frame.
 		private Vector2 _movementInput;
 
-		// ------------------------------------- Godot overrides ------------------------------------
+		// ---------------------------------- Godot overrides -----------------------------------
 
 		public override void _PhysicsProcess(double delta)
 		{
@@ -28,12 +28,10 @@ namespace TohouFuuujinoku.Entities.PlayableCharacters
 			HandleFocus(delta);
 		}
 
-
-		// ----------------------------------------- Helpers ----------------------------------------
+		// ---------------------------------- Private helpers -----------------------------------
 
 		private void HandleMovement()
 		{
-			// Build raw movement input vector.
 			_movementInput = Vector2.Zero;
 
 			if (Input.IsActionPressed("up")) _movementInput.Y -= 1;
@@ -42,15 +40,14 @@ namespace TohouFuuujinoku.Entities.PlayableCharacters
 			if (Input.IsActionPressed("right")) _movementInput.X += 1;
 
 			Velocity = _movementInput.Normalized() * _speed.CurrentSpeed;
-
 			MoveAndSlide();
 		}
 
 		private void HandleFocus(double delta)
 		{
 			bool focused = Input.IsActionPressed("focus");
-			_weapon.ToggleFocusMode(focused, delta);
 			_speed.SetSpeed(focused ? _speed.MaxSpeed / 2 : _speed.MaxSpeed);
+			_weapon.ToggleFocusMode(focused, delta);
 		}
 
 		private void UpdateSprite()
