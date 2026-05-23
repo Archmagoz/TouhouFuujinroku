@@ -31,7 +31,7 @@ namespace TohouFuuujinoku.Entities
 			Position += Vector2.FromAngle(_angle) * Speed * (float)delta;
 
 			// Cull in world space — immune to viewport resizes, fullscreen toggles, and
-			// camera transforms. 2000 units comfortably exceeds any expected play area.
+			// camera transforms. 500 units comfortably exceeds any expected play area.
 			if (Mathf.Abs(GlobalPosition.X) > CullBoundary || Mathf.Abs(GlobalPosition.Y) > CullBoundary)
 				ProjectilePool.Instance.Return(this);
 		}
