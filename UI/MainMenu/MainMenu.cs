@@ -22,6 +22,7 @@ namespace TohouFuuujinoku.UI
 		public override void _ExitTree()
 		{
 			_gameStartButton.Pressed -= OnGameStartPressed;
+			_optionsButton.Pressed -= OnOptionsPressed;
 			_quitButton.Pressed -= OnQuitPressed;
 		}
 
