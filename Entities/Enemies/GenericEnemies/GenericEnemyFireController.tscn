@@ -1,0 +1,13 @@
+[gd_scene format=3 uid="uid://d4ndyaphhwekf"]
+
+[ext_resource type="Script" uid="uid://cvrom6upsgu8i" path="res://Entities/Enemies/GenericEnemies/GenericEnemyFireController.cs" id="1_i6sbm"]
+[ext_resource type="PackedScene" uid="uid://bbfcxlk0s2cpm" path="res://Entities/Enemies/GenericEnemies/Weapons/Shotgun.tscn" id="2_ykjol"]
+
+[node name="GenericEnemyFireController" type="Node2D" unique_id=1612473014 node_paths=PackedStringArray("_weapons")]
+script = ExtResource("1_i6sbm")
+_shotCount = null
+_fireRate = null
+_startingWeaponIndex = null
+_weapons = [NodePath("Shotgun")]
+
+[node name="Shotgun" parent="." unique_id=2111850642 instance=ExtResource("2_ykjol")]

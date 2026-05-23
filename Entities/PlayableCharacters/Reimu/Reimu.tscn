@@ -250,8 +250,6 @@ autoplay = "default"
 [node name="Hitbox" type="CollisionShape2D" parent="." unique_id=227582417]
 shape = SubResource("CircleShape2D_118g0")
 
-[node name="ReimuWeapon" parent="." unique_id=150880922 instance=ExtResource("6_e10mn")]
-
 [node name="SpriteComponent" parent="." unique_id=972550612 node_paths=PackedStringArray("_sprite") instance=ExtResource("6_6xvey")]
 _sprite = NodePath("../AnimatedSprite")
 
@@ -261,6 +259,8 @@ _maxHealth = 5
 [node name="SpeedComponent" parent="." unique_id=1899239882 instance=ExtResource("3_buwra")]
 _currentSpeed = 300.0
 _maxSpeed = 300.0
+
+[node name="ReimuWeapon" parent="." unique_id=150880922 instance=ExtResource("6_e10mn")]
 
 [node name="ReimuWeaponFireController" parent="." unique_id=1196119377 node_paths=PackedStringArray("_shotSound", "_weapon") instance=ExtResource("7_e10mn")]
 _shotSound = NodePath("AudioStreamPlayer")

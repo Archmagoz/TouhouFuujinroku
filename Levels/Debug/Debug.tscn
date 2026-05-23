@@ -3,6 +3,7 @@
 [ext_resource type="Script" uid="uid://di8lk710vvgtk" path="res://Levels/Debug/Debug.cs" id="1_5nf4i"]
 [ext_resource type="PackedScene" uid="uid://ldiv54j5b0m3" path="res://Entities/PlayableCharacters/Reimu/Reimu.tscn" id="1_b5fef"]
 [ext_resource type="PackedScene" uid="uid://cljfb1nrmidxw" path="res://UI/Hud/Hud.tscn" id="2_3beo8"]
+[ext_resource type="PackedScene" uid="uid://dr1xqi874edgh" path="res://Entities/Enemies/GenericEnemies/SmallFairy.tscn" id="2_x6ejw"]
 [ext_resource type="AudioStream" uid="uid://r55uke54y2vk" path="res://Levels/Debug/Assets/DebugLevelSoundtrack.ogg" id="3_8yi1q"]
 [ext_resource type="PackedScene" uid="uid://b5rqan2nxnd3j" path="res://Levels/Debug/Background.tscn" id="4_4tne8"]
 
@@ -15,9 +16,29 @@ size = Vector2(20, 422)
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_4tne8"]
 size = Vector2(314, 20)
 
-[node name="Debug" type="Node2D" unique_id=641409104 node_paths=PackedStringArray("_label")]
+[sub_resource type="Curve2D" id="Curve2D_x6ejw"]
+_data = {
+"points": PackedVector2Array(0, 0, 0, 0, -275, -36, 0, 0, 0, 0, -84.9099, -163.07085, 0, 0, 0, 0, 118.48648, -28.425184)
+}
+point_count = 3
+
+[sub_resource type="Curve2D" id="Curve2D_kvle7"]
+_data = {
+"points": PackedVector2Array(0, 0, 0, 0, 150, -198, 0, 0, 0, 0, -94, -19, 0, 0, 0, 0, -337, -62)
+}
+point_count = 3
+
+[sub_resource type="Curve2D" id="Curve2D_x447m"]
+_data = {
+"points": PackedVector2Array(0, 0, 0, 0, -101, -265, 0, 0, 0, 0, -120, -66, 0, 0, 0, 0, -175, 9, 0, 0, 0, 0, -222, -75, 0, 0, 0, 0, -107, -155, 0, 0, 0, 0, -6, -84, 0, 0, 0, 0, -56, 7, 0, 0, 0, 0, -100, -65, 0, 0, 0, 0, -105, -298)
+}
+point_count = 9
+
+[node name="Debug" type="Node2D" unique_id=641409104 node_paths=PackedStringArray("_label", "_spawnPaths")]
 script = ExtResource("1_5nf4i")
 _label = NodePath("Label")
+_fairyPrefab = ExtResource("2_x6ejw")
+_spawnPaths = [NodePath("PathA/PathFollowA"), NodePath("PathB/PathFollowB"), NodePath("PathC/PathFollowC"), NodePath("PathD/PathFollowD")]
 
 [node name="Background" parent="." unique_id=1237811369 instance=ExtResource("4_4tne8")]
 position = Vector2(-97, 0)
@@ -66,3 +87,37 @@ autoplay = true
 
 [node name="Camera" type="Camera2D" parent="." unique_id=1545325962]
 zoom = Vector2(1.7, 1.7)
+
+[node name="PathA" type="Path2D" parent="." unique_id=562030898]
+visible = false
+position = Vector2(-7.6635103, 35.099987)
+scale = Vector2(1.0521327, 1.2700001)
+curve = SubResource("Curve2D_x6ejw")
+
+[node name="PathFollowA" type="PathFollow2D" parent="PathA" unique_id=1261931083]
+position = Vector2(-275, -36)
+rotation = -0.5892548
+
+[node name="PathB" type="Path2D" parent="." unique_id=987591530]
+visible = false
+curve = SubResource("Curve2D_kvle7")
+
+[node name="PathFollowB" type="PathFollow2D" parent="PathB" unique_id=1081413153]
+position = Vector2(150, -198)
+rotation = 2.5086663
+
+[node name="PathC" type="Path2D" parent="." unique_id=1273047639]
+visible = false
+curve = SubResource("Curve2D_kvle7")
+
+[node name="PathFollowC" type="PathFollow2D" parent="PathC" unique_id=254714936]
+position = Vector2(150, -198)
+rotation = 2.5086663
+
+[node name="PathD" type="Path2D" parent="." unique_id=612448145]
+visible = false
+curve = SubResource("Curve2D_x447m")
+
+[node name="PathFollowD" type="PathFollow2D" parent="PathD" unique_id=1129204847]
+position = Vector2(-101, -265)
+rotation = 1.6659852

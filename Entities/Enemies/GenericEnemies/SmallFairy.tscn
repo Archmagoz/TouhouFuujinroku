@@ -1,0 +1,73 @@
+[gd_scene format=3 uid="uid://dr1xqi874edgh"]
+
+[ext_resource type="Texture2D" uid="uid://td8dhft4ai7c" path="res://Entities/Enemies/Assets/Spritesheet.png" id="1_p7e3w"]
+[ext_resource type="Script" uid="uid://cayeg228t3472" path="res://Entities/Enemies/GenericEnemies/SmallFairy.cs" id="1_rxwda"]
+[ext_resource type="PackedScene" uid="uid://bltjhi4vk5tf3" path="res://Entities/Enemies/GenericEnemies/Projectile/GreenDot.tscn" id="2_ohic1"]
+[ext_resource type="PackedScene" uid="uid://d4ndyaphhwekf" path="res://Entities/Enemies/GenericEnemies/GenericEnemyFireController.tscn" id="3_ohic1"]
+[ext_resource type="AudioStream" uid="uid://cxu5am01eiop" path="res://Entities/Enemies/GenericEnemies/Projectile/Assets/GenericShotSFX.wav" id="5_tx7gd"]
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_rxwda"]
+atlas = ExtResource("1_p7e3w")
+region = Rect2(48, 1382, 32, 32)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_ohic1"]
+atlas = ExtResource("1_p7e3w")
+region = Rect2(80, 1382, 32, 32)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_rnmak"]
+atlas = ExtResource("1_p7e3w")
+region = Rect2(112, 1382, 32, 32)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_tx7gd"]
+atlas = ExtResource("1_p7e3w")
+region = Rect2(144, 1382, 32, 32)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_72jhx"]
+atlas = ExtResource("1_p7e3w")
+region = Rect2(176, 1382, 32, 32)
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_wno3y"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_rxwda")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_ohic1")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_rnmak")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_tx7gd")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_72jhx")
+}],
+"loop": true,
+"name": &"default",
+"speed": 10.0
+}]
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_p7e3w"]
+radius = 9.0
+
+[node name="SmallFairy" type="Area2D" unique_id=1964223042 node_paths=PackedStringArray("_fireController")]
+script = ExtResource("1_rxwda")
+_fireController = NodePath("GenericEnemyFireController")
+
+[node name="AnimatedSprite" type="AnimatedSprite2D" parent="." unique_id=1203939961]
+sprite_frames = SubResource("SpriteFrames_wno3y")
+autoplay = "default"
+
+[node name="CollisionShape" type="CollisionShape2D" parent="." unique_id=208143053]
+shape = SubResource("CircleShape2D_p7e3w")
+
+[node name="GenericEnemyFireController" parent="." unique_id=1612473014 node_paths=PackedStringArray("_shotSound") instance=ExtResource("3_ohic1")]
+_bulletPrefab = ExtResource("2_ohic1")
+_shotCount = 8
+_fireRate = 2.0
+_shotSound = NodePath("AudioStreamPlayer")
+
+[node name="AudioStreamPlayer" type="AudioStreamPlayer2D" parent="GenericEnemyFireController" unique_id=724761034]
+stream = ExtResource("5_tx7gd")

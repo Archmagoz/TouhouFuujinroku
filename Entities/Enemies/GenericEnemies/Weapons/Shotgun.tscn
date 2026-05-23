@@ -1,0 +1,21 @@
+[gd_scene format=3 uid="uid://bbfcxlk0s2cpm"]
+
+[ext_resource type="Script" uid="uid://cutpqv65pj0it" path="res://Entities/Enemies/GenericEnemies/Weapons/Shotgun.cs" id="1_2lcpo"]
+
+[node name="Shotgun" type="Node2D" unique_id=2111850642]
+script = ExtResource("1_2lcpo")
+
+[node name="01" type="Marker2D" parent="." unique_id=1084368044]
+position = Vector2(-20, 8)
+
+[node name="02" type="Marker2D" parent="." unique_id=19974747]
+position = Vector2(-10, 18)
+
+[node name="03" type="Marker2D" parent="." unique_id=127633422]
+position = Vector2(0, 28)
+
+[node name="04" type="Marker2D" parent="." unique_id=637018191]
+position = Vector2(10, 18)
+
+[node name="05" type="Marker2D" parent="." unique_id=1143548574]
+position = Vector2(20, 8)
