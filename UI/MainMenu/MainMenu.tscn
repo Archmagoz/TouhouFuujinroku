@@ -19,6 +19,14 @@ region = Rect2(851.78046, 47.7007, 149.50256, 29.371368)
 atlas = ExtResource("1_8fkdr")
 region = Rect2(691.8448, 47.899464, 149.13458, 29.261242)
 
+[sub_resource type="AtlasTexture" id="AtlasTexture_1dhmk"]
+atlas = ExtResource("1_8fkdr")
+region = Rect2(803.1521, 271.92822, 93.93353, 32.311737)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_a712v"]
+atlas = ExtResource("1_8fkdr")
+region = Rect2(691.1172, 271.95688, 93.97595, 32.085144)
+
 [sub_resource type="AtlasTexture" id="AtlasTexture_4elqj"]
 atlas = ExtResource("1_8fkdr")
 region = Rect2(770.88855, 303.83066, 63.30603, 31.341919)
@@ -62,6 +70,18 @@ texture_pressed = SubResource("AtlasTexture_nahvw")
 texture_hover = SubResource("AtlasTexture_nahvw")
 texture_disabled = SubResource("AtlasTexture_8x0bb")
 texture_focused = SubResource("AtlasTexture_nahvw")
+
+[node name="Opition" type="TextureButton" parent="." unique_id=2135972990]
+layout_mode = 0
+offset_left = 149.0
+offset_top = 104.0
+offset_right = 242.0
+offset_bottom = 144.0
+texture_normal = SubResource("AtlasTexture_1dhmk")
+texture_pressed = SubResource("AtlasTexture_a712v")
+texture_hover = SubResource("AtlasTexture_a712v")
+texture_disabled = SubResource("AtlasTexture_1dhmk")
+texture_focused = SubResource("AtlasTexture_a712v")
 
 [node name="Quit" type="TextureButton" parent="." unique_id=1000945232]
 layout_mode = 0

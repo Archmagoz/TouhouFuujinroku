@@ -19,31 +19,40 @@ namespace TohouFuuujinoku.Entities
 		// Direction of travel in radians — 0 = right, -π/2 = straight up.
 		private float _angle;
 
-		// Cached viewport rect — refreshed on Initialize() to avoid per-frame allocation.
+		// Cached viewport rect — kept valid across fullscreen toggles and window resizes
+		// by subscribing to SizeChanged in _Ready(). Avoids per-frame API calls in _Process().
 		private Rect2 _viewportRect;
 
 		// ------------------------------------ Godot overrides ------------------------------------
+
+		public override void _Ready()
+		{
+			_viewportRect = GetViewportRect();
+
+			// Invalidate the cache whenever the viewport dimensions change — covers both
+			// manual window resizing and fullscreen toggles.
+			GetViewport().SizeChanged += () => _viewportRect = GetViewportRect();
+		}
 
 		public override void _Process(double delta)
 		{
 			Position += Vector2.FromAngle(_angle) * Speed * (float)delta;
 
-			// Return to pool once the projectile exits the viewport.
-			// GlobalPosition is used so the check is independent of any parent transform.
+			// Convert world position to screen space before checking against the viewport rect.
+			// GlobalPosition is in world space; _viewportRect is in screen space.
 			if (!_viewportRect.HasPoint(GetViewportTransform() * GlobalPosition))
 				ProjectilePool.Instance.Return(this);
 		}
 
 		// --------------------------------------- Public API --------------------------------------
 
-		// Called by ProjectilePool.Rent() immediately after the node is added to the scene.
+		// Called by ProjectilePool.Rent() immediately after the node is re-enabled.
 		// Resets all runtime state so recycled instances behave like fresh ones.
 		public void Initialize(Vector2 position, float angle)
 		{
 			Position = position;
 			_angle = angle;
 			Rotation = angle;
-			_viewportRect = GetViewportRect();
 		}
 	}
 }
