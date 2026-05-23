@@ -14,8 +14,9 @@ namespace TohouFuuujinoku.Levels.Debug
 		// Fairy prefab to instantiate on each spawn tick.
 		[Export] private PackedScene _fairyPrefab;
 
-		// Paths available for spawning — each fairy picks one at random from its own pool.
-		// Assign PathFollow2D nodes from the scene tree in the editor.
+		// Source paths used as templates for spawning.
+		// Each fairy receives its own duplicated PathFollow2D instance,
+		// preventing shared progress/state between enemies.
 		[Export] private Array<PathFollow2D> _spawnPaths = [];
 
 		// Seconds between spawns — ramps from 2.0 down to 0.4 as the level progresses.
@@ -69,12 +70,37 @@ namespace TohouFuuujinoku.Levels.Debug
 			_spawnCooldown = Mathf.Lerp(_spawnIntervalStart, _spawnIntervalEnd, t);
 		}
 
-		// Instantiates a fairy, assigns the full path pool, and adds it to the scene.
+		// Instantiates a fairy and gives it a unique duplicated path pool.
+		// Each duplicated PathFollow2D maintains independent progress/state,
+		// avoiding synchronization issues between enemies sharing the same node.
 		private void SpawnFairy()
 		{
 			var fairy = _fairyPrefab.Instantiate<SmallFairy>();
 			AddChild(fairy);
-			fairy.SetPathPool(_spawnPaths);
+
+			Array<PathFollow2D> uniquePathPool = [];
+
+			foreach (var sourcePath in _spawnPaths)
+			{
+				if (sourcePath == null) continue;
+
+				// Duplicate the full PathFollow2D hierarchy/state for this fairy only.
+				var pathCopy = sourcePath.Duplicate() as PathFollow2D;
+
+				if (pathCopy == null) continue;
+
+				// PathFollow2D requires a valid parent path structure.
+				// Reattach the duplicate under the same Path2D owner.
+				sourcePath.GetParent().AddChild(pathCopy);
+
+				// Ensure every fairy starts from its own clean progress state.
+				pathCopy.Progress = 0f;
+				pathCopy.ProgressRatio = 0f;
+
+				uniquePathPool.Add(pathCopy);
+			}
+
+			fairy.SetPathPool(uniquePathPool);
 		}
 	}
 }
