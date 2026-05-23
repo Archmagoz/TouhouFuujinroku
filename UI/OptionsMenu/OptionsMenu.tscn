@@ -1,5 +1,41 @@
 [gd_scene format=3 uid="uid://bsahi63r05vyc"]
 
-[node name="OptionsMenu" type="Control" unique_id=961730160]
+[ext_resource type="Texture2D" uid="uid://dmand0bis1vhi" path="res://UI/MainMenu/Assets/MainMenuSpritesheet.png" id="1_0qgxi"]
+[ext_resource type="Script" uid="uid://dr33txt28rbtv" path="res://UI/OptionsMenu/OptionsMenu.cs" id="1_2y1lw"]
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_2y1lw"]
+atlas = ExtResource("1_0qgxi")
+region = Rect2(39.957764, 47.967968, 640.17786, 480.04315)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_0qgxi"]
+atlas = ExtResource("1_0qgxi")
+region = Rect2(770.88855, 303.83066, 63.30603, 31.341919)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_b57bx"]
+atlas = ExtResource("1_0qgxi")
+region = Rect2(690.88257, 304.05157, 63.018982, 31.118988)
+
+[node name="OptionsMenu" type="Control" unique_id=961730160 node_paths=PackedStringArray("_quitButton")]
 layout_mode = 3
 anchors_preset = 0
+scale = Vector2(1.4799997, 1.4799997)
+script = ExtResource("1_2y1lw")
+_quitButton = NodePath("Quit")
+
+[node name="Background" type="TextureRect" parent="." unique_id=262523885]
+layout_mode = 0
+offset_right = 648.64874
+offset_bottom = 486.48654
+texture = SubResource("AtlasTexture_2y1lw")
+
+[node name="Quit" type="TextureButton" parent="." unique_id=1217271505]
+layout_mode = 0
+offset_left = 223.0
+offset_top = 344.0
+offset_right = 286.0
+offset_bottom = 384.0
+texture_normal = SubResource("AtlasTexture_0qgxi")
+texture_pressed = SubResource("AtlasTexture_b57bx")
+texture_hover = SubResource("AtlasTexture_b57bx")
+texture_disabled = SubResource("AtlasTexture_0qgxi")
+texture_focused = SubResource("AtlasTexture_b57bx")
