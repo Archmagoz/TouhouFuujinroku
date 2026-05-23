@@ -25,6 +25,11 @@ namespace TohouFuuujinoku.Levels.Debug
 		// Total duration over which the interval ramps from start to end, in seconds.
 		[Export] private float _rampDuration = 30f;
 
+		// Jitter factor applied to each spawn interval — prevents fairies from spawning
+		// in sync, which would cause audio clipping when salvos overlap.
+		// Value of 0.2 = ±20% of the base interval.
+		[Export] private float _spawnJitter = 0.2f;
+
 		// Elapsed level time — drives both the ramp calculation and the spawn timer.
 		private float _elapsed;
 		private float _spawnCooldown;
@@ -62,8 +67,12 @@ namespace TohouFuuujinoku.Levels.Debug
 
 			SpawnFairy();
 
+			// Apply jitter to desynchronize spawns — prevents salvos from overlapping
+			// and audio from clipping when multiple fairies fire simultaneously.
 			float t = Mathf.Clamp(_elapsed / _rampDuration, 0f, 1f);
-			_spawnCooldown = Mathf.Lerp(_spawnIntervalStart, _spawnIntervalEnd, t);
+			float baseInterval = Mathf.Lerp(_spawnIntervalStart, _spawnIntervalEnd, t);
+			float jitter = baseInterval * _spawnJitter;
+			_spawnCooldown = baseInterval + (float)GD.RandRange(-jitter, jitter);
 		}
 
 		// Picks a random source path, duplicates its PathFollow2D, and assigns it
