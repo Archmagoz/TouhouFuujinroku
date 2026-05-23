@@ -1,6 +1,0 @@
-[gd_scene format=3 uid="uid://b71sb3j6i7ltn"]
-
-[ext_resource type="Script" uid="uid://d4hf4u3w0gcg8" path="res://Entities/Enemies/GenericEnemies/Weapons.cs" id="1_dnhi3"]
-
-[node name="Weapons" type="Node2D" unique_id=732272043]
-script = ExtResource("1_dnhi3")
