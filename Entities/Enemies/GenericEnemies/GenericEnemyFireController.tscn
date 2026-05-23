@@ -5,9 +5,6 @@
 
 [node name="GenericEnemyFireController" type="Node2D" unique_id=1612473014 node_paths=PackedStringArray("_weapons")]
 script = ExtResource("1_i6sbm")
-_shotCount = null
-_fireRate = null
-_startingWeaponIndex = null
 _weapons = [NodePath("Shotgun")]
 
 [node name="Shotgun" parent="." unique_id=2111850642 instance=ExtResource("2_ykjol")]
