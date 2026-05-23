@@ -43,8 +43,8 @@ namespace TohouFuuujinoku.Entities
 		public void Initialize(Vector2 position, float angle)
 		{
 			Position = position;
-			_angle = angle;
 			Rotation = angle;
+			_angle = angle;
 		}
 	}
 }
