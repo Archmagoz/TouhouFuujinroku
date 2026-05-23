@@ -35,36 +35,36 @@ region = Rect2(770.88855, 303.83066, 63.30603, 31.341919)
 atlas = ExtResource("1_8fkdr")
 region = Rect2(690.88257, 304.05157, 63.018982, 31.118988)
 
-[node name="MainMenu" type="Control" unique_id=1993999925 node_paths=PackedStringArray("_gameStartButton", "_quitButton")]
+[node name="MainMenu" type="Control" unique_id=1993999925 node_paths=PackedStringArray("_gameStartButton", "_optionsButton", "_quitButton")]
 layout_mode = 3
 anchors_preset = 0
+scale = Vector2(1.4799998, 1.4799998)
 script = ExtResource("1_fw0vt")
 _gameStartButton = NodePath("GameStart")
+_optionsButton = NodePath("Opition")
 _quitButton = NodePath("Quit")
 
 [node name="Background" type="TextureRect" parent="." unique_id=94049739]
 layout_mode = 0
-offset_left = -320.0
-offset_top = -240.0
-offset_right = 320.0
-offset_bottom = 240.0
+offset_right = 648.64874
+offset_bottom = 486.48654
 texture = SubResource("AtlasTexture_fw0vt")
 
 [node name="Title" type="TextureRect" parent="." unique_id=752346984]
 layout_mode = 0
-offset_left = -302.00003
-offset_top = -38.999996
-offset_right = 208.99997
-offset_bottom = 75.0
+offset_left = 17.999943
+offset_top = 200.99997
+offset_right = 528.99994
+offset_bottom = 314.99997
 scale = Vector2(0.70156556, 0.7015655)
 texture = SubResource("AtlasTexture_8fkdr")
 
 [node name="GameStart" type="TextureButton" parent="." unique_id=2135349243]
 layout_mode = 0
-offset_left = 94.0
-offset_top = -84.0
-offset_right = 247.0
-offset_bottom = -44.0
+offset_left = 414.0
+offset_top = 156.0
+offset_right = 567.0
+offset_bottom = 196.0
 texture_normal = SubResource("AtlasTexture_8x0bb")
 texture_pressed = SubResource("AtlasTexture_nahvw")
 texture_hover = SubResource("AtlasTexture_nahvw")
@@ -73,10 +73,10 @@ texture_focused = SubResource("AtlasTexture_nahvw")
 
 [node name="Opition" type="TextureButton" parent="." unique_id=2135972990]
 layout_mode = 0
-offset_left = 149.0
-offset_top = 104.0
-offset_right = 242.0
-offset_bottom = 144.0
+offset_left = 469.0
+offset_top = 344.0
+offset_right = 562.0
+offset_bottom = 384.0
 texture_normal = SubResource("AtlasTexture_1dhmk")
 texture_pressed = SubResource("AtlasTexture_a712v")
 texture_hover = SubResource("AtlasTexture_a712v")
@@ -85,15 +85,12 @@ texture_focused = SubResource("AtlasTexture_a712v")
 
 [node name="Quit" type="TextureButton" parent="." unique_id=1000945232]
 layout_mode = 0
-offset_left = 159.0
-offset_top = 141.0
-offset_right = 222.0
-offset_bottom = 181.0
+offset_left = 479.0
+offset_top = 381.0
+offset_right = 542.0
+offset_bottom = 421.0
 texture_normal = SubResource("AtlasTexture_4elqj")
 texture_pressed = SubResource("AtlasTexture_ri767")
 texture_hover = SubResource("AtlasTexture_ri767")
 texture_disabled = SubResource("AtlasTexture_4elqj")
 texture_focused = SubResource("AtlasTexture_ri767")
-
-[node name="Camera" type="Camera2D" parent="." unique_id=1373273738]
-zoom = Vector2(1.5, 1.5)

@@ -7,6 +7,7 @@ namespace TohouFuuujinoku.UI
 	{
 		[ExportGroup("UI Elements")]
 		[Export] private TextureButton _gameStartButton;
+		[Export] private TextureButton _optionsButton;
 		[Export] private TextureButton _quitButton;
 
 		// ---------------------------------- Godot overrides -----------------------------------
@@ -14,6 +15,7 @@ namespace TohouFuuujinoku.UI
 		public override void _Ready()
 		{
 			_gameStartButton.Pressed += OnGameStartPressed;
+			_optionsButton.Pressed += OnOptionsPressed;
 			_quitButton.Pressed += OnQuitPressed;
 		}
 
@@ -28,6 +30,11 @@ namespace TohouFuuujinoku.UI
 		private void OnGameStartPressed()
 		{
 			SceneController.Instance.ChangeScene(SceneType.DebugLevel);
+		}
+
+		private void OnOptionsPressed()
+		{
+			SceneController.Instance.ChangeScene(SceneType.OptionsMenu);
 		}
 
 		private void OnQuitPressed()

@@ -5,8 +5,9 @@ namespace TohouFuuujinoku.Global.Controllers
 {
 	public enum SceneType
 	{
-		DebugLevel,
 		MainMenu,
+		OptionsMenu,
+		DebugLevel,
 	}
 
 	public partial class SceneController : Node
@@ -17,6 +18,7 @@ namespace TohouFuuujinoku.Global.Controllers
 		private readonly Dictionary<SceneType, PackedScene> _preloaded = new()
 		{
 			{ SceneType.MainMenu, GD.Load<PackedScene>("res://UI/MainMenu/MainMenu.tscn") },
+			{ SceneType.OptionsMenu, GD.Load<PackedScene>("res://UI/OptionsMenu/OptionsMenu.tscn") },
 		};
 
 		// Lazy-loaded scenes — resolved on first request, then promoted to _preloaded.

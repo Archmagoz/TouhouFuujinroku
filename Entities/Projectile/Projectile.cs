@@ -19,28 +19,20 @@ namespace TohouFuuujinoku.Entities
 		// Direction of travel in radians — 0 = right, -π/2 = straight up.
 		private float _angle;
 
-		// Cached viewport rect — kept valid across fullscreen toggles and window resizes
-		// by subscribing to SizeChanged in _Ready(). Avoids per-frame API calls in _Process().
-		private Rect2 _viewportRect;
+		// World-space boundary beyond which a projectile is considered off-screen and returned
+		// to the pool. Avoids viewport transform issues that arise when the projectile lives
+		// in the autoload subtree rather than the level scene.
+		private const float CullBoundary = 500f;
 
 		// ------------------------------------ Godot overrides ------------------------------------
-
-		public override void _Ready()
-		{
-			_viewportRect = GetViewportRect();
-
-			// Invalidate the cache whenever the viewport dimensions change — covers both
-			// manual window resizing and fullscreen toggles.
-			GetViewport().SizeChanged += () => _viewportRect = GetViewportRect();
-		}
 
 		public override void _Process(double delta)
 		{
 			Position += Vector2.FromAngle(_angle) * Speed * (float)delta;
 
-			// Convert world position to screen space before checking against the viewport rect.
-			// GlobalPosition is in world space; _viewportRect is in screen space.
-			if (!_viewportRect.HasPoint(GetViewportTransform() * GlobalPosition))
+			// Cull in world space — immune to viewport resizes, fullscreen toggles, and
+			// camera transforms. 2000 units comfortably exceeds any expected play area.
+			if (Mathf.Abs(GlobalPosition.X) > CullBoundary || Mathf.Abs(GlobalPosition.Y) > CullBoundary)
 				ProjectilePool.Instance.Return(this);
 		}
 
