@@ -67,7 +67,6 @@ shape = SubResource("CircleShape2D_p7e3w")
 _bulletPrefab = ExtResource("2_ohic1")
 _shotCount = 8
 _fireRate = 2.0
-_startingWeaponIndex = 0
 _shotSound = NodePath("AudioStreamPlayer")
 
 [node name="AudioStreamPlayer" type="AudioStreamPlayer2D" parent="GenericEnemyFireController" unique_id=724761034]

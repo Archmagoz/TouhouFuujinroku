@@ -1,5 +1,4 @@
 using Godot;
-using Godot.Collections;
 
 namespace TohouFuuujinoku.Entities.Enemies.GenericEnemies
 {
@@ -10,13 +9,13 @@ namespace TohouFuuujinoku.Entities.Enemies.GenericEnemies
 		[Export] private float _speed = 100f;
 
 		// Health points — enemy is defeated when this reaches zero.
-		[Export] private int _health = 3;
+		[Export] private int _health = 100;
 
 		[ExportGroup("Components")]
 		[Export] private GenericEnemyFireController _fireController;
 
-		// The randomly selected path this instance will follow.
-		// Assigned externally via SetPathPool() by the spawner after instantiation.
+		// Exclusive PathFollow2D instance — duplicated from the source path by the spawner.
+		// Owned by this fairy; freed alongside it when despawning.
 		private PathFollow2D _pathFollow;
 
 		// ---------------------------------- Godot overrides -----------------------------------
@@ -34,13 +33,12 @@ namespace TohouFuuujinoku.Entities.Enemies.GenericEnemies
 
 		// --------------------------------------- Public API -----------------------------------
 
-		// Called by the spawner immediately after instantiation — selects a random path
-		// from the pool and positions the fairy at its start point.
-		public void SetPathPool(Array<PathFollow2D> paths)
+		// Receives an already-duplicated PathFollow2D owned exclusively by this fairy.
+		// Called by the spawner immediately after instantiation.
+		public void SetPath(PathFollow2D pathFollow)
 		{
-			if (paths.Count == 0) return;
-
-			_pathFollow = paths[GD.RandRange(0, paths.Count - 1)];
+			_pathFollow = pathFollow;
+			_pathFollow.Progress = 0f;
 			GlobalPosition = _pathFollow.GlobalPosition;
 		}
 
@@ -53,9 +51,12 @@ namespace TohouFuuujinoku.Entities.Enemies.GenericEnemies
 			_pathFollow.Progress += _speed * (float)delta;
 			GlobalPosition = _pathFollow.GlobalPosition;
 
-			// Remove self once the path is fully traversed.
+			// Despawn once the path is fully traversed — free the owned PathFollow2D too.
 			if (_pathFollow.ProgressRatio >= 1f)
+			{
+				_pathFollow.QueueFree();
 				QueueFree();
+			}
 		}
 
 		// Handles incoming hits from player projectiles.
@@ -67,7 +68,10 @@ namespace TohouFuuujinoku.Entities.Enemies.GenericEnemies
 			_health -= projectile.Damage;
 
 			if (_health <= 0)
+			{
+				_pathFollow?.QueueFree();
 				QueueFree();
+			}
 		}
 	}
 }
