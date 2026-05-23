@@ -22,7 +22,7 @@ namespace TohouFuuujinoku.Entities
 		// World-space boundary beyond which a projectile is considered off-screen and returned
 		// to the pool. Avoids viewport transform issues that arise when the projectile lives
 		// in the autoload subtree rather than the level scene.
-		private const float CullBoundary = 500f;
+		private const float CullBoundary = 1000f;
 
 		// ------------------------------------ Godot overrides ------------------------------------
 
@@ -31,7 +31,7 @@ namespace TohouFuuujinoku.Entities
 			Position += Vector2.FromAngle(_angle) * Speed * (float)delta;
 
 			// Cull in world space — immune to viewport resizes, fullscreen toggles, and
-			// camera transforms. 500 units comfortably exceeds any expected play area.
+			// camera transforms. 1000 units comfortably exceeds any expected play area.
 			if (Mathf.Abs(GlobalPosition.X) > CullBoundary || Mathf.Abs(GlobalPosition.Y) > CullBoundary)
 				ProjectilePool.Instance.Return(this);
 		}
