@@ -67,10 +67,7 @@ namespace TohouFuuujinoku.Global.Controllers
 			if (projectile == null) return null;
 
 			// Re-enable all systems disabled by Return() — node stays in the tree the whole time.
-			projectile.Visible = true;
-			projectile.SetProcess(true);
-			projectile.Monitoring = true;
-			projectile.Monitorable = true;
+			SetProjectileActive(projectile, true);
 
 			projectile.Initialize(position, angle);
 			return projectile;
@@ -81,10 +78,7 @@ namespace TohouFuuujinoku.Global.Controllers
 		// autoload prevents orphan node warnings during scene transitions.
 		public void Return(Projectile projectile)
 		{
-			projectile.Visible = false;
-			projectile.SetProcess(false);
-			projectile.Monitoring = false;
-			projectile.Monitorable = false;
+			SetProjectileActive(projectile, false);
 
 			if (!_pools.TryGetValue(projectile.Prefab, out var queue))
 			{
@@ -128,6 +122,16 @@ namespace TohouFuuujinoku.Global.Controllers
 			AddChild(projectile);
 			Return(projectile); // immediately disable until first Rent() call.
 			return projectile;
+		}
+
+		// Helper to toggle all systems of a projectile on or off. Used by Rent() and Return() to
+		// re-enable or disable the node without removing it from the scene tree.
+		private void SetProjectileActive(Projectile projectile, bool active)
+		{
+			projectile.Visible = active;
+			projectile.SetProcess(active);
+			projectile.Monitoring = active;
+			projectile.Monitorable = active;
 		}
 	}
 }
