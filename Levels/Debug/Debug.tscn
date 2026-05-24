@@ -24,9 +24,9 @@ point_count = 3
 
 [sub_resource type="Curve2D" id="Curve2D_kvle7"]
 _data = {
-"points": PackedVector2Array(0, 0, 0, 0, 150, -198, 0, 0, 0, 0, -94, -19, 0, 0, 0, 0, -337, -62)
+"points": PackedVector2Array(0, 0, 0, 0, 150, -198, 0, 0, 0, 0, -108, -143, 0, 0, 0, 0, -195, -75, 0, 0, 0, 0, -108, -30, 0, 0, 0, 0, 8, 5, 0, 0, 0, 0, -173, 54, 0, 0, 0, 0, -331, 111)
 }
-point_count = 3
+point_count = 7
 
 [sub_resource type="Curve2D" id="Curve2D_x447m"]
 _data = {
@@ -92,43 +92,35 @@ autoplay = true
 zoom = Vector2(1.7, 1.7)
 
 [node name="PathA" type="Path2D" parent="." unique_id=562030898]
-visible = false
 position = Vector2(-7.6635103, 35.099987)
 scale = Vector2(1.0521327, 1.2700001)
 curve = SubResource("Curve2D_x6ejw")
 
 [node name="PathFollowA" type="PathFollow2D" parent="PathA" unique_id=1261931083]
-visible = false
 position = Vector2(-275, -36)
 rotation = -0.5892548
 loop = false
 
 [node name="PathB" type="Path2D" parent="." unique_id=987591530]
-visible = false
 curve = SubResource("Curve2D_kvle7")
 
 [node name="PathFollowB" type="PathFollow2D" parent="PathB" unique_id=1081413153]
-visible = false
 position = Vector2(150, -198)
-rotation = 2.5086663
+rotation = 2.9315584
 loop = false
 
 [node name="PathC" type="Path2D" parent="." unique_id=1273047639]
-visible = false
 curve = SubResource("Curve2D_kvle7")
 
 [node name="PathFollowC" type="PathFollow2D" parent="PathC" unique_id=254714936]
-visible = false
 position = Vector2(150, -198)
-rotation = 2.5086663
+rotation = 2.9315584
 loop = false
 
 [node name="PathD" type="Path2D" parent="." unique_id=612448145]
-visible = false
 curve = SubResource("Curve2D_x447m")
 
 [node name="PathFollowD" type="PathFollow2D" parent="PathD" unique_id=1129204847]
-visible = false
 position = Vector2(-101, -265)
 rotation = 1.6659852
 loop = false
