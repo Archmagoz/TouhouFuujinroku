@@ -1,6 +1,6 @@
 using Godot;
 
-namespace TohouFuuujinoku.Components
+namespace TouhouFuujinroku.Components
 {
 	[GlobalClass]
 	public partial class HealthComponent : Node

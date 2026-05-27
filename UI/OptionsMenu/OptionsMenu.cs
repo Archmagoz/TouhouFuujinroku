@@ -1,7 +1,7 @@
 using Godot;
-using TohouFuuujinoku.Global.Controllers;
+using TouhouFuujinroku.Global.Controllers;
 
-namespace TohouFuuujinoku.UI
+namespace TouhouFuujinroku.UI
 {
     public partial class OptionsMenu : Control
     {

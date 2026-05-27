@@ -1,8 +1,8 @@
 using Godot;
 using System.Collections.Generic;
-using TohouFuuujinoku.Entities;
+using TouhouFuujinroku.Entities;
 
-namespace TohouFuuujinoku.Global.Controllers
+namespace TouhouFuujinroku.Global.Controllers
 {
 	// Lifecycle-aware object pool for all projectiles in the game.
 	// Lives as an Autoload — always present, but only active inside a level.

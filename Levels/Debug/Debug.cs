@@ -1,10 +1,10 @@
 using Godot;
 using Godot.Collections;
-using TohouFuuujinoku.Global.Controllers;
-using TohouFuuujinoku.Entities.Enemies.GenericEnemies;
+using TouhouFuujinroku.Global.Controllers;
+using TouhouFuujinroku.Entities.Enemies.GenericEnemies;
 using SystemDict = System.Collections.Generic.Dictionary<Godot.PackedScene, int>;
 
-namespace TohouFuuujinoku.Levels.Debug
+namespace TouhouFuujinroku.Levels.Debug
 {
 	public partial class Debug : Node2D
 	{

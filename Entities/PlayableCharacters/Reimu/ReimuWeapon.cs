@@ -2,7 +2,7 @@ using Godot;
 using Godot.Collections;
 using System.Collections.Generic;
 
-namespace TohouFuuujinoku.Entities.PlayableCharacters
+namespace TouhouFuujinroku.Entities.PlayableCharacters
 {
 	[GlobalClass]
 	public partial class ReimuWeapon : Node2D

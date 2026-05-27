@@ -1,8 +1,8 @@
 using Godot;
 using Godot.Collections;
-using TohouFuuujinoku.Entities.Enemies.GenericEnemies.Weapons;
+using TouhouFuujinroku.Entities.Enemies.GenericEnemies.Weapons;
 
-namespace TohouFuuujinoku.Entities.Enemies.GenericEnemies
+namespace TouhouFuujinroku.Entities.Enemies.GenericEnemies
 {
 	// Reusable fire controller for generic enemies — manages cadence, shot quota, and weapon.
 	// Weapons are children of this node; swap active weapon via SetWeapon() at runtime.

@@ -1,7 +1,8 @@
 using Godot;
-using TohouFuuujinoku.Global.Controllers;
+using TouhouFuujinroku.Interfaces;
+using TouhouFuujinroku.Global.Controllers;
 
-namespace TohouFuuujinoku.Entities
+namespace TouhouFuujinroku.Entities
 {
 	[GlobalClass]
 	public partial class Projectile : Area2D
@@ -13,8 +14,8 @@ namespace TohouFuuujinoku.Entities
 		// ---------------------------------------- Configuration ----------------------------------
 
 		[ExportGroup("Configuration")]
-		[Export] public float Speed = 300f;
-		[Export] public int Damage = 1;
+		[Export] private float _speed = 300f;
+		[Export] private int _damage = 1;
 
 		// Direction of travel in radians — 0 = right, -π/2 = straight up.
 		private float _angle;
@@ -26,14 +27,25 @@ namespace TohouFuuujinoku.Entities
 
 		// ------------------------------------ Godot overrides ------------------------------------
 
+		public override void _Ready()
+		{
+			AreaEntered += OnAreaEntered;
+			BodyEntered += OnBodyEntered;
+		}
+
 		public override void _Process(double delta)
 		{
-			Position += Vector2.FromAngle(_angle) * Speed * (float)delta;
+			Position += Vector2.FromAngle(_angle) * _speed * (float)delta;
 
 			// Cull in world space — immune to viewport resizes, fullscreen toggles, and
 			// camera transforms. 1000 units comfortably exceeds any expected play area.
 			if (Mathf.Abs(Position.X) > CullBoundary || Mathf.Abs(Position.Y) > CullBoundary)
 				ProjectilePool.Instance.Return(this);
+		}
+
+		public override void _ExitTree()
+		{
+			AreaEntered -= OnAreaEntered;
 		}
 
 		// --------------------------------------- Public API --------------------------------------
@@ -45,6 +57,22 @@ namespace TohouFuuujinoku.Entities
 			Position = position;
 			Rotation = angle;
 			_angle = angle;
+		}
+
+		// ---------------------------------------- Helpers ----------------------------------------
+
+		// Applies damage to any IDamageable in the overlapping area.
+		// Collision layer filtering is handled in the editor — no type checks needed here.
+		private void OnAreaEntered(Area2D area)
+		{
+			if (area is IDamageable damageable)
+				damageable.ApplyDamage(_damage);
+		}
+
+		private void OnBodyEntered(Node2D body)
+		{
+			if (body is IDamageable damageable)
+				damageable.ApplyDamage(_damage);
 		}
 	}
 }

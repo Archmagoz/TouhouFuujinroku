@@ -1,15 +1,17 @@
 using Godot;
+using TouhouFuujinroku.Components;
+using TouhouFuujinroku.Interfaces;
 
-namespace TohouFuuujinoku.Entities.Enemies.GenericEnemies
+namespace TouhouFuujinroku.Entities.Enemies.GenericEnemies
 {
-	public partial class SmallFairy : Area2D
+	public partial class SmallFairy : Area2D, IDamageable
 	{
 		[ExportGroup("Configuration")]
 		// Movement speed along the assigned path in pixels per second.
-		[Export] private float _speed = 100f;
+		[Export] private SpeedComponent _speed;
 
 		// Health points — enemy is defeated when this reaches zero.
-		[Export] private int _health = 100;
+		[Export] private HealthComponent _health;
 
 		[ExportGroup("Components")]
 		[Export] private GenericEnemyFireController _fireController;
@@ -17,6 +19,9 @@ namespace TohouFuuujinoku.Entities.Enemies.GenericEnemies
 		// Exclusive PathFollow2D instance — duplicated from the source path by the spawner.
 		// Owned by this fairy; freed alongside it when despawning.
 		private PathFollow2D _pathFollow;
+
+		// IDamageable implementation — simply forwards to the HealthComponent.
+		public void ApplyDamage(int amount) => _health.ApplyDamage(amount);
 
 		// ---------------------------------- Godot overrides -----------------------------------
 
@@ -43,7 +48,7 @@ namespace TohouFuuujinoku.Entities.Enemies.GenericEnemies
 		{
 			if (_pathFollow == null) return;
 
-			_pathFollow.Progress += _speed * (float)delta;
+			_pathFollow.Progress += _speed.CurrentSpeed * (float)delta;
 			GlobalPosition = _pathFollow.GlobalPosition;
 
 			// Despawn once the path is fully traversed — free the owned PathFollow2D too.

@@ -5,6 +5,8 @@
 [ext_resource type="PackedScene" uid="uid://bltjhi4vk5tf3" path="res://Entities/Enemies/GenericEnemies/Projectile/GreenDot.tscn" id="2_ohic1"]
 [ext_resource type="PackedScene" uid="uid://d4ndyaphhwekf" path="res://Entities/Enemies/GenericEnemies/GenericEnemyFireController.tscn" id="3_ohic1"]
 [ext_resource type="AudioStream" uid="uid://cxu5am01eiop" path="res://Entities/Enemies/GenericEnemies/Projectile/Assets/GenericShotSFX.wav" id="5_tx7gd"]
+[ext_resource type="PackedScene" uid="uid://dxj0lkshro5gy" path="res://Components/SpeedComponent/SpeedComponent.tscn" id="6_ft0qj"]
+[ext_resource type="PackedScene" uid="uid://qnkfyeixmb6m" path="res://Components/HealthComponent/HealthComponent.tscn" id="7_gveti"]
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_rxwda"]
 atlas = ExtResource("1_p7e3w")
@@ -52,8 +54,12 @@ animations = [{
 [sub_resource type="CircleShape2D" id="CircleShape2D_p7e3w"]
 radius = 9.0
 
-[node name="SmallFairy" type="Area2D" unique_id=1964223042 node_paths=PackedStringArray("_fireController")]
+[node name="SmallFairy" type="Area2D" unique_id=1964223042 node_paths=PackedStringArray("_speed", "_health", "_fireController")]
+collision_layer = 16
+collision_mask = 5
 script = ExtResource("1_rxwda")
+_speed = NodePath("SpeedComponent")
+_health = NodePath("HealthComponent")
 _fireController = NodePath("GenericEnemyFireController")
 
 [node name="AnimatedSprite" type="AnimatedSprite2D" parent="." unique_id=1203939961]
@@ -62,6 +68,11 @@ autoplay = "default"
 
 [node name="CollisionShape" type="CollisionShape2D" parent="." unique_id=208143053]
 shape = SubResource("CircleShape2D_p7e3w")
+
+[node name="SpeedComponent" parent="." unique_id=1899239882 instance=ExtResource("6_ft0qj")]
+_currentSpeed = 100.0
+
+[node name="HealthComponent" parent="." unique_id=1821635083 instance=ExtResource("7_gveti")]
 
 [node name="GenericEnemyFireController" parent="." unique_id=1612473014 node_paths=PackedStringArray("_shotSound") instance=ExtResource("3_ohic1")]
 _bulletPrefab = ExtResource("2_ohic1")

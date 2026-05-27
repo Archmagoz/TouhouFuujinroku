@@ -1,8 +1,8 @@
 using Godot;
 using System.Collections.Generic;
-using TohouFuuujinoku.Global.Controllers;
+using TouhouFuujinroku.Global.Controllers;
 
-namespace TohouFuuujinoku.Entities.Enemies.GenericEnemies.Weapons
+namespace TouhouFuujinroku.Entities.Enemies.GenericEnemies.Weapons
 {
 	// Spread-shot weapon — fires one projectile per Marker2D child in a single salvo.
 	// Markers define shot directions; all projectiles spawn at the weapon's origin.

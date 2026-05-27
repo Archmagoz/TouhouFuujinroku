@@ -1,9 +1,10 @@
 using Godot;
-using TohouFuuujinoku.Components;
+using TouhouFuujinroku.Components;
+using TouhouFuujinroku.Interfaces;
 
-namespace TohouFuuujinoku.Entities.PlayableCharacters
+namespace TouhouFuujinroku.Entities.PlayableCharacters
 {
-	public partial class Reimu : CharacterBody2D
+	public partial class Reimu : CharacterBody2D, IDamageable
 	{
 		[ExportGroup("Components")]
 		[Export] private SpriteComponent _sprite;
@@ -18,6 +19,9 @@ namespace TohouFuuujinoku.Entities.PlayableCharacters
 		// the button is released, preventing missed shots from brief input gaps.
 		private int _shootBuffer;
 		private const int ShootBufferFrames = 6; // ~0.1 s at 60 fps — tune to taste.
+
+		// IDamageable implementation — simply forwards to the HealthComponent.
+		public void ApplyDamage(int amount) => _health.ApplyDamage(amount);
 
 		// ---------------------------------- Godot overrides -----------------------------------
 

@@ -1,6 +1,6 @@
 using Godot;
 
-namespace TohouFuuujinoku.Entities.Enemies.GenericEnemies.Weapons
+namespace TouhouFuujinroku.Entities.Enemies.GenericEnemies.Weapons
 {
     // Abstract base for all enemy weapons — enforces a common Fire() contract.
     // Attach concrete weapon scenes as children of GenericEnemyFireController.

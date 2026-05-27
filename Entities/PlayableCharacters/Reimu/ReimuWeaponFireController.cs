@@ -1,7 +1,7 @@
 using Godot;
-using TohouFuuujinoku.Global.Controllers;
+using TouhouFuujinroku.Global.Controllers;
 
-namespace TohouFuuujinoku.Entities.PlayableCharacters
+namespace TouhouFuujinroku.Entities.PlayableCharacters
 {
 	// Handles fire cadence, projectile spawning, and shot audio for ReimuWeapon.
 	// Lives as a child of ReimuWeapon — all external calls go through the parent.

@@ -14,7 +14,6 @@ radius = 5.0990195
 z_index = 1
 collision_layer = 8
 script = ExtResource("1_bccv5")
-Speed = 150.0
 metadata/_custom_type_script = "uid://c5fkupb13gquw"
 
 [node name="Sprite" type="Sprite2D" parent="." unique_id=671896005]

@@ -1,7 +1,7 @@
 using Godot;
 using System.Collections.Generic;
 
-namespace TohouFuuujinoku.Global.Controllers
+namespace TouhouFuujinroku.Global.Controllers
 {
 	public enum SceneType
 	{
