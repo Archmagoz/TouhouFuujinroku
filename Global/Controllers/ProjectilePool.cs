@@ -91,7 +91,7 @@ namespace TohouFuuujinoku.Global.Controllers
 
 		// ---------------------------------------- Helpers ----------------------------------------
 
-		// Pops from the existing queue or instantiates and adopts a fresh node if the pool is empty.
+		// Pops from the existing queue or instantiates a fresh node if the pool is empty.
 		private Projectile GetOrCreate(PackedScene prefab)
 		{
 			if (_pools.TryGetValue(prefab, out var queue) && queue.Count > 0)
@@ -101,7 +101,8 @@ namespace TohouFuuujinoku.Global.Controllers
 		}
 
 		// Instantiates a Projectile, stamps its prefab reference, and permanently adopts it
-		// as a child of this pool. All projectiles are owned by the pool for their entire lifetime.
+		// as a child of this pool. The node is disabled immediately — it must be explicitly
+		// enqueued via Return() by the caller (prewarm) or activated via Rent() on first use.
 		private Projectile CreateProjectile(PackedScene prefab)
 		{
 			var node = prefab.Instantiate();
@@ -117,15 +118,15 @@ namespace TohouFuuujinoku.Global.Controllers
 
 			projectile.Prefab = prefab;
 
-			// Add as permanent child — projectiles never leave this pool's subtree.
-			// Visibility and processing are toggled by Rent()/Return() instead.
+			// Add as permanent child and disable immediately — enqueuing is the caller's responsibility.
+			// Separating adoption from enqueuing prevents double-enqueue when prewarm calls Return().
 			AddChild(projectile);
-			Return(projectile); // immediately disable until first Rent() call.
+			SetProjectileActive(projectile, false);
 			return projectile;
 		}
 
-		// Helper to toggle all systems of a projectile on or off. Used by Rent() and Return() to
-		// re-enable or disable the node without removing it from the scene tree.
+		// Toggles all systems of a projectile on or off — used by Rent() and Return()
+		// to activate or deactivate without removing the node from the scene tree.
 		private void SetProjectileActive(Projectile projectile, bool active)
 		{
 			projectile.Visible = active;

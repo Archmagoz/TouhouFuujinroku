@@ -32,7 +32,7 @@ namespace TohouFuuujinoku.Entities
 
 			// Cull in world space — immune to viewport resizes, fullscreen toggles, and
 			// camera transforms. 1000 units comfortably exceeds any expected play area.
-			if (Mathf.Abs(GlobalPosition.X) > CullBoundary || Mathf.Abs(GlobalPosition.Y) > CullBoundary)
+			if (Mathf.Abs(Position.X) > CullBoundary || Mathf.Abs(Position.Y) > CullBoundary)
 				ProjectilePool.Instance.Return(this);
 		}
 
