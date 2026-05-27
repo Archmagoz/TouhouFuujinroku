@@ -28,14 +28,15 @@ namespace TouhouFuujinroku.Entities.PlayableCharacters
 		public override void _PhysicsProcess(double delta)
 		{
 			HandleMovement();
-			UpdateSprite();
 		}
 
 		public override void _Process(double delta)
 		{
 			HandleFocus(delta);
+			UpdateSprite();
 			HandleShooting();
 		}
+
 
 		// ---------------------------------- Private helpers -----------------------------------
 

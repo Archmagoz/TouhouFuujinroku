@@ -35,11 +35,17 @@ namespace TouhouFuujinroku.Entities.Enemies.GenericEnemies
 			_health.Death -= OnDeath;
 		}
 
-		public override void _Process(double delta)
+		public override void _PhysicsProcess(double delta)
 		{
 			if (_dying) return;
 
 			HandleMovement(delta);
+		}
+
+		public override void _Process(double delta)
+		{
+			if (_dying) return;
+
 			_fireController.TryFire();
 		}
 
