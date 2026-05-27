@@ -126,7 +126,6 @@ _speed = NodePath("SpeedComponent")
 
 [node name="AnimatedSprite" type="AnimatedSprite2D" parent="." unique_id=1203939961]
 sprite_frames = SubResource("SpriteFrames_wno3y")
-animation = &"death"
 autoplay = "default"
 
 [node name="CollisionShape" type="CollisionShape2D" parent="." unique_id=208143053]
