@@ -20,11 +20,6 @@ namespace TohouFuuujinoku.Entities.Enemies.GenericEnemies
 
 		// ---------------------------------- Godot overrides -----------------------------------
 
-		public override void _Ready()
-		{
-			AreaEntered += OnAreaEntered;
-		}
-
 		public override void _Process(double delta)
 		{
 			HandleMovement(delta);
@@ -55,21 +50,6 @@ namespace TohouFuuujinoku.Entities.Enemies.GenericEnemies
 			if (_pathFollow.ProgressRatio >= 1f)
 			{
 				_pathFollow.QueueFree();
-				QueueFree();
-			}
-		}
-
-		// Handles incoming hits from player projectiles.
-		private void OnAreaEntered(Area2D area)
-		{
-			if (area is not Projectile projectile) return;
-
-			Global.Controllers.ProjectilePool.Instance.Return(projectile);
-			_health -= projectile.Damage;
-
-			if (_health <= 0)
-			{
-				_pathFollow?.QueueFree();
 				QueueFree();
 			}
 		}
