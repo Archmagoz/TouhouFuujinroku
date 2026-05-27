@@ -6,9 +6,6 @@
 [ext_resource type="PackedScene" uid="uid://qnkfyeixmb6m" path="res://Components/HealthComponent/HealthComponent.tscn" id="4_dhsxb"]
 [ext_resource type="PackedScene" uid="uid://dm63m0eqn6g68" path="res://Components/SpriteComponent/SpriteComponent.tscn" id="6_6xvey"]
 [ext_resource type="PackedScene" uid="uid://bd843vt4pvk5p" path="res://Entities/PlayableCharacters/Reimu/ReimuWeapon.tscn" id="6_e10mn"]
-[ext_resource type="PackedScene" uid="uid://bwcpglrmexbd" path="res://Entities/PlayableCharacters/Reimu/ReimuWeaponFireController.tscn" id="7_e10mn"]
-[ext_resource type="PackedScene" uid="uid://b6la2jobdl0tv" path="res://Entities/PlayableCharacters/Reimu/ReimuProjectile.tscn" id="8_kkc3p"]
-[ext_resource type="AudioStream" uid="uid://d1g036vx1qpml" path="res://Entities/PlayableCharacters/Assets/ShotSFX.wav" id="9_pperf"]
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_v87c3"]
 atlas = ExtResource("1_118g0")
@@ -233,14 +230,13 @@ animations = [{
 [sub_resource type="CircleShape2D" id="CircleShape2D_118g0"]
 radius = 7.0
 
-[node name="Reimu" type="CharacterBody2D" unique_id=2024202319 node_paths=PackedStringArray("_sprite", "_health", "_speed", "_weapon", "_fireController")]
+[node name="Reimu" type="CharacterBody2D" unique_id=2024202319 node_paths=PackedStringArray("_sprite", "_health", "_speed", "_weapon")]
 collision_mask = 26
 script = ExtResource("1_v87c3")
 _sprite = NodePath("SpriteComponent")
 _health = NodePath("HealthComponent")
 _speed = NodePath("SpeedComponent")
 _weapon = NodePath("ReimuWeapon")
-_fireController = NodePath("ReimuWeaponFireController")
 
 [node name="AnimatedSprite" type="AnimatedSprite2D" parent="." unique_id=1329335674]
 position = Vector2(1, 0)
@@ -261,13 +257,3 @@ _currentSpeed = 300.0
 _maxSpeed = 300.0
 
 [node name="ReimuWeapon" parent="." unique_id=150880922 instance=ExtResource("6_e10mn")]
-
-[node name="ReimuWeaponFireController" parent="." unique_id=1196119377 node_paths=PackedStringArray("_shotSound", "_weapon") instance=ExtResource("7_e10mn")]
-_shotSound = NodePath("AudioStreamPlayer")
-_weapon = NodePath("../ReimuWeapon")
-_bulletPrefab = ExtResource("8_kkc3p")
-_fireRate = 0.08
-
-[node name="AudioStreamPlayer" type="AudioStreamPlayer2D" parent="ReimuWeaponFireController" unique_id=659109474]
-stream = ExtResource("9_pperf")
-volume_db = -25.0

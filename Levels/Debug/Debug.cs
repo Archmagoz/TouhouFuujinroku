@@ -2,6 +2,7 @@ using Godot;
 using Godot.Collections;
 using TohouFuuujinoku.Global.Controllers;
 using TohouFuuujinoku.Entities.Enemies.GenericEnemies;
+using SystemDict = System.Collections.Generic.Dictionary<Godot.PackedScene, int>;
 
 namespace TohouFuuujinoku.Levels.Debug
 {
@@ -9,6 +10,10 @@ namespace TohouFuuujinoku.Levels.Debug
 	{
 		[ExportGroup("Components")]
 		[Export] private RichTextLabel _label;
+
+		[ExportGroup("Projectile Warmup")]
+		[Export] private PackedScene _reimuBulletPrefab;
+		[Export] private PackedScene _greenDotBulletPrefab;
 
 		[ExportGroup("Spawning")]
 		// Fairy prefab to instantiate on each spawn tick.
@@ -42,7 +47,16 @@ namespace TohouFuuujinoku.Levels.Debug
 			// unlike _ExitTree() which may not trigger during deferred scene transitions.
 			TreeExiting += () => ProjectilePool.Instance.Clear();
 			_spawnCooldown = _spawnIntervalStart;
-			ProjectilePool.Instance.Initialize();
+
+			// Optional projectile prewarm — populates the pool with inactive instances of each prefab,
+			// preventing first-use stutter when the pool has to instantiate on demand.
+			var prewarmConfig = new SystemDict
+			{
+				{ _reimuBulletPrefab, 64 },     // player fires fast
+				{ _greenDotBulletPrefab, 128 }, // green dot is a common enemy projectile
+			};
+
+			ProjectilePool.Instance.Initialize(prewarmConfig);
 		}
 
 		public override void _Process(double delta)

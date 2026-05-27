@@ -3,16 +3,16 @@ using TohouFuuujinoku.Global.Controllers;
 
 namespace TohouFuuujinoku.Entities.PlayableCharacters
 {
+	// Handles fire cadence, projectile spawning, and shot audio for ReimuWeapon.
+	// Lives as a child of ReimuWeapon — all external calls go through the parent.
 	public partial class ReimuWeaponFireController : Node
 	{
-		//Node references - assigned in the editor.
-		[ExportGroup("Components")]
-		[Export] private AudioStreamPlayer2D _shotSound;
-
 		[ExportGroup("Configuration")]
-		[Export] private ReimuWeapon _weapon;
 		[Export] private PackedScene _bulletPrefab;
 		[Export] private float _fireRate = 0.1f;
+
+		[ExportGroup("Components")]
+		[Export] private AudioStreamPlayer2D _shotSound;
 
 		// Seconds remaining before the next shot is allowed.
 		private float _cooldown;
@@ -27,7 +27,7 @@ namespace TohouFuuujinoku.Entities.PlayableCharacters
 		// --------------------------------------- Public API -----------------------------------
 
 		// Attempts to fire from all weapon origins; silently no-ops while on cooldown.
-		// Call every frame the shoot input is active — cooldown is enforced internally.
+		// Called exclusively by the parent ReimuWeapon — not by external systems.
 		public void TryFire()
 		{
 			if (_cooldown > 0) return;
@@ -38,13 +38,16 @@ namespace TohouFuuujinoku.Entities.PlayableCharacters
 
 		// ---------------------------------- Private helpers -----------------------------------
 
-		// Rents one projectile per fire origin — straight up (-π/2) by default.
+		// Retrieves fire origins from the parent ReimuWeapon and rents one projectile per origin.
+		// Angle fixed at -π/2 — straight up, matching Touhou's vertical scrolling convention.
 		private void FireFromAllOrigins()
 		{
-			foreach (var origin in _weapon.GetFireOrigins())
+			var weapon = GetParent<ReimuWeapon>();
+
+			foreach (var origin in weapon.GetFireOrigins())
 				ProjectilePool.Instance.Rent(_bulletPrefab, origin, angle: -Mathf.Pi / 2f);
 
-			_shotSound.Play();
+			_shotSound?.Play();
 		}
 	}
 }

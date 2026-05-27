@@ -32,12 +32,21 @@ namespace TohouFuuujinoku.Entities.PlayableCharacters
 		private Vector2[] _focusDeltas = [];
 		private Vector2[] _offsets = [];
 
+		// Cached reference to the fire controller — located as a child in _Ready().
+		// Kept internal to ReimuWeapon; callers interact via TryFire() and ToggleFocusMode().
+		private ReimuWeaponFireController _fireController;
+
 		// ---------------------------------- Godot overrides -----------------------------------
 
 		public override void _Ready()
 		{
+			// Locate the fire controller among direct children — decouples from node name.
+			foreach (var child in GetChildren())
+				if (child is ReimuWeaponFireController controller)
+					_fireController = controller;
+
 			// Cache sprites and their editor offsets as the normal formation.
-			foreach (Node child in GetChildren())
+			foreach (var child in GetChildren())
 				if (child is Sprite2D sprite)
 					_sprites.Add(sprite);
 
@@ -93,6 +102,10 @@ namespace TohouFuuujinoku.Entities.PlayableCharacters
 				_offsets[i] = _offsets[i].Lerp(targetOffset, weight);
 			}
 		}
+
+		// Delegates the fire request to the child controller — Reimu calls this, not TryFire directly.
+		// Centralizes all weapon interaction through ReimuWeapon as the single public interface.
+		public void TryFire() => _fireController?.TryFire();
 
 		// Yields the GlobalPosition of every Marker2D child found across all weapon sprites.
 		// Markers rotate with their parent sprite, so positions already reflect current formation.

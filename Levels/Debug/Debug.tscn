@@ -3,8 +3,10 @@
 [ext_resource type="Script" uid="uid://di8lk710vvgtk" path="res://Levels/Debug/Debug.cs" id="1_5nf4i"]
 [ext_resource type="PackedScene" uid="uid://ldiv54j5b0m3" path="res://Entities/PlayableCharacters/Reimu/Reimu.tscn" id="1_b5fef"]
 [ext_resource type="PackedScene" uid="uid://cljfb1nrmidxw" path="res://UI/Hud/Hud.tscn" id="2_3beo8"]
+[ext_resource type="PackedScene" uid="uid://b6la2jobdl0tv" path="res://Entities/PlayableCharacters/Reimu/ReimuProjectile.tscn" id="2_kvle7"]
 [ext_resource type="PackedScene" uid="uid://dr1xqi874edgh" path="res://Entities/Enemies/GenericEnemies/SmallFairy.tscn" id="2_x6ejw"]
 [ext_resource type="AudioStream" uid="uid://r55uke54y2vk" path="res://Levels/Debug/Assets/DebugLevelSoundtrack.ogg" id="3_8yi1q"]
+[ext_resource type="PackedScene" uid="uid://bltjhi4vk5tf3" path="res://Entities/Enemies/GenericEnemies/Projectile/GreenDot.tscn" id="3_x447m"]
 [ext_resource type="PackedScene" uid="uid://b5rqan2nxnd3j" path="res://Levels/Debug/Background.tscn" id="4_4tne8"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_3beo8"]
@@ -37,6 +39,8 @@ point_count = 9
 [node name="Debug" type="Node2D" unique_id=641409104 node_paths=PackedStringArray("_label", "_spawnPaths")]
 script = ExtResource("1_5nf4i")
 _label = NodePath("Label")
+_reimuBulletPrefab = ExtResource("2_kvle7")
+_greenDotBulletPrefab = ExtResource("3_x447m")
 _fairyPrefab = ExtResource("2_x6ejw")
 _spawnPaths = [NodePath("PathA/PathFollowA"), NodePath("PathB/PathFollowB"), NodePath("PathC/PathFollowC"), NodePath("PathD/PathFollowD")]
 _spawnIntervalStart = 5.0

@@ -71,3 +71,4 @@ _shotSound = NodePath("AudioStreamPlayer")
 
 [node name="AudioStreamPlayer" type="AudioStreamPlayer2D" parent="GenericEnemyFireController" unique_id=724761034]
 stream = ExtResource("5_tx7gd")
+volume_db = -5.0

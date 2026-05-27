@@ -10,7 +10,6 @@ namespace TohouFuuujinoku.Entities.PlayableCharacters
 		[Export] private HealthComponent _health;
 		[Export] private SpeedComponent _speed;
 		[Export] private ReimuWeapon _weapon;
-		[Export] private ReimuWeaponFireController _fireController;
 
 		// Raw directional input built each physics frame.
 		private Vector2 _movementInput;
@@ -65,7 +64,7 @@ namespace TohouFuuujinoku.Entities.PlayableCharacters
 
 			if (_shootBuffer > 0)
 			{
-				_fireController.TryFire();
+				_weapon.TryFire();
 				_shootBuffer--;
 			}
 		}
