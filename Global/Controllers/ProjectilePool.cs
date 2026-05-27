@@ -16,7 +16,7 @@ namespace TouhouFuujinroku.Global.Controllers
 		public static ProjectilePool Instance { get; private set; }
 
 		// Separate queue per prefab — one pool per projectile type.
-		private readonly Dictionary<PackedScene, Queue<Projectile>> _pools = new();
+		private readonly Dictionary<PackedScene, Queue<Projectile>> _pools = [];
 
 		// Guards Rent() against being called outside a level context.
 		private bool _initialized = false;
