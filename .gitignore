@@ -13,5 +13,4 @@ export_credentials.cfg
 *.translation
 mono_crash.*.json
 *.import
-*.uid
 *.tmp
