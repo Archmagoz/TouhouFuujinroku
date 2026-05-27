@@ -19,6 +19,9 @@ namespace TouhouFuujinroku.Entities.Enemies.GenericEnemies
 		// Locks movement and firing during the death animation — set on Death signal.
 		private bool _dying = false;
 
+		// IDamageable implementation — forwards damage to the HealthComponent.
+		public void ApplyDamage(int amount) => _health.ApplyDamage(amount);
+
 		// ---------------------------------- Godot overrides -----------------------------------
 
 		public override void _Ready()
@@ -41,9 +44,6 @@ namespace TouhouFuujinroku.Entities.Enemies.GenericEnemies
 		}
 
 		// --------------------------------------- Public API -----------------------------------
-
-		// IDamageable implementation — forwards damage to the HealthComponent.
-		public void ApplyDamage(int amount) => _health.ApplyDamage(amount);
 
 		// Receives an already-duplicated PathFollow2D owned exclusively by this fairy.
 		// Called by the spawner immediately after instantiation.
