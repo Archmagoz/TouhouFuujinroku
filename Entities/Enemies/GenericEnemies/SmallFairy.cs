@@ -6,32 +6,44 @@ namespace TouhouFuujinroku.Entities.Enemies.GenericEnemies
 {
 	public partial class SmallFairy : Area2D, IDamageable
 	{
-		[ExportGroup("Configuration")]
-		// Movement speed along the assigned path in pixels per second.
-		[Export] private SpeedComponent _speed;
-
-		// Health points — enemy is defeated when this reaches zero.
-		[Export] private HealthComponent _health;
-
 		[ExportGroup("Components")]
 		[Export] private GenericEnemyFireController _fireController;
+		[Export] private AnimatedSprite2D _sprite;
+		[Export] private HealthComponent _health;
+		[Export] private SpeedComponent _speed;
 
 		// Exclusive PathFollow2D instance — duplicated from the source path by the spawner.
 		// Owned by this fairy; freed alongside it when despawning.
 		private PathFollow2D _pathFollow;
 
-		// IDamageable implementation — simply forwards to the HealthComponent.
-		public void ApplyDamage(int amount) => _health.ApplyDamage(amount);
+		// Locks movement and firing during the death animation — set on Death signal.
+		private bool _dying = false;
 
 		// ---------------------------------- Godot overrides -----------------------------------
 
+		public override void _Ready()
+		{
+			// Subscribe to the health component's death signal — drives the death sequence.
+			_health.Death += OnDeath;
+		}
+
+		public override void _ExitTree()
+		{
+			_health.Death -= OnDeath;
+		}
+
 		public override void _Process(double delta)
 		{
+			if (_dying) return;
+
 			HandleMovement(delta);
 			_fireController.TryFire();
 		}
 
 		// --------------------------------------- Public API -----------------------------------
+
+		// IDamageable implementation — forwards damage to the HealthComponent.
+		public void ApplyDamage(int amount) => _health.ApplyDamage(amount);
 
 		// Receives an already-duplicated PathFollow2D owned exclusively by this fairy.
 		// Called by the spawner immediately after instantiation.
@@ -57,6 +69,19 @@ namespace TouhouFuujinroku.Entities.Enemies.GenericEnemies
 				_pathFollow.QueueFree();
 				QueueFree();
 			}
+		}
+
+		// Triggered by HealthComponent.Death — locks movement, plays death animation,
+		// and queues the node for removal once the animation finishes.
+		private void OnDeath()
+		{
+			_dying = true;
+			_pathFollow?.QueueFree();
+
+			_sprite.Play("death");
+
+			// Despawn once the death animation completes.
+			_sprite.AnimationFinished += QueueFree;
 		}
 	}
 }

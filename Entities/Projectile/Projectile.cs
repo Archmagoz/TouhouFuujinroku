@@ -33,6 +33,12 @@ namespace TouhouFuujinroku.Entities
 			BodyEntered += OnBodyEntered;
 		}
 
+		public override void _ExitTree()
+		{
+			AreaEntered -= OnAreaEntered;
+			BodyEntered -= OnBodyEntered;
+		}
+
 		public override void _Process(double delta)
 		{
 			Position += Vector2.FromAngle(_angle) * _speed * (float)delta;
@@ -41,11 +47,6 @@ namespace TouhouFuujinroku.Entities
 			// camera transforms. 1000 units comfortably exceeds any expected play area.
 			if (Mathf.Abs(Position.X) > CullBoundary || Mathf.Abs(Position.Y) > CullBoundary)
 				ProjectilePool.Instance.Return(this);
-		}
-
-		public override void _ExitTree()
-		{
-			AreaEntered -= OnAreaEntered;
 		}
 
 		// --------------------------------------- Public API --------------------------------------

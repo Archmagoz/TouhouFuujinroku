@@ -8,6 +8,38 @@
 [ext_resource type="PackedScene" uid="uid://dxj0lkshro5gy" path="res://Components/SpeedComponent/SpeedComponent.tscn" id="6_ft0qj"]
 [ext_resource type="PackedScene" uid="uid://qnkfyeixmb6m" path="res://Components/HealthComponent/HealthComponent.tscn" id="7_gveti"]
 
+[sub_resource type="AtlasTexture" id="AtlasTexture_ft0qj"]
+atlas = ExtResource("1_p7e3w")
+region = Rect2(305, 1575, 32, 32)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_gveti"]
+atlas = ExtResource("1_p7e3w")
+region = Rect2(337, 1575, 32, 32)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_vvlg7"]
+atlas = ExtResource("1_p7e3w")
+region = Rect2(369, 1575, 32, 32)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_d6215"]
+atlas = ExtResource("1_p7e3w")
+region = Rect2(401, 1575, 32, 32)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_hveq0"]
+atlas = ExtResource("1_p7e3w")
+region = Rect2(433, 1575, 32, 32)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_bttch"]
+atlas = ExtResource("1_p7e3w")
+region = Rect2(465, 1575, 32, 32)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_vfavw"]
+atlas = ExtResource("1_p7e3w")
+region = Rect2(497, 1575, 32, 32)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_n1l08"]
+atlas = ExtResource("1_p7e3w")
+region = Rect2(529, 1575, 32, 32)
+
 [sub_resource type="AtlasTexture" id="AtlasTexture_rxwda"]
 atlas = ExtResource("1_p7e3w")
 region = Rect2(48, 1382, 32, 32)
@@ -32,6 +64,35 @@ region = Rect2(176, 1382, 32, 32)
 animations = [{
 "frames": [{
 "duration": 1.0,
+"texture": SubResource("AtlasTexture_ft0qj")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_gveti")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_vvlg7")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_d6215")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_hveq0")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_bttch")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_vfavw")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_n1l08")
+}],
+"loop": false,
+"name": &"death",
+"speed": 10.0
+}, {
+"frames": [{
+"duration": 1.0,
 "texture": SubResource("AtlasTexture_rxwda")
 }, {
 "duration": 1.0,
@@ -54,16 +115,18 @@ animations = [{
 [sub_resource type="CircleShape2D" id="CircleShape2D_p7e3w"]
 radius = 9.0
 
-[node name="SmallFairy" type="Area2D" unique_id=1964223042 node_paths=PackedStringArray("_speed", "_health", "_fireController")]
+[node name="SmallFairy" type="Area2D" unique_id=1964223042 node_paths=PackedStringArray("_fireController", "_sprite", "_health", "_speed")]
 collision_layer = 16
 collision_mask = 5
 script = ExtResource("1_rxwda")
-_speed = NodePath("SpeedComponent")
-_health = NodePath("HealthComponent")
 _fireController = NodePath("GenericEnemyFireController")
+_sprite = NodePath("AnimatedSprite")
+_health = NodePath("HealthComponent")
+_speed = NodePath("SpeedComponent")
 
 [node name="AnimatedSprite" type="AnimatedSprite2D" parent="." unique_id=1203939961]
 sprite_frames = SubResource("SpriteFrames_wno3y")
+animation = &"death"
 autoplay = "default"
 
 [node name="CollisionShape" type="CollisionShape2D" parent="." unique_id=208143053]
@@ -73,6 +136,7 @@ shape = SubResource("CircleShape2D_p7e3w")
 _currentSpeed = 100.0
 
 [node name="HealthComponent" parent="." unique_id=1821635083 instance=ExtResource("7_gveti")]
+_maxHealth = 20
 
 [node name="GenericEnemyFireController" parent="." unique_id=1612473014 node_paths=PackedStringArray("_shotSound") instance=ExtResource("3_ohic1")]
 _bulletPrefab = ExtResource("2_ohic1")
