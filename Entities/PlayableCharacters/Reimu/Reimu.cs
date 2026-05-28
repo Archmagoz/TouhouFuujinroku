@@ -37,7 +37,6 @@ namespace TouhouFuujinroku.Entities.PlayableCharacters
 			HandleShooting();
 		}
 
-
 		// ---------------------------------- Private helpers -----------------------------------
 
 		private void HandleMovement()
