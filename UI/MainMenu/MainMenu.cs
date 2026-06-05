@@ -30,12 +30,12 @@ namespace TouhouFuujinroku.UI
 
 		private void OnGameStartPressed()
 		{
-			SceneController.Instance.ChangeScene(SceneType.DebugLevel);
+			SceneController.Instance.TransitionTo(Scene.DebugLevel);
 		}
 
 		private void OnOptionsPressed()
 		{
-			SceneController.Instance.ChangeScene(SceneType.OptionsMenu);
+			SceneController.Instance.TransitionTo(Scene.OptionsMenu);
 		}
 
 		private void OnQuitPressed()

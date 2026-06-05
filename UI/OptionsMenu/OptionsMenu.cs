@@ -24,7 +24,7 @@ namespace TouhouFuujinroku.UI
 
         private void OnQuitPressed()
         {
-            SceneController.Instance.ChangeScene(SceneType.MainMenu);
+            SceneController.Instance.TransitionTo(Scene.MainMenu);
         }
     }
 }

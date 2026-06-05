@@ -3,7 +3,9 @@ using System.Collections.Generic;
 
 namespace TouhouFuujinroku.Global.Controllers
 {
-	public enum SceneType
+	// Identifies every scene the controller knows how to load.
+	// Add a new entry here before registering the scene in SceneController.
+	public enum Scene
 	{
 		MainMenu,
 		OptionsMenu,
@@ -14,53 +16,63 @@ namespace TouhouFuujinroku.Global.Controllers
 	{
 		public static SceneController Instance { get; private set; }
 
-		// Preloaded scenes — instantiated immediately, no runtime disk reads.
-		private readonly Dictionary<SceneType, PackedScene> _preloaded = new()
+		// ---------------------------------- Preloaded scenes ----------------------------------
+		// Instantiated at startup so scene transitions never stall on a disk read.
+		// Only put scenes that must be available immediately (e.g. menus) here.
+
+		private readonly Dictionary<Scene, PackedScene> _ready = new()
 		{
-			{ SceneType.MainMenu, GD.Load<PackedScene>("res://UI/MainMenu/MainMenu.tscn") },
-			{ SceneType.OptionsMenu, GD.Load<PackedScene>("res://UI/OptionsMenu/OptionsMenu.tscn") },
+			{ Scene.MainMenu,    GD.Load<PackedScene>("res://UI/MainMenu/MainMenu.tscn") },
+			{ Scene.OptionsMenu, GD.Load<PackedScene>("res://UI/OptionsMenu/OptionsMenu.tscn") },
 		};
 
-		// Lazy-loaded scenes — resolved on first request, then promoted to _preloaded.
-		private readonly Dictionary<SceneType, string> _paths = new()
+		// ----------------------------------- Lazy scenes -------------------------------------
+		// Resolved from disk on first request, then promoted to _ready so subsequent
+		// transitions are as fast as preloaded ones. Good for large/infrequent scenes.
+
+		private readonly Dictionary<Scene, string> _lazyPaths = new()
 		{
-			{ SceneType.DebugLevel, "res://Levels/Debug/Debug.tscn" },
+			{ Scene.DebugLevel, "res://Levels/Debug/Debug.tscn" },
 		};
 
-		// ------------------------------------- Godot overrides ------------------------------------
+		// ---------------------------------- Godot overrides ----------------------------------
 
 		public override void _Ready() => Instance = this;
 
-		// --------------------------------------- Public API ---------------------------------------
+		// ------------------------------------ Public API -------------------------------------
 
-		// Swaps the current scene for the requested type; no-ops silently if type is unregistered.
-		public void ChangeScene(SceneType type)
+		// Replaces the active scene with the one mapped to the given id.
+		// Silently no-ops when the id has no registered path or packed scene.
+		public void TransitionTo(Scene id)
 		{
-			if (!TryGetScene(type, out var scene)) return;
+			if (!TryResolveScene(id, out var packed)) return;
 
+			// Free the outgoing scene before adding the incoming one to avoid
+			// running two scenes simultaneously even for a single frame.
 			GetTree().CurrentScene?.QueueFree();
 
-			var newScene = scene.Instantiate();
-			GetTree().Root.AddChild(newScene);
-			GetTree().CurrentScene = newScene;
+			var incoming = packed.Instantiate();
+			GetTree().Root.AddChild(incoming);
+			GetTree().CurrentScene = incoming;
 		}
 
-		// ---------------------------------------- Helpers ----------------------------------------
+		// ------------------------------------- Helpers --------------------------------------
 
-		// Resolves a SceneType to a PackedScene, lazy-loading and caching if necessary.
-		private bool TryGetScene(SceneType type, out PackedScene scene)
+		// Returns the PackedScene for a given id, loading it from disk if needed.
+		// Lazy-loaded scenes are cached in _ready so the disk is only hit once.
+		private bool TryResolveScene(Scene id, out PackedScene packed)
 		{
-			if (_preloaded.TryGetValue(type, out scene))
+			if (_ready.TryGetValue(id, out packed))
 				return true;
 
-			if (_paths.TryGetValue(type, out var path))
+			if (_lazyPaths.TryGetValue(id, out var path))
 			{
-				scene = GD.Load<PackedScene>(path);
-				_preloaded[type] = scene; // promote to preloaded — skips disk on subsequent calls.
+				packed = GD.Load<PackedScene>(path);
+				_ready[id] = packed; // promote — future calls skip this branch entirely
 				return true;
 			}
 
-			scene = null;
+			packed = null;
 			return false;
 		}
 	}
