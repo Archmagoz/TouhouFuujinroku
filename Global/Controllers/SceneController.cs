@@ -56,7 +56,6 @@ namespace TouhouFuujinroku.Global.Controllers
 		// only one scene is alive at a time, even within a single frame.
 		public void TransitionTo(Scene id)
 		{
-			// If the scene fails to resolve, do nothing.
 			if (!TryResolveScene(id, out var packed)) return;
 
 			GetTree().CurrentScene?.QueueFree();
