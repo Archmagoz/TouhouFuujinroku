@@ -17,18 +17,14 @@ namespace TouhouFuujinroku.Global.Controllers
 		public static SceneController Instance { get; private set; }
 
 		// ---------------------------------- Preloaded scenes ----------------------------------
-		// Instantiated at startup so scene transitions never stall on a disk read.
-		// Only put scenes that must be available immediately (e.g. menus) here.
+		// Eagerly loaded in _Ready so GD.Load runs after the engine is fully initialised;
+		// avoids hitting the ResourceLoader before the scene tree is ready.
 
-		private readonly Dictionary<Scene, PackedScene> _ready = new()
-		{
-			{ Scene.MainMenu,    GD.Load<PackedScene>("res://UI/MainMenu/MainMenu.tscn") },
-			{ Scene.OptionsMenu, GD.Load<PackedScene>("res://UI/OptionsMenu/OptionsMenu.tscn") },
-		};
+		private readonly Dictionary<Scene, PackedScene> _preloadedScenes = new();
 
 		// ----------------------------------- Lazy scenes -------------------------------------
-		// Resolved from disk on first request, then promoted to _ready so subsequent
-		// transitions are as fast as preloaded ones. Good for large/infrequent scenes.
+		// Resolved from disk on first request, then promoted to _preloadedScenes so
+		// subsequent transitions skip the disk entirely.
 
 		private readonly Dictionary<Scene, string> _lazyPaths = new()
 		{
@@ -37,18 +33,32 @@ namespace TouhouFuujinroku.Global.Controllers
 
 		// ---------------------------------- Godot overrides ----------------------------------
 
-		public override void _Ready() => Instance = this;
+		public override void _Ready()
+		{
+			// Enforce a single instance by evicting any duplicate that gets added to the tree.
+			if (Instance != null)
+			{
+				QueueFree();
+				return;
+			}
+
+			Instance = this;
+
+			// Load eagerly-required scenes here rather than in field initialisers so
+			// GD.Load runs inside a valid engine frame with a live ResourceLoader.
+			_preloadedScenes[Scene.MainMenu] = GD.Load<PackedScene>("res://UI/MainMenu/MainMenu.tscn");
+			_preloadedScenes[Scene.OptionsMenu] = GD.Load<PackedScene>("res://UI/OptionsMenu/OptionsMenu.tscn");
+		}
 
 		// ------------------------------------ Public API -------------------------------------
 
-		// Replaces the active scene with the one mapped to the given id.
-		// Silently no-ops when the id has no registered path or packed scene.
+		// Frees the current scene before adding the incoming one to guarantee
+		// only one scene is alive at a time, even within a single frame.
 		public void TransitionTo(Scene id)
 		{
+			// If the scene fails to resolve, do nothing.
 			if (!TryResolveScene(id, out var packed)) return;
 
-			// Free the outgoing scene before adding the incoming one to avoid
-			// running two scenes simultaneously even for a single frame.
 			GetTree().CurrentScene?.QueueFree();
 
 			var incoming = packed.Instantiate();
@@ -58,17 +68,21 @@ namespace TouhouFuujinroku.Global.Controllers
 
 		// ------------------------------------- Helpers --------------------------------------
 
-		// Returns the PackedScene for a given id, loading it from disk if needed.
-		// Lazy-loaded scenes are cached in _ready so the disk is only hit once.
+		// Checks _preloadedScenes first; on a miss, loads from _lazyPaths and promotes
+		// the result into _preloadedScenes so the disk is only read once per lazy scene.
 		private bool TryResolveScene(Scene id, out PackedScene packed)
 		{
-			if (_ready.TryGetValue(id, out packed))
+			if (_preloadedScenes.TryGetValue(id, out packed))
 				return true;
 
 			if (_lazyPaths.TryGetValue(id, out var path))
 			{
 				packed = GD.Load<PackedScene>(path);
-				_ready[id] = packed; // promote — future calls skip this branch entirely
+
+				// If the scene fails to load, don't add a null entry to _preloadedScenes.
+				if (packed == null) return false;
+
+				_preloadedScenes[id] = packed;
 				return true;
 			}
 
