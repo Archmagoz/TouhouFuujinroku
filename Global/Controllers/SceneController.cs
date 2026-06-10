@@ -56,7 +56,12 @@ namespace TouhouFuujinroku.Global.Controllers
 		// only one scene is alive at a time, even within a single frame.
 		public void TransitionTo(Scene id)
 		{
-			if (!TryResolveScene(id, out var packed)) return;
+			if (!TryResolveScene(id, out var packed))
+			{
+				GD.PushWarning($"[SceneController] No scene registered for '{id}'. " +
+								"Add it to _preloadedScenes or _lazyPaths.");
+				return;
+			}
 
 			GetTree().CurrentScene?.QueueFree();
 
@@ -78,8 +83,12 @@ namespace TouhouFuujinroku.Global.Controllers
 			{
 				packed = GD.Load<PackedScene>(path);
 
-				// If the scene fails to load, don't add a null entry to _preloadedScenes.
-				if (packed == null) return false;
+				if (packed == null)
+				{
+					GD.PushError($"[SceneController] GD.Load returned null for path '{path}'. " +
+								 "Verify the file exists and is exported.");
+					return false;
+				}
 
 				_preloadedScenes[id] = packed;
 				return true;

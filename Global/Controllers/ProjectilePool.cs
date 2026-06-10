@@ -8,27 +8,38 @@ namespace TouhouFuujinroku.Global.Controllers
 	// Lives as an Autoload — always present, but only active inside a level.
 	// Call Initialize() on level _Ready() and Clear() on level _ExitTree().
 	//
-	// All projectile nodes remain children of this pool at all times — including
-	// while inactive. This prevents Godot from counting them as orphan nodes,
-	// which occurs whenever an instantiated node has no parent in the scene tree.
+	// All projectile nodes remain permanent children of this pool at all times,
+	// including while inactive — prevents Godot from reporting orphan nodes
+	// when scenes transition and instantiated nodes lose their parent.
 	public partial class ProjectilePool : Node
 	{
 		public static ProjectilePool Instance { get; private set; }
 
-		// Separate queue per prefab — one pool per projectile type.
+		// One queue per prefab — each projectile type maintains its own recycling bin.
 		private readonly Dictionary<PackedScene, Queue<Projectile>> _pools = [];
 
 		// Guards Rent() against being called outside a level context.
-		private bool _initialized = false;
+		private bool _initialized;
 
 		// ------------------------------------- Godot overrides ------------------------------------
 
-		public override void _Ready() => Instance = this;
+		public override void _Ready()
+		{
+			// Evict duplicates rather than silently overwriting the existing instance.
+			if (Instance != null)
+			{
+				QueueFree();
+				return;
+			}
+
+			Instance = this;
+		}
 
 		// --------------------------------------- Public API ---------------------------------------
 
-		// Called by the level's _Ready(). Marks the pool as ready to serve projectiles.
-		// optionalPrewarm: prefab/count pairs to instantiate immediately — skips first-use stutter.
+		// Marks the pool as ready to serve projectiles.
+		// Calls Clear() first so re-entering a level starts from a clean state.
+		// optionalPrewarm: prefab/count pairs instantiated immediately to avoid first-use stutter.
 		public void Initialize(Dictionary<PackedScene, int> optionalPrewarm = null)
 		{
 			Clear();
@@ -41,9 +52,8 @@ namespace TouhouFuujinroku.Global.Controllers
 					Return(CreateProjectile(prefab));
 		}
 
-		// Called by the level's TreeExiting signal. Frees all projectile nodes — both active
-		// and pooled. Because all nodes are permanent children of this pool, QueueFree() is
-		// guaranteed to work correctly with no orphans left behind.
+		// Frees every projectile node — both active and pooled — then resets pool state.
+		// Safe to call mid-level; GetChildren() covers nodes currently rented (outside any queue).
 		public void Clear()
 		{
 			foreach (var child in GetChildren())
@@ -53,8 +63,8 @@ namespace TouhouFuujinroku.Global.Controllers
 			_initialized = false;
 		}
 
-		// Retrieves or creates a Projectile, re-enables it, and initializes its state.
-		// Returns null and logs a warning if called outside an active level.
+		// Pops or creates a Projectile, re-enables all its systems, and calls Initialize()
+		// to set position and angle. Returns null with a warning if called outside a level.
 		public Projectile Rent(PackedScene prefab, Vector2 position, float angle)
 		{
 			if (!_initialized)
@@ -66,18 +76,22 @@ namespace TouhouFuujinroku.Global.Controllers
 			var projectile = GetOrCreate(prefab);
 			if (projectile == null) return null;
 
-			// Re-enable all systems disabled by Return() — node stays in the tree the whole time.
 			SetProjectileActive(projectile, true);
-
 			projectile.Initialize(position, angle);
 			return projectile;
 		}
 
-		// Disables and hides a projectile, returning it to the pool for reuse.
-		// The node is NOT removed from the scene tree — keeping it as a child of this
-		// autoload prevents orphan node warnings during scene transitions.
+		// Disables all projectile systems and re-enqueues it for reuse.
+		// The node stays in the tree as a child of this pool — never reparented or freed.
 		public void Return(Projectile projectile)
 		{
+			if (projectile.Prefab == null)
+			{
+				GD.PushError("ProjectilePool.Return: projectile has no Prefab reference — " +
+							 "was it created outside the pool?");
+				return;
+			}
+
 			SetProjectileActive(projectile, false);
 
 			if (!_pools.TryGetValue(projectile.Prefab, out var queue))
@@ -91,7 +105,7 @@ namespace TouhouFuujinroku.Global.Controllers
 
 		// ---------------------------------------- Helpers ----------------------------------------
 
-		// Pops from the existing queue or instantiates a fresh node if the pool is empty.
+		// Pops from the existing queue or falls through to CreateProjectile if the pool is empty.
 		private Projectile GetOrCreate(PackedScene prefab)
 		{
 			if (_pools.TryGetValue(prefab, out var queue) && queue.Count > 0)
@@ -100,9 +114,9 @@ namespace TouhouFuujinroku.Global.Controllers
 			return CreateProjectile(prefab);
 		}
 
-		// Instantiates a Projectile, stamps its prefab reference, and permanently adopts it
-		// as a child of this pool. The node is disabled immediately — it must be explicitly
-		// enqueued via Return() by the caller (prewarm) or activated via Rent() on first use.
+		// Instantiates a node, verifies its root is a Projectile, stamps its prefab reference,
+		// and adopts it as a permanent child in a disabled state.
+		// Caller is responsible for enqueuing via Return() or activating via Rent().
 		private Projectile CreateProjectile(PackedScene prefab)
 		{
 			var node = prefab.Instantiate();
@@ -118,19 +132,19 @@ namespace TouhouFuujinroku.Global.Controllers
 
 			projectile.Prefab = prefab;
 
-			// Add as permanent child and disable immediately — enqueuing is the caller's responsibility.
-			// Separating adoption from enqueuing prevents double-enqueue when prewarm calls Return().
+			// Adopt before disabling — AddChild must run first or SetProcess calls have no effect.
 			AddChild(projectile);
 			SetProjectileActive(projectile, false);
 			return projectile;
 		}
 
-		// Toggles all systems of a projectile on or off — used by Rent() and Return()
-		// to activate or deactivate without removing the node from the scene tree.
+		// Toggles every system that would let a disabled projectile affect the simulation —
+		// visibility, per-frame callbacks, and both collision roles.
 		private void SetProjectileActive(Projectile projectile, bool active)
 		{
 			projectile.Visible = active;
 			projectile.SetProcess(active);
+			projectile.SetPhysicsProcess(active);
 			projectile.Monitoring = active;
 			projectile.Monitorable = active;
 		}
