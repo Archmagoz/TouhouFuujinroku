@@ -53,21 +53,6 @@ position = Vector2(-97, 0)
 [node name="Reimu" parent="." unique_id=2024202319 instance=ExtResource("1_b5fef")]
 position = Vector2(-108, 164)
 
-[node name="Hud" parent="." unique_id=712697274 instance=ExtResource("2_3beo8")]
-z_index = 2
-offset_left = -293.0
-offset_top = -288.0
-offset_right = -293.0
-offset_bottom = -288.0
-
-[node name="Label" type="RichTextLabel" parent="." unique_id=1823657325]
-offset_left = -250.0
-offset_top = -211.0
-offset_right = -142.0
-offset_bottom = -155.0
-text = "DEBUG
-FPS: 666"
-
 [node name="Corners" type="StaticBody2D" parent="." unique_id=1958889644]
 collision_layer = 2
 
@@ -91,6 +76,21 @@ shape = SubResource("RectangleShape2D_4tne8")
 stream = ExtResource("3_8yi1q")
 volume_db = -5.0
 autoplay = true
+
+[node name="Label" type="RichTextLabel" parent="." unique_id=1823657325]
+offset_left = -250.0
+offset_top = -211.0
+offset_right = -142.0
+offset_bottom = -155.0
+text = "DEBUG
+FPS: 666"
+
+[node name="Hud" parent="." unique_id=1689239087 instance=ExtResource("2_3beo8")]
+z_index = 1
+offset_left = -293.0
+offset_top = -291.0
+offset_right = -293.0
+offset_bottom = -291.0
 
 [node name="Camera" type="Camera2D" parent="." unique_id=1545325962]
 zoom = Vector2(1.7, 1.7)

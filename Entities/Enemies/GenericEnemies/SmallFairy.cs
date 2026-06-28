@@ -1,12 +1,20 @@
 using Godot;
+using System;
 using TouhouFuujinroku.Components;
 using TouhouFuujinroku.Entities.Enemies.GenericEnemies.Weapons;
 using TouhouFuujinroku.Interfaces;
 
 namespace TouhouFuujinroku.Entities.Enemies.GenericEnemies
 {
-	public partial class SmallFairy : Area2D, IDamageable
+	public partial class SmallFairy : Area2D, IDamageable, IScoreable
 	{
+		// Each SmallFairy variant declares its own point value directly in the scene via export.
+		[Export] private long _pointValue;
+		public long PointValue => _pointValue;
+
+		// IScoreable implementation — raised on death with the point value.
+		public event Action<long> Died;
+
 		// ------------------------------------- Components ------------------------------------
 
 		[ExportGroup("Components")]
@@ -31,6 +39,13 @@ namespace TouhouFuujinroku.Entities.Enemies.GenericEnemies
 		public override void _Ready()
 		{
 			_health.Death += OnDeath;
+		}
+
+		public override void _EnterTree()
+		{
+			// Added here instead of _Ready() — NodeAdded fires during _EnterTree(),
+			// so the group membership must exist at this point for listeners to catch it.
+			AddToGroup("enemies");
 		}
 
 		public override void _ExitTree()
@@ -87,9 +102,10 @@ namespace TouhouFuujinroku.Entities.Enemies.GenericEnemies
 			_dying = true;
 			_pathFollow?.QueueFree();
 
-			_sprite.Play("death");
+			// Notify score listeners before the animation starts — node is still valid here.
+			Died?.Invoke(_pointValue);
 
-			// Despawn once the death animation completes.
+			_sprite.Play("death");
 			_sprite.AnimationFinished += QueueFree;
 		}
 	}

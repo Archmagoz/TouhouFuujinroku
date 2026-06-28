@@ -1,6 +1,7 @@
 [gd_scene format=3 uid="uid://cljfb1nrmidxw"]
 
 [ext_resource type="Texture2D" uid="uid://bhesd5w5ub3or" path="res://UI/Hud/Assets/Hud.png" id="1_pa3cw"]
+[ext_resource type="PackedScene" uid="uid://jugsva0n4t4k" path="res://UI/Hud/Score/Score.tscn" id="2_rt2hf"]
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_pa3cw"]
 atlas = ExtResource("1_pa3cw")
@@ -18,7 +19,7 @@ region = Rect2(289.04794, 32.99499, 63.789948, 40.306835)
 atlas = ExtResource("1_pa3cw")
 region = Rect2(298.00137, 72.6156, 56.77426, 38.838554)
 
-[node name="Control" type="Control" unique_id=1689239087]
+[node name="Hud" type="Control" unique_id=1689239087]
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
@@ -40,7 +41,7 @@ offset_right = 576.0
 offset_bottom = 576.0
 texture = SubResource("AtlasTexture_rt2hf")
 
-[node name="Score" type="TextureRect" parent="." unique_id=1426060026]
+[node name="ScorePrefix" type="TextureRect" parent="." unique_id=1426060026]
 layout_mode = 0
 offset_left = 368.0
 offset_top = 104.0
@@ -55,3 +56,15 @@ offset_top = 164.0
 offset_right = 432.0
 offset_bottom = 204.0
 texture = SubResource("AtlasTexture_7ha4p")
+
+[node name="Score" parent="." unique_id=1159864689 instance=ExtResource("2_rt2hf")]
+layout_mode = 1
+anchors_preset = 0
+anchor_right = 0.0
+anchor_bottom = 0.0
+offset_left = 431.0
+offset_top = 125.0
+offset_right = 431.0
+offset_bottom = 125.0
+grow_horizontal = 1
+grow_vertical = 1

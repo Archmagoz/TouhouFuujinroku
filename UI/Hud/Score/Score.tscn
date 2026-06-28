@@ -1,0 +1,67 @@
+[gd_scene format=3 uid="uid://jugsva0n4t4k"]
+
+[ext_resource type="Script" uid="uid://di4v655mhm7k2" path="res://UI/Hud/Score/Score.cs" id="1_l0qi1"]
+[ext_resource type="Texture2D" uid="uid://bhesd5w5ub3or" path="res://UI/Hud/Assets/Hud.png" id="1_ralul"]
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_5ykvm"]
+atlas = ExtResource("1_ralul")
+region = Rect2(368, 73, 160, 18)
+
+[node name="Score" type="Control" unique_id=1159864689]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_l0qi1")
+
+[node name="HBoxContainer" type="HBoxContainer" parent="." unique_id=1157746347]
+layout_mode = 0
+offset_right = 40.0
+offset_bottom = 40.0
+
+[node name="Digit_0" type="Sprite2D" parent="HBoxContainer" unique_id=568000703]
+position = Vector2(128, 9)
+texture = SubResource("AtlasTexture_5ykvm")
+hframes = 10
+
+[node name="Digit_1" type="Sprite2D" parent="HBoxContainer" unique_id=319319752]
+position = Vector2(113, 9)
+texture = SubResource("AtlasTexture_5ykvm")
+hframes = 10
+
+[node name="Digit_2" type="Sprite2D" parent="HBoxContainer" unique_id=1265256627]
+position = Vector2(98, 9)
+texture = SubResource("AtlasTexture_5ykvm")
+hframes = 10
+
+[node name="Digit_3" type="Sprite2D" parent="HBoxContainer" unique_id=1781628641]
+position = Vector2(83, 9)
+texture = SubResource("AtlasTexture_5ykvm")
+hframes = 10
+
+[node name="Digit_4" type="Sprite2D" parent="HBoxContainer" unique_id=2075193168]
+position = Vector2(68, 9)
+texture = SubResource("AtlasTexture_5ykvm")
+hframes = 10
+
+[node name="Digit_5" type="Sprite2D" parent="HBoxContainer" unique_id=1395861487]
+position = Vector2(53, 9)
+texture = SubResource("AtlasTexture_5ykvm")
+hframes = 10
+
+[node name="Digit_6" type="Sprite2D" parent="HBoxContainer" unique_id=596727311]
+position = Vector2(38, 9)
+texture = SubResource("AtlasTexture_5ykvm")
+hframes = 10
+
+[node name="Digit_7" type="Sprite2D" parent="HBoxContainer" unique_id=1343396843]
+position = Vector2(23, 9)
+texture = SubResource("AtlasTexture_5ykvm")
+hframes = 10
+
+[node name="Digit_8" type="Sprite2D" parent="HBoxContainer" unique_id=1999950869]
+position = Vector2(8, 9)
+texture = SubResource("AtlasTexture_5ykvm")
+hframes = 10

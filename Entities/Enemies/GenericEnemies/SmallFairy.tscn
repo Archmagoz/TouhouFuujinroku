@@ -118,6 +118,7 @@ radius = 9.0
 collision_layer = 16
 collision_mask = 5
 script = ExtResource("1_rxwda")
+_pointValue = 100
 _weapon = NodePath("Shotgun")
 _sprite = NodePath("AnimatedSprite")
 _health = NodePath("HealthComponent")
