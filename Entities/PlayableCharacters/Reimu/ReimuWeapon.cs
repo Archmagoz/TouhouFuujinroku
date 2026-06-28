@@ -1,12 +1,15 @@
 using Godot;
 using Godot.Collections;
 using System.Collections.Generic;
+using TouhouFuujinroku.Global.Controllers;
 
 namespace TouhouFuujinroku.Entities.PlayableCharacters
 {
 	[GlobalClass]
 	public partial class ReimuWeapon : Node2D
 	{
+		// ----------------------------------- Configuration ------------------------------------
+
 		[ExportGroup("Configuration")]
 		// How fast each sprite chases its target — higher = snappier.
 		[Export] private float _followSpeed = 64f;
@@ -20,6 +23,19 @@ namespace TouhouFuujinroku.Entities.PlayableCharacters
 		// How much the bottom sprites shift forward on focus.
 		[Export] private float _focusForwardY = -15f;
 
+		// Bullet prefab instantiated on each salvo.
+		[Export] private PackedScene _bulletPrefab;
+
+		// Seconds between salvos.
+		[Export] private float _fireRate = 0.1f;
+
+		// ------------------------------------- Components ------------------------------------
+
+		[ExportGroup("Components")]
+		[Export] private AudioStreamPlayer2D _shotSound;
+
+		// -------------------------------------- State ----------------------------------------
+
 		// One full clockwise rotation per second.
 		private static readonly float RotationSpeed = Mathf.Tau;
 
@@ -32,19 +48,13 @@ namespace TouhouFuujinroku.Entities.PlayableCharacters
 		private Vector2[] _focusDeltas = [];
 		private Vector2[] _offsets = [];
 
-		// Cached reference to the fire controller — located as a child in _Ready().
-		// Kept internal to ReimuWeapon; callers interact via TryFire() and ToggleFocusMode().
-		private ReimuWeaponFireController _fireController;
+		// Seconds remaining before the next shot is allowed.
+		private float _cooldown;
 
-		// ---------------------------------- Godot overrides -----------------------------------
+		// ---------------------------------- Godot overrides ----------------------------------
 
 		public override void _Ready()
 		{
-			// Locate the fire controller among direct children — decouples from node name.
-			foreach (var child in GetChildren())
-				if (child is ReimuWeaponFireController controller)
-					_fireController = controller;
-
 			// Cache sprites and their editor offsets as the normal formation.
 			foreach (var child in GetChildren())
 				if (child is Sprite2D sprite)
@@ -76,8 +86,10 @@ namespace TouhouFuujinroku.Entities.PlayableCharacters
 
 		public override void _Process(double delta)
 		{
-			// Cast once; reused for both lag weight and rotation step.
 			float f = (float)delta;
+
+			if (_cooldown > 0f) _cooldown -= f;
+
 			float lagWeight = ExponentialLerp(_followSpeed, f);
 
 			for (int i = 0; i < _sprites.Count; i++)
@@ -88,7 +100,7 @@ namespace TouhouFuujinroku.Entities.PlayableCharacters
 			}
 		}
 
-		// ------------------------------------- Public API -------------------------------------
+		// --------------------------------------- Public API ----------------------------------
 
 		// Smoothly shifts sprite offsets toward the focused or normal formation.
 		// Call every frame while the focus state may be changing.
@@ -103,21 +115,31 @@ namespace TouhouFuujinroku.Entities.PlayableCharacters
 			}
 		}
 
-		// Delegates the fire request to the child controller — Reimu calls this, not TryFire directly.
-		// Centralizes all weapon interaction through ReimuWeapon as the single public interface.
-		public void TryFire() => _fireController?.TryFire();
+		// Attempts to fire from all sprite origins; silently no-ops while on cooldown.
+		public void TryFire()
+		{
+			if (_cooldown > 0f || _bulletPrefab == null) return;
+
+			_cooldown = _fireRate;
+
+			// Angle fixed at -π/2 — straight up, matching Touhou's vertical scrolling convention.
+			foreach (var origin in GetFireOrigins())
+				ProjectilePool.Instance.Rent(_bulletPrefab, origin, angle: -Mathf.Pi / 2f);
+
+			_shotSound?.Play();
+		}
+
+		// ---------------------------------- Private helpers ----------------------------------
 
 		// Yields the GlobalPosition of every Marker2D child found across all weapon sprites.
 		// Markers rotate with their parent sprite, so positions already reflect current formation.
-		public IEnumerable<Vector2> GetFireOrigins()
+		private IEnumerable<Vector2> GetFireOrigins()
 		{
 			foreach (var sprite in _sprites)
 				foreach (var child in sprite.GetChildren())
 					if (child is Marker2D marker)
 						yield return marker.GlobalPosition;
 		}
-
-		// ---------------------------------- Private helpers -----------------------------------
 
 		// Frame-rate-independent lerp weight via exponential decay — 1 - e^(-speed * delta).
 		private static float ExponentialLerp(float speed, float delta) =>

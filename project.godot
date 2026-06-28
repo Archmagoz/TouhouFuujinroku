@@ -13,7 +13,9 @@ config_version=5
 config/name="Touhou Fuujinroku"
 run/main_scene="uid://cj5118oxipcj6"
 config/features=PackedStringArray("4.7", "C#", "Forward Plus")
-config/icon="res://icon.svg"
+config/icon="uid://cdnpp1j1gpjs0"
+config/macos_native_icon="res://_icons/icon.icns"
+config/windows_native_icon="res://_icons/icon.ico"
 
 [audio]
 

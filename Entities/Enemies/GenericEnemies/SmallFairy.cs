@@ -1,13 +1,17 @@
 using Godot;
 using TouhouFuujinroku.Components;
+using TouhouFuujinroku.Entities.Enemies.GenericEnemies.Weapons;
 using TouhouFuujinroku.Interfaces;
 
 namespace TouhouFuujinroku.Entities.Enemies.GenericEnemies
 {
 	public partial class SmallFairy : Area2D, IDamageable
 	{
+		// ------------------------------------- Components ------------------------------------
+
 		[ExportGroup("Components")]
-		[Export] private GenericEnemyFireController _fireController;
+		// Weapon node composed directly into this scene — configured entirely on the weapon side.
+		[Export] private EnemyWeapon _weapon;
 		[Export] private AnimatedSprite2D _sprite;
 		[Export] private HealthComponent _health;
 		[Export] private SpeedComponent _speed;
@@ -22,11 +26,10 @@ namespace TouhouFuujinroku.Entities.Enemies.GenericEnemies
 		// IDamageable implementation — forwards damage to the HealthComponent.
 		public void ApplyDamage(int amount) => _health.ApplyDamage(amount);
 
-		// ---------------------------------- Godot overrides -----------------------------------
+		// ---------------------------------- Godot overrides ----------------------------------
 
 		public override void _Ready()
 		{
-			// Subscribe to the health component's death signal — drives the death sequence.
 			_health.Death += OnDeath;
 		}
 
@@ -46,10 +49,10 @@ namespace TouhouFuujinroku.Entities.Enemies.GenericEnemies
 		{
 			if (_dying) return;
 
-			_fireController.TryFire();
+			_weapon?.TryFire();
 		}
 
-		// --------------------------------------- Public API -----------------------------------
+		// --------------------------------------- Public API ----------------------------------
 
 		// Receives an already-duplicated PathFollow2D owned exclusively by this fairy.
 		// Called by the spawner immediately after instantiation.
@@ -60,7 +63,7 @@ namespace TouhouFuujinroku.Entities.Enemies.GenericEnemies
 			GlobalPosition = _pathFollow.GlobalPosition;
 		}
 
-		// ---------------------------------- Private helpers -----------------------------------
+		// ---------------------------------- Private helpers ----------------------------------
 
 		private void HandleMovement(double delta)
 		{

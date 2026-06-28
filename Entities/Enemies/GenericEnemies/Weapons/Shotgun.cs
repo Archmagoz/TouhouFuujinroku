@@ -8,11 +8,11 @@ namespace TouhouFuujinroku.Entities.Enemies.GenericEnemies.Weapons
 	// Markers define shot directions; all projectiles spawn at the weapon's origin.
 	public partial class Shotgun : EnemyWeapon
 	{
-		// --------------------------------------- Public API -----------------------------------
+		// --------------------------------------- Protected API -------------------------------
 
 		// Fires one projectile toward each Marker2D child, all spawning at GlobalPosition.
 		// The angle from origin to marker defines each projectile's travel direction.
-		public override void Fire(PackedScene prefab)
+		protected override void Fire(PackedScene prefab)
 		{
 			foreach (var (position, angle) in GetFireData())
 				ProjectilePool.Instance.Rent(prefab, position, angle);
@@ -26,8 +26,6 @@ namespace TouhouFuujinroku.Entities.Enemies.GenericEnemies.Weapons
 		{
 			foreach (var child in GetChildren())
 				if (child is Marker2D marker)
-					// Use the marker's local position as direction vector — 
-					// independent of where the weapon is in world space.
 					yield return (GlobalPosition, marker.Position.Angle());
 		}
 	}

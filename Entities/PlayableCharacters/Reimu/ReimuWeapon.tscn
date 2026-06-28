@@ -2,7 +2,6 @@
 
 [ext_resource type="Texture2D" uid="uid://jveli1y7vv" path="res://Entities/PlayableCharacters/Assets/Spritesheet.png" id="1_6gpg3"]
 [ext_resource type="Script" uid="uid://cy8lwx16qqjgy" path="res://Entities/PlayableCharacters/Reimu/ReimuWeapon.cs" id="1_vk55m"]
-[ext_resource type="PackedScene" uid="uid://bwcpglrmexbd" path="res://Entities/PlayableCharacters/Reimu/ReimuWeaponFireController.tscn" id="3_hyx40"]
 [ext_resource type="PackedScene" uid="uid://b6la2jobdl0tv" path="res://Entities/PlayableCharacters/Reimu/ReimuProjectile.tscn" id="4_81b38"]
 [ext_resource type="AudioStream" uid="uid://d1g036vx1qpml" path="res://Entities/PlayableCharacters/Assets/ShotSFX.wav" id="4_cnsxv"]
 
@@ -10,8 +9,10 @@
 atlas = ExtResource("1_6gpg3")
 region = Rect2(80.073616, 143.74896, 16.104568, 17.192719)
 
-[node name="ReimuWeapon" type="Node2D" unique_id=150880922]
+[node name="ReimuWeapon" type="Node2D" unique_id=150880922 node_paths=PackedStringArray("_shotSound")]
 script = ExtResource("1_vk55m")
+_bulletPrefab = ExtResource("4_81b38")
+_shotSound = NodePath("ShotSound")
 
 [node name="BottomLeft" type="Sprite2D" parent="." unique_id=253914502]
 position = Vector2(-24, 0)
@@ -53,10 +54,5 @@ position = Vector2(-7, 0)
 [node name="Right" type="Marker2D" parent="BottomRight" unique_id=457214114]
 position = Vector2(8, 0)
 
-[node name="ReimuWeaponFireController" parent="." unique_id=1196119377 node_paths=PackedStringArray("_shotSound") instance=ExtResource("3_hyx40")]
-_bulletPrefab = ExtResource("4_81b38")
-_shotSound = NodePath("AudioStreamPlayer")
-
-[node name="AudioStreamPlayer" type="AudioStreamPlayer2D" parent="ReimuWeaponFireController" unique_id=1225710259]
+[node name="ShotSound" type="AudioStreamPlayer2D" parent="." unique_id=1289480053]
 stream = ExtResource("4_cnsxv")
-volume_db = -5.0
