@@ -23,15 +23,13 @@ namespace TouhouFuujinroku.Entities.PlayableCharacters
 		// How much the bottom sprites shift forward on focus.
 		[Export] private float _focusForwardY = -15f;
 
-		// Bullet prefab instantiated on each salvo.
-		[Export] private PackedScene _bulletPrefab;
-
-		// Seconds between salvos.
+		// Seconds between shot.
 		[Export] private float _fireRate = 0.1f;
 
-		// ------------------------------------- Components ------------------------------------
+		// Bullet prefab instantiated on each shot.
+		[Export] private PackedScene _bulletPrefab;
 
-		[ExportGroup("Components")]
+		// Audio played on each shot — optional, may be null.
 		[Export] private AudioStreamPlayer2D _shotSound;
 
 		// -------------------------------------- State ----------------------------------------
