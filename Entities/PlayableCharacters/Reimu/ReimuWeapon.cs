@@ -11,6 +11,7 @@ namespace TouhouFuujinroku.Entities.PlayableCharacters
 		// ----------------------------------- Configuration ------------------------------------
 
 		[ExportGroup("Configuration")]
+		[ExportSubgroup("Formation")]
 		// How fast each sprite chases its target — higher = snappier.
 		[Export] private float _followSpeed = 64f;
 
@@ -23,6 +24,7 @@ namespace TouhouFuujinroku.Entities.PlayableCharacters
 		// How much the bottom sprites shift forward on focus.
 		[Export] private float _focusForwardY = -15f;
 
+		[ExportSubgroup("Firing")]
 		// Seconds between shot.
 		[Export] private float _fireRate = 0.1f;
 
@@ -39,6 +41,10 @@ namespace TouhouFuujinroku.Entities.PlayableCharacters
 
 		// Sprites (loaded in _Ready()) — order: 0 bottom-left, 1 top-left, 2 top-right, 3 bottom-right.
 		private Array<Sprite2D> _sprites = [];
+
+		// Fire-origin markers, cached once in _Ready() — rotate with their parent sprite,
+		// so GlobalPosition already reflects the current formation each frame.
+		private Array<Marker2D> _fireOrigins = [];
 
 		// Per-sprite positions and offsets, sized in _Ready() after sprites are loaded.
 		private Vector2[] _positions = [];
@@ -69,6 +75,11 @@ namespace TouhouFuujinroku.Entities.PlayableCharacters
 				_normalOffsets[i] = _sprites[i].Position;
 				_offsets[i] = _normalOffsets[i];
 				_positions[i] = _sprites[i].GlobalPosition;
+
+				// Cache every Marker2D child found under this sprite as a fire origin.
+				foreach (var child in _sprites[i].GetChildren())
+					if (child is Marker2D marker)
+						_fireOrigins.Add(marker);
 			}
 
 			// Per-sprite focus deltas — sprite order: 0 bottom-left, 1 top-left, 2 top-right, 3 bottom-right.
@@ -129,14 +140,11 @@ namespace TouhouFuujinroku.Entities.PlayableCharacters
 
 		// ---------------------------------- Private helpers ----------------------------------
 
-		// Yields the GlobalPosition of every Marker2D child found across all weapon sprites.
-		// Markers rotate with their parent sprite, so positions already reflect current formation.
+		// Yields the current GlobalPosition of every cached fire-origin marker.
 		private IEnumerable<Vector2> GetFireOrigins()
 		{
-			foreach (var sprite in _sprites)
-				foreach (var child in sprite.GetChildren())
-					if (child is Marker2D marker)
-						yield return marker.GlobalPosition;
+			foreach (var marker in _fireOrigins)
+				yield return marker.GlobalPosition;
 		}
 
 		// Frame-rate-independent lerp weight via exponential decay — 1 - e^(-speed * delta).
