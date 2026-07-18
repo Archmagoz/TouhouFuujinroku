@@ -20,6 +20,11 @@ namespace TouhouFuujinroku.Entities
 		// Direction of travel in radians — 0 = right, -π/2 = straight up.
 		private float _angle;
 
+		// Precomputed unit vector for _angle. Cached once in Initialize() instead of calling
+		// Vector2.FromAngle(_angle) every frame — the angle never changes after instancing,
+		// so recomputing sin/cos in _Process would just be wasted work.
+		private Vector2 _direction;
+
 		// World-space boundary beyond which a projectile is considered off-screen and returned
 		// to the pool. Avoids viewport transform issues that arise when the projectile lives
 		// in the autoload subtree rather than the level scene.
@@ -41,7 +46,7 @@ namespace TouhouFuujinroku.Entities
 
 		public override void _Process(double delta)
 		{
-			Position += Vector2.FromAngle(_angle) * _speed * (float)delta;
+			Position += _direction * _speed * (float)delta;
 
 			// Cull in world space — immune to viewport resizes, fullscreen toggles, and
 			// camera transforms. 1000 units comfortably exceeds any expected play area.
@@ -58,6 +63,7 @@ namespace TouhouFuujinroku.Entities
 			Position = position;
 			Rotation = angle;
 			_angle = angle;
+			_direction = Vector2.FromAngle(angle);
 		}
 
 		// ---------------------------------------- Helpers ----------------------------------------

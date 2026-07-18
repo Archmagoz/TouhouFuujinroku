@@ -58,12 +58,6 @@ namespace TouhouFuujinroku.Entities.Enemies.GenericEnemies
 			if (_dying) return;
 
 			HandleMovement(delta);
-		}
-
-		public override void _Process(double delta)
-		{
-			if (_dying) return;
-
 			_weapon?.TryFire();
 		}
 

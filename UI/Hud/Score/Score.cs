@@ -7,7 +7,7 @@ namespace TouhouFuujinroku.UI.Hud.Score
     // Digit sprites are loaded from the HBoxContainer child at runtime; no exports needed.
     public partial class Score : Control
     {
-        // ---------------------------------------- State -------------------------------------
+        // ----------------------------------------- State -------------------------------------
 
         private long _score;
         private Sprite2D[] _digits;
