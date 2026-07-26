@@ -17,12 +17,7 @@ namespace TouhouFuujinroku.Entities
 		[Export] private float _speed = 300f;
 		[Export] private int _damage = 1;
 
-		// Direction of travel in radians — 0 = right, -π/2 = straight up.
-		private float _angle;
-
-		// Precomputed unit vector for _angle. Cached once in Initialize() instead of calling
-		// Vector2.FromAngle(_angle) every frame — the angle never changes after instancing,
-		// so recomputing sin/cos in _Process would just be wasted work.
+		// Resolved from the angle passed to Initialize() — used to move the projectile each frame.
 		private Vector2 _direction;
 
 		// World-space boundary beyond which a projectile is considered off-screen and returned
@@ -62,7 +57,6 @@ namespace TouhouFuujinroku.Entities
 		{
 			Position = position;
 			Rotation = angle;
-			_angle = angle;
 			_direction = Vector2.FromAngle(angle);
 		}
 

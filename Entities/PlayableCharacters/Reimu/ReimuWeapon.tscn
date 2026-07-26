@@ -56,3 +56,4 @@ position = Vector2(8, 0)
 
 [node name="ShotSound" type="AudioStreamPlayer2D" parent="." unique_id=1289480053]
 stream = ExtResource("4_cnsxv")
+volume_db = -12.0
