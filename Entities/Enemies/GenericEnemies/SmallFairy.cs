@@ -41,13 +41,6 @@ namespace TouhouFuujinroku.Entities.Enemies.GenericEnemies
 			_health.Death += OnDeath;
 		}
 
-		public override void _EnterTree()
-		{
-			// Added here instead of _Ready() — NodeAdded fires during _EnterTree(),
-			// so the group membership must exist at this point for listeners to catch it.
-			AddToGroup("enemies");
-		}
-
 		public override void _ExitTree()
 		{
 			_health.Death -= OnDeath;

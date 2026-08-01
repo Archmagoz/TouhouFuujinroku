@@ -37,6 +37,10 @@ window/stretch/mode="canvas_items"
 
 project/assembly_name="Touhou Fuujinroku"
 
+[global_group]
+
+enemies=""
+
 [input]
 
 left={
