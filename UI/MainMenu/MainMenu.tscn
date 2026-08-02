@@ -35,14 +35,11 @@ region = Rect2(770.88855, 303.83066, 63.30603, 31.341919)
 atlas = ExtResource("1_8fkdr")
 region = Rect2(690.88257, 304.05157, 63.018982, 31.118988)
 
-[node name="MainMenu" type="Control" unique_id=1993999925 node_paths=PackedStringArray("_gameStartButton", "_optionsButton", "_quitButton")]
+[node name="MainMenu" type="Control" unique_id=1993999925]
 layout_mode = 3
 anchors_preset = 0
 scale = Vector2(1.4799998, 1.4799998)
 script = ExtResource("1_fw0vt")
-_gameStartButton = NodePath("GameStart")
-_optionsButton = NodePath("Opition")
-_quitButton = NodePath("Quit")
 
 [node name="Background" type="TextureRect" parent="." unique_id=94049739]
 layout_mode = 0
@@ -94,3 +91,7 @@ texture_pressed = SubResource("AtlasTexture_ri767")
 texture_hover = SubResource("AtlasTexture_ri767")
 texture_disabled = SubResource("AtlasTexture_4elqj")
 texture_focused = SubResource("AtlasTexture_ri767")
+
+[connection signal="pressed" from="GameStart" to="." method="OnGameStartPressed"]
+[connection signal="pressed" from="Opition" to="." method="OnOptionsPressed"]
+[connection signal="pressed" from="Quit" to="." method="OnQuitPressed"]

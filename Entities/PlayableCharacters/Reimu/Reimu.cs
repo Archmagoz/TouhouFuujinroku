@@ -1,13 +1,14 @@
 using Godot;
+
 using TouhouFuujinroku.Components;
 using TouhouFuujinroku.Interfaces;
 
-namespace TouhouFuujinroku.Entities.PlayableCharacters
+namespace TouhouFuujinroku.Entities.PlayableCharacters.Reimu
 {
 	public partial class Reimu : CharacterBody2D, IDamageable
 	{
 		[ExportGroup("Components")]
-		[Export] private SpriteComponent _sprite;
+		[Export] private ReimuAnimatedSprite _sprite;
 		[Export] private HealthComponent _health;
 		[Export] private SpeedComponent _speed;
 		[Export] private ReimuWeapon _weapon;

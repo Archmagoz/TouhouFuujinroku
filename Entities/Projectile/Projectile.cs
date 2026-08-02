@@ -1,4 +1,5 @@
 using Godot;
+
 using TouhouFuujinroku.Interfaces;
 using TouhouFuujinroku.Global.Controllers;
 
@@ -11,7 +12,7 @@ namespace TouhouFuujinroku.Entities
 		// Never set this manually; treat it as pool-internal state.
 		public PackedScene Prefab { get; set; }
 
-		// ---------------------------------------- Configuration ----------------------------------
+		// Configuration ---------------------------------------------------------------------------------------
 
 		[ExportGroup("Configuration")]
 		[Export] private float _speed = 300f;
@@ -25,19 +26,7 @@ namespace TouhouFuujinroku.Entities
 		// in the autoload subtree rather than the level scene.
 		private const float CullBoundary = 1000f;
 
-		// ------------------------------------ Godot overrides ------------------------------------
-
-		public override void _Ready()
-		{
-			AreaEntered += OnAreaEntered;
-			BodyEntered += OnBodyEntered;
-		}
-
-		public override void _ExitTree()
-		{
-			AreaEntered -= OnAreaEntered;
-			BodyEntered -= OnBodyEntered;
-		}
+		// Godot overrides -------------------------------------------------------------------------------------
 
 		public override void _Process(double delta)
 		{
@@ -49,7 +38,7 @@ namespace TouhouFuujinroku.Entities
 				ProjectilePool.Instance.Return(this);
 		}
 
-		// --------------------------------------- Public API --------------------------------------
+		// Public API ------------------------------------------------------------------------------------------
 
 		// Called by ProjectilePool.Rent() immediately after the node is re-enabled.
 		// Resets all runtime state so recycled instances behave like fresh ones.
@@ -60,7 +49,7 @@ namespace TouhouFuujinroku.Entities
 			_direction = Vector2.FromAngle(angle);
 		}
 
-		// ---------------------------------------- Helpers ----------------------------------------
+		// Helpers ---------------------------------------------------------------------------------------------
 
 		// Applies damage to any IDamageable in the overlapping area.
 		// Collision layer filtering is handled in the editor — no type checks needed here.

@@ -1,5 +1,7 @@
 using Godot;
+
 using System;
+
 using TouhouFuujinroku.Components;
 using TouhouFuujinroku.Entities.Enemies.GenericEnemies.Weapons;
 using TouhouFuujinroku.Interfaces;
@@ -15,7 +17,7 @@ namespace TouhouFuujinroku.Entities.Enemies.GenericEnemies
 		// IScoreable implementation — raised on death with the point value.
 		public event Action<long> Died;
 
-		// ------------------------------------- Components ------------------------------------
+		// Components -------------------------------------------------------------------------------------------
 
 		[ExportGroup("Components")]
 		// Weapon node composed directly into this scene — configured entirely on the weapon side.
@@ -34,27 +36,17 @@ namespace TouhouFuujinroku.Entities.Enemies.GenericEnemies
 		// IDamageable implementation — forwards damage to the HealthComponent.
 		public void ApplyDamage(int amount) => _health.ApplyDamage(amount);
 
-		// ---------------------------------- Godot overrides ----------------------------------
-
-		public override void _Ready()
-		{
-			_health.Death += OnDeath;
-		}
-
-		public override void _ExitTree()
-		{
-			_health.Death -= OnDeath;
-		}
+		// Godot overrides --------------------------------------------------------------------------------------
 
 		public override void _PhysicsProcess(double delta)
 		{
 			if (_dying) return;
 
 			HandleMovement(delta);
-			_weapon?.TryFire();
+			_weapon.TryFire();
 		}
 
-		// --------------------------------------- Public API ----------------------------------
+		// Public API -------------------------------------------------------------------------------------------
 
 		// Receives an already-duplicated PathFollow2D owned exclusively by this fairy.
 		// Called by the spawner immediately after instantiation.
@@ -65,7 +57,7 @@ namespace TouhouFuujinroku.Entities.Enemies.GenericEnemies
 			GlobalPosition = _pathFollow.GlobalPosition;
 		}
 
-		// ---------------------------------- Private helpers ----------------------------------
+		// Helpers ----------------------------------------------------------------------------------------------
 
 		private void HandleMovement(double delta)
 		{
@@ -87,10 +79,10 @@ namespace TouhouFuujinroku.Entities.Enemies.GenericEnemies
 		private void OnDeath()
 		{
 			_dying = true;
-			_pathFollow?.QueueFree();
+			_pathFollow.QueueFree();
 
 			// Notify score listeners before the animation starts — node is still valid here.
-			Died?.Invoke(_pointValue);
+			Died.Invoke(_pointValue);
 
 			_sprite.Play("death");
 			_sprite.AnimationFinished += QueueFree;

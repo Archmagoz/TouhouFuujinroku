@@ -1,14 +1,16 @@
 using Godot;
 using Godot.Collections;
+
 using System.Collections.Generic;
+
 using TouhouFuujinroku.Global.Controllers;
 
-namespace TouhouFuujinroku.Entities.PlayableCharacters
+namespace TouhouFuujinroku.Entities.PlayableCharacters.Reimu
 {
 	[GlobalClass]
 	public partial class ReimuWeapon : Node2D
 	{
-		// ----------------------------------- Configuration ------------------------------------
+		// Configuration ---------------------------------------------------------------------------------------
 
 		[ExportGroup("Configuration")]
 		[ExportSubgroup("Formation")]
@@ -34,7 +36,7 @@ namespace TouhouFuujinroku.Entities.PlayableCharacters
 		// Audio played on each shot — optional, may be null.
 		[Export] private AudioStreamPlayer2D _shotSound;
 
-		// -------------------------------------- State ----------------------------------------
+		// State ----------------------------------------------------------------------------------------------
 
 		// One full clockwise rotation per second.
 		private static readonly float RotationSpeed = Mathf.Tau;
@@ -55,7 +57,7 @@ namespace TouhouFuujinroku.Entities.PlayableCharacters
 		// Seconds remaining before the next shot is allowed.
 		private float _cooldown;
 
-		// ---------------------------------- Godot overrides ----------------------------------
+		// Godot overrides ------------------------------------------------------------------------------------
 
 		public override void _Ready()
 		{
@@ -109,7 +111,7 @@ namespace TouhouFuujinroku.Entities.PlayableCharacters
 			}
 		}
 
-		// --------------------------------------- Public API ----------------------------------
+		// Public API -----------------------------------------------------------------------------------------
 
 		// Smoothly shifts sprite offsets toward the focused or normal formation.
 		// Call every frame while the focus state may be changing.
@@ -135,10 +137,10 @@ namespace TouhouFuujinroku.Entities.PlayableCharacters
 			foreach (var origin in GetFireOrigins())
 				ProjectilePool.Instance.Rent(_bulletPrefab, origin, angle: -Mathf.Pi / 2f);
 
-			_shotSound?.Play();
+			_shotSound.Play();
 		}
 
-		// ---------------------------------- Private helpers ----------------------------------
+		// Helpers ---------------------------------------------------------------------------------------------
 
 		// Yields the current GlobalPosition of every cached fire-origin marker.
 		private IEnumerable<Vector2> GetFireOrigins()

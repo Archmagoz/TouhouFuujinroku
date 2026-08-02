@@ -1,5 +1,4 @@
 using Godot;
-using TouhouFuujinroku.Interfaces;
 
 namespace TouhouFuujinroku.UI.Hud.Score
 {
@@ -7,12 +6,10 @@ namespace TouhouFuujinroku.UI.Hud.Score
     // Digit sprites are loaded from the HBoxContainer child at runtime; no exports needed.
     public partial class Score : Control
     {
-        // ----------------------------------------- State -------------------------------------
-
         private long _score;
         private Sprite2D[] _digits;
 
-        // --------------------------------------- Public API ----------------------------------
+        // Public API -----------------------------------------------------------------------------------------
 
         // Adds points and refreshes the display — call this on enemy death.
         public void AddScore(long points)
@@ -28,21 +25,15 @@ namespace TouhouFuujinroku.UI.Hud.Score
             UpdateDisplay();
         }
 
-        // ---------------------------------- Godot overrides ----------------------------------
+        // Godot overrides ------------------------------------------------------------------------------------
 
         public override void _Ready()
         {
             LoadDigits();
-            GetTree().NodeAdded += OnNodeAdded;
             UpdateDisplay();
         }
 
-        public override void _ExitTree()
-        {
-            GetTree().NodeAdded -= OnNodeAdded;
-        }
-
-        // ---------------------------------- Private helpers ----------------------------------
+        // Private helpers ------------------------------------------------------------------------------------
 
         // Locates the HBoxContainer child and collects its Sprite2D children left to right.
         // Index 0 = most significant digit; index N-1 = units digit.
@@ -65,13 +56,6 @@ namespace TouhouFuujinroku.UI.Hud.Score
             for (int i = 0; i < children.Count; i++)
                 if (children[i] is Sprite2D sprite)
                     _digits[i] = sprite;
-        }
-
-        // Connects to any IScoreable node entering the "enemies" group — type-agnostic.
-        private void OnNodeAdded(Node node)
-        {
-            if (node.IsInGroup("enemies") && node is IScoreable scoreable)
-                scoreable.Died += AddScore;
         }
 
         // Decomposes the score into individual digits and sets each sprite frame accordingly.

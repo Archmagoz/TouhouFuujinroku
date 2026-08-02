@@ -8,6 +8,7 @@
 [ext_resource type="AudioStream" uid="uid://r55uke54y2vk" path="res://Levels/Debug/Assets/DebugLevelSoundtrack.ogg" id="3_8yi1q"]
 [ext_resource type="PackedScene" uid="uid://bltjhi4vk5tf3" path="res://Entities/Enemies/GenericEnemies/Projectile/GreenDot.tscn" id="3_x447m"]
 [ext_resource type="PackedScene" uid="uid://b5rqan2nxnd3j" path="res://Levels/Debug/Background.tscn" id="4_4tne8"]
+[ext_resource type="PackedScene" uid="uid://kccjmttaqp2q" path="res://Entities/Enemies/Spawning/FairySpawner.tscn" id="8_x447m"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_3beo8"]
 size = Vector2(26, 422)
@@ -36,16 +37,11 @@ _data = {
 }
 point_count = 9
 
-[node name="Debug" type="Node2D" unique_id=641409104 node_paths=PackedStringArray("_label", "_spawnPaths")]
+[node name="Debug" type="Node2D" unique_id=641409104 node_paths=PackedStringArray("_label")]
 script = ExtResource("1_5nf4i")
 _label = NodePath("Label")
 _reimuBulletPrefab = ExtResource("2_kvle7")
 _greenDotBulletPrefab = ExtResource("3_x447m")
-_fairyPrefab = ExtResource("2_x6ejw")
-_spawnPaths = [NodePath("PathA/PathFollowA"), NodePath("PathB/PathFollowB"), NodePath("PathC/PathFollowC"), NodePath("PathD/PathFollowD")]
-_spawnIntervalStart = 5.0
-_spawnIntervalEnd = 2.0
-_rampDuration = 60.0
 
 [node name="Background" parent="." unique_id=1237811369 instance=ExtResource("4_4tne8")]
 position = Vector2(-97, 0)
@@ -128,3 +124,8 @@ curve = SubResource("Curve2D_x447m")
 position = Vector2(-101, -265)
 rotation = 1.6659852
 loop = false
+
+[node name="FairySpawner" parent="." unique_id=836321031 node_paths=PackedStringArray("_hud", "_spawnPaths") instance=ExtResource("8_x447m")]
+_hud = NodePath("../Hud")
+_fairyPrefab = ExtResource("2_x6ejw")
+_spawnPaths = [NodePath("../PathA/PathFollowA"), NodePath("../PathB/PathFollowB"), NodePath("../PathC/PathFollowC"), NodePath("../PathD/PathFollowD")]

@@ -2,9 +2,9 @@
 
 [ext_resource type="Texture2D" uid="uid://jveli1y7vv" path="res://Entities/PlayableCharacters/Assets/Spritesheet.png" id="1_118g0"]
 [ext_resource type="Script" uid="uid://dirlw4yfch0mq" path="res://Entities/PlayableCharacters/Reimu/Reimu.cs" id="1_v87c3"]
+[ext_resource type="Script" uid="uid://c47fphfrle78r" path="res://Entities/PlayableCharacters/Reimu/ReimuAnimatedSprite.cs" id="3_6xvey"]
 [ext_resource type="PackedScene" uid="uid://dxj0lkshro5gy" path="res://Components/SpeedComponent/SpeedComponent.tscn" id="3_buwra"]
 [ext_resource type="PackedScene" uid="uid://qnkfyeixmb6m" path="res://Components/HealthComponent/HealthComponent.tscn" id="4_dhsxb"]
-[ext_resource type="PackedScene" uid="uid://dm63m0eqn6g68" path="res://Components/SpriteComponent/SpriteComponent.tscn" id="6_6xvey"]
 [ext_resource type="PackedScene" uid="uid://bd843vt4pvk5p" path="res://Entities/PlayableCharacters/Reimu/ReimuWeapon.tscn" id="6_e10mn"]
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_v87c3"]
@@ -233,7 +233,7 @@ radius = 7.0
 [node name="Reimu" type="CharacterBody2D" unique_id=2024202319 node_paths=PackedStringArray("_sprite", "_health", "_speed", "_weapon")]
 collision_mask = 26
 script = ExtResource("1_v87c3")
-_sprite = NodePath("SpriteComponent")
+_sprite = NodePath("AnimatedSprite")
 _health = NodePath("HealthComponent")
 _speed = NodePath("SpeedComponent")
 _weapon = NodePath("ReimuWeapon")
@@ -242,12 +242,12 @@ _weapon = NodePath("ReimuWeapon")
 position = Vector2(1, 0)
 sprite_frames = SubResource("SpriteFrames_yem7q")
 autoplay = "default"
+script = ExtResource("3_6xvey")
 
 [node name="Hitbox" type="CollisionShape2D" parent="." unique_id=227582417]
 shape = SubResource("CircleShape2D_118g0")
 
-[node name="SpriteComponent" parent="." unique_id=972550612 node_paths=PackedStringArray("_sprite") instance=ExtResource("6_6xvey")]
-_sprite = NodePath("../AnimatedSprite")
+[node name="ReimuWeapon" parent="." unique_id=150880922 instance=ExtResource("6_e10mn")]
 
 [node name="HealthComponent" parent="." unique_id=1821635083 instance=ExtResource("4_dhsxb")]
 _maxHealth = 5
@@ -256,4 +256,4 @@ _maxHealth = 5
 _currentSpeed = 300.0
 _maxSpeed = 300.0
 
-[node name="ReimuWeapon" parent="." unique_id=150880922 instance=ExtResource("6_e10mn")]
+[connection signal="animation_finished" from="AnimatedSprite" to="AnimatedSprite" method="OnAnimationFinished"]

@@ -15,12 +15,11 @@ region = Rect2(770.88855, 303.83066, 63.30603, 31.341919)
 atlas = ExtResource("1_0qgxi")
 region = Rect2(690.88257, 304.05157, 63.018982, 31.118988)
 
-[node name="OptionsMenu" type="Control" unique_id=961730160 node_paths=PackedStringArray("_quitButton")]
+[node name="OptionsMenu" type="Control" unique_id=961730160]
 layout_mode = 3
 anchors_preset = 0
 scale = Vector2(1.4799997, 1.4799997)
 script = ExtResource("1_2y1lw")
-_quitButton = NodePath("Quit")
 
 [node name="Background" type="TextureRect" parent="." unique_id=262523885]
 layout_mode = 0
@@ -39,3 +38,5 @@ texture_pressed = SubResource("AtlasTexture_b57bx")
 texture_hover = SubResource("AtlasTexture_b57bx")
 texture_disabled = SubResource("AtlasTexture_0qgxi")
 texture_focused = SubResource("AtlasTexture_b57bx")
+
+[connection signal="pressed" from="Quit" to="." method="OnQuitPressed"]

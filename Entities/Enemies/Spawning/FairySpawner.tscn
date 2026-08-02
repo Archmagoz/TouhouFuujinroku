@@ -1,0 +1,6 @@
+[gd_scene format=3 uid="uid://kccjmttaqp2q"]
+
+[ext_resource type="Script" uid="uid://b21ch4k2gm0o6" path="res://Entities/Enemies/Spawning/FairySpawner.cs" id="1_n01v8"]
+
+[node name="FairySpawner" type="Node" unique_id=836321031]
+script = ExtResource("1_n01v8")

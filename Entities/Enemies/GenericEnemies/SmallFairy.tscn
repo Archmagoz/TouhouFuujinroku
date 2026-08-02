@@ -140,3 +140,5 @@ _maxHealth = 20
 [node name="Shotgun" parent="." unique_id=2111850642 instance=ExtResource("5_tx7gd")]
 _bulletPrefab = ExtResource("2_ohic1")
 _shotCount = 3
+
+[connection signal="Death" from="HealthComponent" to="." method="OnDeath"]

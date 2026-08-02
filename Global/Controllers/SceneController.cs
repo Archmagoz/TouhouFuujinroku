@@ -1,4 +1,5 @@
 using Godot;
+
 using System.Collections.Generic;
 
 namespace TouhouFuujinroku.Global.Controllers
@@ -16,13 +17,13 @@ namespace TouhouFuujinroku.Global.Controllers
 	{
 		public static SceneController Instance { get; private set; }
 
-		// ---------------------------------- Preloaded scenes ----------------------------------
+		// Preloaded scenes -------------------------------------------------------------------------------------
 		// Eagerly loaded in _Ready so GD.Load runs after the engine is fully initialised;
 		// avoids hitting the ResourceLoader before the scene tree is ready.
 
 		private readonly Dictionary<Scene, PackedScene> _preloadedScenes = new();
 
-		// ----------------------------------- Lazy scenes -------------------------------------
+		// Lazy scenes ------------------------------------------------------------------------------------------
 		// Resolved from disk on first request, then promoted to _preloadedScenes so
 		// subsequent transitions skip the disk entirely.
 
@@ -31,7 +32,7 @@ namespace TouhouFuujinroku.Global.Controllers
 			{ Scene.DebugLevel, "res://Levels/Debug/Debug.tscn" },
 		};
 
-		// ---------------------------------- Godot overrides ----------------------------------
+		// Godot overrides --------------------------------------------------------------------------------------
 
 		public override void _Ready()
 		{
@@ -50,7 +51,7 @@ namespace TouhouFuujinroku.Global.Controllers
 			_preloadedScenes[Scene.OptionsMenu] = GD.Load<PackedScene>("res://UI/OptionsMenu/OptionsMenu.tscn");
 		}
 
-		// ------------------------------------ Public API -------------------------------------
+		// Public API -------------------------------------------------------------------------------------------
 
 		// Frees the current scene before adding the incoming one to guarantee
 		// only one scene is alive at a time, even within a single frame.
@@ -63,14 +64,21 @@ namespace TouhouFuujinroku.Global.Controllers
 				return;
 			}
 
-			GetTree().CurrentScene?.QueueFree();
+			GetTree().CurrentScene.QueueFree();
 
 			var incoming = packed.Instantiate();
 			GetTree().Root.AddChild(incoming);
 			GetTree().CurrentScene = incoming;
 		}
 
-		// ------------------------------------- Helpers --------------------------------------
+		// Quits the game from any scene, including the main menu.
+		public void QuitGame()
+		{
+			// aqui entra fade-out, save, etc no futuro
+			Instance.GetTree().Quit();
+		}
+
+		// Helpers -----------------------------------------------------------------------------------------------
 
 		// Checks _preloadedScenes first; on a miss, loads from _lazyPaths and promotes
 		// the result into _preloadedScenes so the disk is only read once per lazy scene.

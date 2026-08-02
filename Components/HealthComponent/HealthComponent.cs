@@ -20,7 +20,7 @@ namespace TouhouFuujinroku.Components
 		public int CurrentHealth => _currentHealth;
 		public bool IsDead => _currentHealth <= 0;
 
-		// ------------------------------------- Godot overrides ------------------------------------
+		// Godot overrides --------------------------------------------------------------------------------------
 
 		public override void _Ready()
 		{
@@ -28,7 +28,7 @@ namespace TouhouFuujinroku.Components
 			_currentHealth = _maxHealth;
 		}
 
-		// ---------------------------------------- Public API --------------------------------------
+		// Public API -------------------------------------------------------------------------------------------
 
 		public void Reset()
 		{
@@ -63,7 +63,7 @@ namespace TouhouFuujinroku.Components
 			UpdateHealth(0);
 		}
 
-		// ----------------------------------------- Helpers ----------------------------------------
+		// Helpers ----------------------------------------------------------------------------------------------
 
 		private void UpdateHealth(int value)
 		{

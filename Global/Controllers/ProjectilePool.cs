@@ -1,5 +1,7 @@
 using Godot;
+
 using System.Collections.Generic;
+
 using TouhouFuujinroku.Entities;
 
 namespace TouhouFuujinroku.Global.Controllers
@@ -21,7 +23,7 @@ namespace TouhouFuujinroku.Global.Controllers
 		// Guards Rent() against being called outside a level context.
 		private bool _initialized;
 
-		// ------------------------------------- Godot overrides ------------------------------------
+		// Godot overrides -------------------------------------------------------------------------------------
 
 		public override void _Ready()
 		{
@@ -35,7 +37,7 @@ namespace TouhouFuujinroku.Global.Controllers
 			Instance = this;
 		}
 
-		// --------------------------------------- Public API ---------------------------------------
+		// Public API -------------------------------------------------------------------------------------------
 
 		// Marks the pool as ready to serve projectiles.
 		// Calls Clear() first so re-entering a level starts from a clean state.
@@ -103,7 +105,7 @@ namespace TouhouFuujinroku.Global.Controllers
 			queue.Enqueue(projectile);
 		}
 
-		// ---------------------------------------- Helpers ----------------------------------------
+		// Helpers ---------------------------------------------------------------------------------------------
 
 		// Pops from the existing queue or falls through to CreateProjectile if the pool is empty.
 		private Projectile GetOrCreate(PackedScene prefab)

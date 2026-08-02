@@ -1,5 +1,6 @@
 [gd_scene format=3 uid="uid://cljfb1nrmidxw"]
 
+[ext_resource type="Script" uid="uid://cf0aii5e28tvs" path="res://UI/Hud/Hud.cs" id="1_hdg5h"]
 [ext_resource type="Texture2D" uid="uid://bhesd5w5ub3or" path="res://UI/Hud/Assets/Hud.png" id="1_pa3cw"]
 [ext_resource type="PackedScene" uid="uid://jugsva0n4t4k" path="res://UI/Hud/Score/Score.tscn" id="2_rt2hf"]
 
@@ -19,13 +20,15 @@ region = Rect2(289.04794, 32.99499, 63.789948, 40.306835)
 atlas = ExtResource("1_pa3cw")
 region = Rect2(298.00137, 72.6156, 56.77426, 38.838554)
 
-[node name="Hud" type="Control" unique_id=1689239087]
+[node name="Hud" type="Control" unique_id=1689239087 node_paths=PackedStringArray("_score")]
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
+script = ExtResource("1_hdg5h")
+_score = NodePath("Score")
 metadata/_edit_vertical_guides_ = [432.0]
 
 [node name="BG01" type="TextureRect" parent="." unique_id=1025087550]

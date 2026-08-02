@@ -6,29 +6,25 @@ namespace TouhouFuujinroku.Entities.Enemies.GenericEnemies.Weapons
     // Composed directly into the enemy scene; no runtime instantiation needed.
     public abstract partial class EnemyWeapon : Node2D
     {
-        // ----------------------------------- Configuration ------------------------------------
+        // Configuration --------------------------------------------------------------------------------------
 
         [ExportGroup("Configuration")]
-        // Bullet prefab instantiated on each salvo — defined per weapon, not per enemy.
+        // Bullet prefab instantiated on each shot — defined per weapon, not per enemy.
         [Export] private PackedScene _bulletPrefab;
 
-        // Total salvos fired before this weapon goes silent.
+        // Total shots fired before this weapon goes silent.
         [Export] private int _shotCount;
 
-        // Seconds between salvos.
+        // Seconds between shots.
         [Export] private float _fireRate;
-
-        // ------------------------------------- Components ------------------------------------
 
         [ExportGroup("Components")]
         [Export] private AudioStreamPlayer2D _shotSound;
 
-        // -------------------------------------- State ----------------------------------------
-
         private int _remainingShots;
         private float _cooldown;
 
-        // ---------------------------------- Godot overrides ----------------------------------
+        // Godot overrides ------------------------------------------------------------------------------------
 
         public override void _Ready()
         {
@@ -40,9 +36,9 @@ namespace TouhouFuujinroku.Entities.Enemies.GenericEnemies.Weapons
             if (_cooldown > 0f) _cooldown -= (float)delta;
         }
 
-        // --------------------------------------- Public API ----------------------------------
+        // Public API -----------------------------------------------------------------------------------------
 
-        // Attempts to fire a salvo; silently no-ops while on cooldown or quota is exhausted.
+        // Attempts to fire a shot; silently no-ops while on cooldown or quota is exhausted.
         // Call every frame from the owning enemy's _Process().
         public void TryFire()
         {
@@ -51,10 +47,10 @@ namespace TouhouFuujinroku.Entities.Enemies.GenericEnemies.Weapons
             _cooldown = _fireRate;
             _remainingShots--;
             Fire(_bulletPrefab);
-            _shotSound?.Play();
+            _shotSound.Play();
         }
 
-        // Fires a salvo using the stored prefab — implementation defined by each weapon type.
+        // Fires a shot using the stored prefab — implementation defined by each weapon type.
         protected abstract void Fire(PackedScene prefab);
     }
 }

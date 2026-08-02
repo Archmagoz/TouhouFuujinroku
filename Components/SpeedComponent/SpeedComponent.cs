@@ -19,7 +19,7 @@ namespace TouhouFuujinroku.Components
 		public float CurrentSpeed => _currentSpeed;
 		public float MaxSpeed => _maxSpeed;
 
-		// ------------------------------------- Godot overrides ------------------------------------
+		// Godot overrides --------------------------------------------------------------------------------------
 
 		public override void _Ready()
 		{
@@ -27,7 +27,7 @@ namespace TouhouFuujinroku.Components
 			_defaultSpeed = _currentSpeed;
 		}
 
-		// ---------------------------------------- Public API --------------------------------------
+		// Public API -------------------------------------------------------------------------------------------
 
 		public void Reset()
 		{
@@ -53,7 +53,7 @@ namespace TouhouFuujinroku.Components
 			UpdateSpeed(_currentSpeed - amount);
 		}
 
-		// ----------------------------------------- Helpers ----------------------------------------
+		// Helpers ----------------------------------------------------------------------------------------------
 
 		private void UpdateSpeed(float value)
 		{
