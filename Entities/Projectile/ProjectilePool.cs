@@ -2,23 +2,26 @@ using Godot;
 
 using System.Collections.Generic;
 
-using TouhouFuujinroku.Entities;
-
-namespace TouhouFuujinroku.Global.Controllers
+namespace TouhouFuujinroku.Entities.Projectile
 {
 	// Lifecycle-aware object pool for all projectiles in the game.
-	// Lives as an Autoload — always present, but only active inside a level.
+	// Instanced as a child node inside each level's scene — not an Autoload.
 	// Call Initialize() on level _Ready() and Clear() on level _ExitTree().
 	//
 	// All projectile nodes remain permanent children of this pool at all times,
 	// including while inactive — prevents Godot from reporting orphan nodes
 	// when scenes transition and instantiated nodes lose their parent.
+	[GlobalClass]
 	public partial class ProjectilePool : Node
 	{
 		public static ProjectilePool Instance { get; private set; }
 
 		// One queue per prefab — each projectile type maintains its own recycling bin.
 		private readonly Dictionary<PackedScene, Queue<Projectile>> _pools = [];
+
+		// Tracks every projectile currently rented out — guards Return() against
+		// being called more than once for the same instance (double-return).
+		private readonly HashSet<Projectile> _rented = [];
 
 		// Guards Rent() against being called outside a level context.
 		private bool _initialized;
@@ -35,6 +38,14 @@ namespace TouhouFuujinroku.Global.Controllers
 			}
 
 			Instance = this;
+		}
+
+		// Clears the static reference when the level unloads — without this, Instance
+		// would keep pointing at a freed node after the level (and this pool) is gone.
+		public override void _ExitTree()
+		{
+			if (Instance == this)
+				Instance = null;
 		}
 
 		// Public API -------------------------------------------------------------------------------------------
@@ -62,6 +73,7 @@ namespace TouhouFuujinroku.Global.Controllers
 				child.QueueFree();
 
 			_pools.Clear();
+			_rented.Clear();
 			_initialized = false;
 		}
 
@@ -78,6 +90,8 @@ namespace TouhouFuujinroku.Global.Controllers
 			var projectile = GetOrCreate(prefab);
 			if (projectile == null) return null;
 
+			_rented.Add(projectile);
+
 			SetProjectileActive(projectile, true);
 			projectile.Initialize(position, angle);
 			return projectile;
@@ -91,6 +105,14 @@ namespace TouhouFuujinroku.Global.Controllers
 			{
 				GD.PushError("ProjectilePool.Return: projectile has no Prefab reference — " +
 							 "was it created outside the pool?");
+				return;
+			}
+
+			// Reject double-returns — without this guard the same instance could end up
+			// enqueued twice, letting a single Rent() call hand it out to two owners at once.
+			if (!_rented.Remove(projectile))
+			{
+				GD.PushWarning("ProjectilePool.Return: projectile was already returned — ignoring duplicate call.");
 				return;
 			}
 

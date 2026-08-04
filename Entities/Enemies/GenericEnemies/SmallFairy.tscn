@@ -115,6 +115,7 @@ animations = [{
 radius = 9.0
 
 [node name="SmallFairy" type="Area2D" unique_id=1964223042 node_paths=PackedStringArray("_weapon", "_sprite", "_health", "_speed") groups=["enemies"]]
+z_index = 1
 collision_layer = 16
 collision_mask = 5
 script = ExtResource("1_rxwda")
@@ -128,17 +129,17 @@ _speed = NodePath("SpeedComponent")
 sprite_frames = SubResource("SpriteFrames_wno3y")
 autoplay = "default"
 
-[node name="CollisionShape" type="CollisionShape2D" parent="." unique_id=208143053]
+[node name="Hitbox" type="CollisionShape2D" parent="." unique_id=208143053]
 shape = SubResource("CircleShape2D_p7e3w")
+
+[node name="Shotgun" parent="." unique_id=2111850642 instance=ExtResource("5_tx7gd")]
+_bulletPrefab = ExtResource("2_ohic1")
+_shotCount = 3
 
 [node name="SpeedComponent" parent="." unique_id=1899239882 instance=ExtResource("6_ft0qj")]
 _currentSpeed = 100.0
 
 [node name="HealthComponent" parent="." unique_id=1821635083 instance=ExtResource("7_gveti")]
 _maxHealth = 20
-
-[node name="Shotgun" parent="." unique_id=2111850642 instance=ExtResource("5_tx7gd")]
-_bulletPrefab = ExtResource("2_ohic1")
-_shotCount = 3
 
 [connection signal="Death" from="HealthComponent" to="." method="OnDeath"]

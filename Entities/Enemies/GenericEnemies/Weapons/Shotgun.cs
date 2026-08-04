@@ -1,6 +1,8 @@
 using Godot;
+
 using System.Collections.Generic;
-using TouhouFuujinroku.Global.Controllers;
+
+using TouhouFuujinroku.Entities.Projectile;
 
 namespace TouhouFuujinroku.Entities.Enemies.GenericEnemies.Weapons
 {

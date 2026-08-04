@@ -1,11 +1,12 @@
 using Godot;
+
 using SystemDict = System.Collections.Generic.Dictionary<Godot.PackedScene, int>;
 
-using TouhouFuujinroku.Global.Controllers;
+using TouhouFuujinroku.Entities.Projectile;
 
-namespace TouhouFuujinroku.Levels.Debug
+namespace TouhouFuujinroku.Levels.DebugLevel
 {
-	public partial class Debug : Node2D
+	public partial class DebugLevel : Node2D
 	{
 		[ExportGroup("Components")]
 		[Export] private RichTextLabel _label;
@@ -22,13 +23,8 @@ namespace TouhouFuujinroku.Levels.Debug
 			// unlike _ExitTree() which may not trigger during deferred scene transitions.
 			TreeExiting += () => ProjectilePool.Instance.Clear();
 
-			// Optional projectile prewarm — populates the pool with inactive instances of each prefab,
-			// preventing first-use stutter when the pool has to instantiate on demand.
-			var prewarmConfig = new SystemDict
-			{
-				{ _reimuBulletPrefab, 64 },    // player fires fast
-				{ _greenDotBulletPrefab, 64 }, // green dot is a common enemy projectile
-			};
+			// Optional projectile prewarm — populates the pool with inactive instances of each prefab if needed.
+			var prewarmConfig = new SystemDict { };
 
 			ProjectilePool.Instance.Initialize(prewarmConfig);
 		}

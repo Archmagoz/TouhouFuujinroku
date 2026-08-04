@@ -1,0 +1,6 @@
+[gd_scene format=3 uid="uid://66mmcvf5xih1"]
+
+[ext_resource type="Script" uid="uid://bsn3k13ecfpjb" path="res://Entities/Projectile/ProjectilePool.cs" id="1_uc1uc"]
+
+[node name="ProjectilePool" type="Node" unique_id=93427511]
+script = ExtResource("1_uc1uc")

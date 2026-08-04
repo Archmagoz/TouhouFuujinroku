@@ -15,6 +15,7 @@ atlas = ExtResource("1_vrqqt")
 region = Rect2(307.2715, 54.913372, 125.45465, 122.7274)
 
 [node name="DebugBackground" type="Node2D" unique_id=1237811369]
+z_index = 1
 
 [node name="ParallaxLayer01" type="Parallax2D" parent="." unique_id=586420831]
 repeat_size = Vector2(0, 480)

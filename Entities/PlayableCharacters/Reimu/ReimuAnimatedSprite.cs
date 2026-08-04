@@ -42,6 +42,7 @@ namespace TouhouFuujinroku.Entities.PlayableCharacters.Reimu
 			Play(RightAnimation);
 		}
 
+		// Connection made in the editor to the AnimatedSprite2D's "animation_finished" signal.
 		private void OnAnimationFinished()
 		{
 			// Transition from the intro clip to its corresponding loop.

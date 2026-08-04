@@ -27,7 +27,7 @@ offset_right = 648.64874
 offset_bottom = 486.48654
 texture = SubResource("AtlasTexture_2y1lw")
 
-[node name="Quit" type="TextureButton" parent="." unique_id=1217271505]
+[node name="BtnQuit" type="TextureButton" parent="." unique_id=1217271505]
 layout_mode = 0
 offset_left = 223.0
 offset_top = 344.0
@@ -39,4 +39,4 @@ texture_hover = SubResource("AtlasTexture_b57bx")
 texture_disabled = SubResource("AtlasTexture_0qgxi")
 texture_focused = SubResource("AtlasTexture_b57bx")
 
-[connection signal="pressed" from="Quit" to="." method="OnQuitPressed"]
+[connection signal="pressed" from="BtnQuit" to="." method="OnQuitPressed"]

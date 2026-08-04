@@ -29,7 +29,7 @@ namespace TouhouFuujinroku.Global.Controllers
 
 		private readonly Dictionary<Scene, string> _lazyPaths = new()
 		{
-			{ Scene.DebugLevel, "res://Levels/Debug/Debug.tscn" },
+			{ Scene.DebugLevel, "res://Levels/DebugLevel/DebugLevel.tscn" },
 		};
 
 		// Godot overrides --------------------------------------------------------------------------------------

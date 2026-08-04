@@ -10,8 +10,8 @@ region = Rect2(67.87124, 176.94495, 56.172707, 6.1097565)
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_70rho"]
 size = Vector2(29, 6)
 
-[node name="ReimuBullet" type="Area2D" unique_id=1837741841]
-z_index = 1
+[node name="ReimuProjectile" type="Area2D" unique_id=1837741841]
+z_index = 2
 rotation = -1.5707964
 collision_layer = 4
 collision_mask = 16
@@ -22,7 +22,7 @@ metadata/_custom_type_script = "uid://c5fkupb13gquw"
 [node name="Sprite" type="Sprite2D" parent="." unique_id=1961293480]
 texture = SubResource("AtlasTexture_r1q6k")
 
-[node name="CollisionShape" type="CollisionShape2D" parent="." unique_id=943714919]
+[node name="Hitbox" type="CollisionShape2D" parent="." unique_id=943714919]
 position = Vector2(12.5, 0)
 shape = SubResource("RectangleShape2D_70rho")
 

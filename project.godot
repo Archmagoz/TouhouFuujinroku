@@ -24,7 +24,6 @@ buses/default_bus_layout=""
 [autoload]
 
 Fullscreen="*uid://c5qwaxiekp4ye"
-ProjectilePool="*uid://bsn3k13ecfpjb"
 SceneController="*uid://gmfyv628gegv"
 
 [display]

@@ -3,7 +3,7 @@ using Godot.Collections;
 
 using System.Collections.Generic;
 
-using TouhouFuujinroku.Global.Controllers;
+using TouhouFuujinroku.Entities.Projectile;
 
 namespace TouhouFuujinroku.Entities.PlayableCharacters.Reimu
 {

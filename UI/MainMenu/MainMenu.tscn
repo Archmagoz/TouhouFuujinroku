@@ -56,7 +56,7 @@ offset_bottom = 314.99997
 scale = Vector2(0.70156556, 0.7015655)
 texture = SubResource("AtlasTexture_8fkdr")
 
-[node name="GameStart" type="TextureButton" parent="." unique_id=2135349243]
+[node name="BtnGameStart" type="TextureButton" parent="." unique_id=2135349243]
 layout_mode = 0
 offset_left = 414.0
 offset_top = 156.0
@@ -68,7 +68,7 @@ texture_hover = SubResource("AtlasTexture_nahvw")
 texture_disabled = SubResource("AtlasTexture_8x0bb")
 texture_focused = SubResource("AtlasTexture_nahvw")
 
-[node name="Opition" type="TextureButton" parent="." unique_id=2135972990]
+[node name="BtnOpition" type="TextureButton" parent="." unique_id=2135972990]
 layout_mode = 0
 offset_left = 469.0
 offset_top = 344.0
@@ -80,7 +80,7 @@ texture_hover = SubResource("AtlasTexture_a712v")
 texture_disabled = SubResource("AtlasTexture_1dhmk")
 texture_focused = SubResource("AtlasTexture_a712v")
 
-[node name="Quit" type="TextureButton" parent="." unique_id=1000945232]
+[node name="BtnQuit" type="TextureButton" parent="." unique_id=1000945232]
 layout_mode = 0
 offset_left = 479.0
 offset_top = 381.0
@@ -92,6 +92,6 @@ texture_hover = SubResource("AtlasTexture_ri767")
 texture_disabled = SubResource("AtlasTexture_4elqj")
 texture_focused = SubResource("AtlasTexture_ri767")
 
-[connection signal="pressed" from="GameStart" to="." method="OnGameStartPressed"]
-[connection signal="pressed" from="Opition" to="." method="OnOptionsPressed"]
-[connection signal="pressed" from="Quit" to="." method="OnQuitPressed"]
+[connection signal="pressed" from="BtnGameStart" to="." method="OnGameStartPressed"]
+[connection signal="pressed" from="BtnOpition" to="." method="OnOptionsPressed"]
+[connection signal="pressed" from="BtnQuit" to="." method="OnQuitPressed"]

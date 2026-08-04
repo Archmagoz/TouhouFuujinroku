@@ -21,6 +21,7 @@ atlas = ExtResource("1_pa3cw")
 region = Rect2(298.00137, 72.6156, 56.77426, 38.838554)
 
 [node name="Hud" type="Control" unique_id=1689239087 node_paths=PackedStringArray("_score")]
+z_index = 3
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0

@@ -1,0 +1,136 @@
+[gd_scene format=3 uid="uid://dlmfa3n5gmsjs"]
+
+[ext_resource type="Script" uid="uid://di8lk710vvgtk" path="res://Levels/DebugLevel/DebugLevel.cs" id="1_r64kg"]
+[ext_resource type="PackedScene" uid="uid://b6la2jobdl0tv" path="res://Entities/PlayableCharacters/Reimu/ReimuProjectile.tscn" id="2_amjf5"]
+[ext_resource type="PackedScene" uid="uid://bltjhi4vk5tf3" path="res://Entities/Enemies/GenericEnemies/Projectile/GreenDot.tscn" id="3_axnee"]
+[ext_resource type="PackedScene" uid="uid://b5rqan2nxnd3j" path="res://Levels/DebugLevel/Background.tscn" id="4_1ro0i"]
+[ext_resource type="PackedScene" uid="uid://ldiv54j5b0m3" path="res://Entities/PlayableCharacters/Reimu/Reimu.tscn" id="5_n0rhh"]
+[ext_resource type="AudioStream" uid="uid://r55uke54y2vk" path="res://Levels/DebugLevel/Assets/DebugLevelSoundtrack.ogg" id="6_4i2cl"]
+[ext_resource type="PackedScene" uid="uid://cljfb1nrmidxw" path="res://UI/Hud/Hud.tscn" id="7_ljaqd"]
+[ext_resource type="PackedScene" uid="uid://kccjmttaqp2q" path="res://Entities/Enemies/Spawning/FairySpawner.tscn" id="8_osfr4"]
+[ext_resource type="PackedScene" uid="uid://dr1xqi874edgh" path="res://Entities/Enemies/GenericEnemies/SmallFairy.tscn" id="9_kpwub"]
+[ext_resource type="PackedScene" uid="uid://66mmcvf5xih1" path="res://Entities/Projectile/ProjectilePool.tscn" id="10_amjf5"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_3beo8"]
+size = Vector2(26, 422)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_8yi1q"]
+size = Vector2(20, 422)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_4tne8"]
+size = Vector2(314, 20)
+
+[sub_resource type="Curve2D" id="Curve2D_x6ejw"]
+_data = {
+"points": PackedVector2Array(0, 0, 0, 0, -275, -36, 0, 0, 0, 0, -84.9099, -163.07085, 0, 0, 0, 0, 118.48648, -28.425184)
+}
+point_count = 3
+
+[sub_resource type="Curve2D" id="Curve2D_kvle7"]
+_data = {
+"points": PackedVector2Array(0, 0, 0, 0, 150, -198, 0, 0, 0, 0, -108, -143, 0, 0, 0, 0, -195, -75, 0, 0, 0, 0, -108, -30, 0, 0, 0, 0, 8, 5, 0, 0, 0, 0, -173, 54, 0, 0, 0, 0, -331, 111)
+}
+point_count = 7
+
+[sub_resource type="Curve2D" id="Curve2D_x447m"]
+_data = {
+"points": PackedVector2Array(0, 0, 0, 0, -101, -265, 0, 0, 0, 0, -120, -66, 0, 0, 0, 0, -175, 9, 0, 0, 0, 0, -222, -75, 0, 0, 0, 0, -107, -155, 0, 0, 0, 0, -6, -84, 0, 0, 0, 0, -56, 7, 0, 0, 0, 0, -100, -65, 0, 0, 0, 0, -105, -298)
+}
+point_count = 9
+
+[node name="DebugLevel" type="Node2D" unique_id=641409104 node_paths=PackedStringArray("_label")]
+script = ExtResource("1_r64kg")
+_label = NodePath("DebugFPS")
+_reimuBulletPrefab = ExtResource("2_amjf5")
+_greenDotBulletPrefab = ExtResource("3_axnee")
+
+[node name="Soundtrack" type="AudioStreamPlayer2D" parent="." unique_id=1250787388]
+stream = ExtResource("6_4i2cl")
+volume_db = -5.0
+autoplay = true
+
+[node name="ProjectilePool" parent="." unique_id=93427511 instance=ExtResource("10_amjf5")]
+
+[node name="FairySpawner" parent="." unique_id=836321031 node_paths=PackedStringArray("_hud", "_spawnPaths") instance=ExtResource("8_osfr4")]
+_hud = NodePath("../Hud")
+_fairyPrefab = ExtResource("9_kpwub")
+_spawnPaths = [NodePath("../PathA/PathFollowA"), NodePath("../PathB/PathFollowB"), NodePath("../PathC/PathFollowC"), NodePath("../PathD/PathFollowD")]
+
+[node name="Background" parent="." unique_id=1237811369 instance=ExtResource("4_1ro0i")]
+position = Vector2(-81, 0)
+
+[node name="CornersHitbox" type="StaticBody2D" parent="." unique_id=1958889644]
+collision_layer = 2
+
+[node name="Left" type="CollisionShape2D" parent="CornersHitbox" unique_id=787142925]
+position = Vector2(-267, 0)
+shape = SubResource("RectangleShape2D_3beo8")
+
+[node name="Right" type="CollisionShape2D" parent="CornersHitbox" unique_id=880642155]
+position = Vector2(71, 0)
+shape = SubResource("RectangleShape2D_8yi1q")
+
+[node name="Down" type="CollisionShape2D" parent="CornersHitbox" unique_id=311504753]
+position = Vector2(-97, 222)
+shape = SubResource("RectangleShape2D_4tne8")
+
+[node name="Up" type="CollisionShape2D" parent="CornersHitbox" unique_id=428785116]
+position = Vector2(-97, -222)
+shape = SubResource("RectangleShape2D_4tne8")
+
+[node name="Reimu" parent="." unique_id=2024202319 instance=ExtResource("5_n0rhh")]
+z_index = 1
+position = Vector2(-108, 164)
+
+[node name="DebugFPS" type="RichTextLabel" parent="." unique_id=1823657325]
+z_index = 1
+offset_left = -250.0
+offset_top = -211.0
+offset_right = -142.0
+offset_bottom = -155.0
+text = "DEBUG
+FPS: 666"
+
+[node name="Hud" parent="." unique_id=1689239087 instance=ExtResource("7_ljaqd")]
+offset_left = -293.0
+offset_top = -291.0
+offset_right = -293.0
+offset_bottom = -291.0
+
+[node name="PathA" type="Path2D" parent="." unique_id=562030898]
+position = Vector2(-7.6635103, 35.099987)
+scale = Vector2(1.0521327, 1.2700001)
+curve = SubResource("Curve2D_x6ejw")
+
+[node name="PathFollowA" type="PathFollow2D" parent="PathA" unique_id=1261931083]
+position = Vector2(-275, -36)
+rotation = -0.5892548
+loop = false
+
+[node name="PathB" type="Path2D" parent="." unique_id=987591530]
+curve = SubResource("Curve2D_kvle7")
+
+[node name="PathFollowB" type="PathFollow2D" parent="PathB" unique_id=1081413153]
+position = Vector2(150, -198)
+rotation = 2.9315584
+loop = false
+
+[node name="PathC" type="Path2D" parent="." unique_id=1273047639]
+curve = SubResource("Curve2D_kvle7")
+
+[node name="PathFollowC" type="PathFollow2D" parent="PathC" unique_id=254714936]
+position = Vector2(150, -198)
+rotation = 2.9315584
+loop = false
+
+[node name="PathD" type="Path2D" parent="." unique_id=612448145]
+curve = SubResource("Curve2D_x447m")
+
+[node name="PathFollowD" type="PathFollow2D" parent="PathD" unique_id=1129204847]
+position = Vector2(-101, -265)
+rotation = 1.6659852
+loop = false
+
+[node name="Camera" type="Camera2D" parent="." unique_id=1545325962]
+z_index = 3
+zoom = Vector2(1.7, 1.7)

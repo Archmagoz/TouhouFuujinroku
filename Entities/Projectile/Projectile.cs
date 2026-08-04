@@ -3,7 +3,7 @@ using Godot;
 using TouhouFuujinroku.Interfaces;
 using TouhouFuujinroku.Global.Controllers;
 
-namespace TouhouFuujinroku.Entities
+namespace TouhouFuujinroku.Entities.Projectile
 {
 	[GlobalClass]
 	public partial class Projectile : Area2D
