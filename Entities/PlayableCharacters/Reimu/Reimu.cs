@@ -24,7 +24,7 @@ namespace TouhouFuujinroku.Entities.PlayableCharacters.Reimu
 		// IDamageable implementation — simply forwards to the HealthComponent.
 		public void ApplyDamage(int amount) => _health.ApplyDamage(amount);
 
-		// ---------------------------------- Godot overrides -----------------------------------
+		// Godot overrides ------------------------------------------------------------------------------------
 
 		public override void _PhysicsProcess(double delta)
 		{
@@ -38,7 +38,7 @@ namespace TouhouFuujinroku.Entities.PlayableCharacters.Reimu
 			UpdateSprite();
 		}
 
-		// ---------------------------------- Private helpers -----------------------------------
+		// Private helpers ------------------------------------------------------------------------------------
 
 		private void HandleMovement()
 		{
