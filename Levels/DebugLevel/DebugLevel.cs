@@ -19,10 +19,6 @@ namespace TouhouFuujinroku.Levels.DebugLevel
 
 		public override void _Ready()
 		{
-			// TreeExiting fires reliably even when the scene is freed via QueueFree(),
-			// unlike _ExitTree() which may not trigger during deferred scene transitions.
-			TreeExiting += () => ProjectilePool.Instance.Clear();
-
 			// Optional projectile prewarm — populates the pool with inactive instances of each prefab if needed.
 			var prewarmConfig = new SystemDict { };
 
