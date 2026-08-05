@@ -156,6 +156,11 @@ namespace TouhouFuujinroku.Entities.Projectile
 
 			projectile.Prefab = prefab;
 
+			// Freshly created projectiles aren't in any queue yet — mark them as "out"
+			// so the first Return() call (prewarm or otherwise) is accepted, not flagged
+			// as a duplicate.
+			_rented.Add(projectile);
+
 			// Adopt before disabling — AddChild must run first or SetProcess calls have no effect.
 			AddChild(projectile);
 			SetProjectileActive(projectile, false);

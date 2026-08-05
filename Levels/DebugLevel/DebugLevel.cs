@@ -11,7 +11,7 @@ namespace TouhouFuujinroku.Levels.DebugLevel
 		[ExportGroup("Components")]
 		[Export] private RichTextLabel _label;
 
-		[ExportGroup("Projectile Warmup")]
+		[ExportGroup("Projectiles")]
 		[Export] private PackedScene _reimuBulletPrefab;
 		[Export] private PackedScene _greenDotBulletPrefab;
 
@@ -20,7 +20,11 @@ namespace TouhouFuujinroku.Levels.DebugLevel
 		public override void _Ready()
 		{
 			// Optional projectile prewarm — populates the pool with inactive instances of each prefab if needed.
-			var prewarmConfig = new SystemDict { };
+			var prewarmConfig = new SystemDict
+			{
+				{_reimuBulletPrefab, 128},  // Player fires fast
+				{_greenDotBulletPrefab, 64} // Common enemy projectile
+			};
 
 			ProjectilePool.Instance.Initialize(prewarmConfig);
 		}

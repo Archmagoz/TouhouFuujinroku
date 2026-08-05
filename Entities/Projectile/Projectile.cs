@@ -1,7 +1,6 @@
 using Godot;
 
 using TouhouFuujinroku.Interfaces;
-using TouhouFuujinroku.Global.Controllers;
 
 namespace TouhouFuujinroku.Entities.Projectile
 {
