@@ -4,6 +4,7 @@ namespace TouhouFuujinroku.Entities.Enemies.GenericEnemies.Weapons
 {
     // Self-contained enemy weapon — owns all combat configuration (cadence, quota, prefab, audio).
     // Composed directly into the enemy scene; no runtime instantiation needed.
+    [Icon("res://addons/at-icons/node2d/gun.svg")]
     public abstract partial class EnemyWeapon : Node2D
     {
         // Configuration --------------------------------------------------------------------------------------

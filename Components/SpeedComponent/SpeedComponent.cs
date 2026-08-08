@@ -3,7 +3,7 @@ using Godot;
 namespace TouhouFuujinroku.Components
 {
 	[GlobalClass]
-	public partial class SpeedComponent : Node
+	public partial class SpeedComponent : Component
 	{
 		// Signal Handler.
 		[Signal] public delegate void SpeedChangedEventHandler(float current, float max);

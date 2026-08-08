@@ -3,7 +3,7 @@ using Godot;
 namespace TouhouFuujinroku.Components
 {
 	[GlobalClass]
-	public partial class HealthComponent : Node
+	public partial class HealthComponent : Component
 	{
 		// Signal Handlers.
 		[Signal] public delegate void HealthChangedEventHandler(int current, int max);

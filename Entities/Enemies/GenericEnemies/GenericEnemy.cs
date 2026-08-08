@@ -8,9 +8,10 @@ using TouhouFuujinroku.Interfaces;
 
 namespace TouhouFuujinroku.Entities.Enemies.GenericEnemies
 {
-	public partial class SmallFairy : Area2D, IDamageable, IScoreable
+	[GlobalClass, Icon("res://addons/at-icons/node2d/skull.svg")]
+	public partial class GenericEnemy : Area2D, IDamageable, IScoreable
 	{
-		// Each SmallFairy variant declares its own point value directly in the scene via export.
+		// Each GenericEnemy variant declares its own point value directly in the scene via export.
 		[Export] private long _pointValue;
 		public long PointValue => _pointValue;
 
@@ -27,7 +28,7 @@ namespace TouhouFuujinroku.Entities.Enemies.GenericEnemies
 		[Export] private SpeedComponent _speed;
 
 		// Exclusive PathFollow2D instance — duplicated from the source path by the spawner.
-		// Owned by this fairy; freed alongside it when despawning.
+		// Owned by this enemy; freed alongside it when despawning.
 		private PathFollow2D _pathFollow;
 
 		// Locks movement and firing during the death animation — set on Death signal.
@@ -48,7 +49,7 @@ namespace TouhouFuujinroku.Entities.Enemies.GenericEnemies
 
 		// Public API -------------------------------------------------------------------------------------------
 
-		// Receives an already-duplicated PathFollow2D owned exclusively by this fairy.
+		// Receives an already-duplicated PathFollow2D owned exclusively by this enemy.
 		// Called by the spawner immediately after instantiation.
 		public void SetPath(PathFollow2D pathFollow)
 		{

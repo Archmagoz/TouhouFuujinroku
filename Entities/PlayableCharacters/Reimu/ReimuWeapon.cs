@@ -7,7 +7,7 @@ using TouhouFuujinroku.Entities.Projectile;
 
 namespace TouhouFuujinroku.Entities.PlayableCharacters.Reimu
 {
-	[GlobalClass]
+	[GlobalClass, Icon("res://addons/at-icons/node2d/gun.svg")]
 	public partial class ReimuWeapon : Node2D
 	{
 		// Configuration ---------------------------------------------------------------------------------------

@@ -1,7 +1,7 @@
 [gd_scene format=3 uid="uid://dr1xqi874edgh"]
 
 [ext_resource type="Texture2D" uid="uid://td8dhft4ai7c" path="res://Entities/Enemies/Assets/Spritesheet.png" id="1_p7e3w"]
-[ext_resource type="Script" uid="uid://cayeg228t3472" path="res://Entities/Enemies/GenericEnemies/SmallFairy.cs" id="1_rxwda"]
+[ext_resource type="Script" uid="uid://cayeg228t3472" path="res://Entities/Enemies/GenericEnemies/GenericEnemy.cs" id="1_rxwda"]
 [ext_resource type="PackedScene" uid="uid://bltjhi4vk5tf3" path="res://Entities/Enemies/GenericEnemies/Projectile/GreenDot.tscn" id="2_ohic1"]
 [ext_resource type="PackedScene" uid="uid://bbfcxlk0s2cpm" path="res://Entities/Enemies/GenericEnemies/Weapons/Shotgun.tscn" id="5_tx7gd"]
 [ext_resource type="PackedScene" uid="uid://dxj0lkshro5gy" path="res://Components/SpeedComponent/SpeedComponent.tscn" id="6_ft0qj"]
@@ -114,16 +114,17 @@ animations = [{
 [sub_resource type="CircleShape2D" id="CircleShape2D_p7e3w"]
 radius = 9.0
 
-[node name="SmallFairy" type="Area2D" unique_id=1964223042 node_paths=PackedStringArray("_weapon", "_sprite", "_health", "_speed") groups=["enemies"]]
+[node name="SmallFairy" type="Area2D" unique_id=111588079 node_paths=PackedStringArray("_weapon", "_sprite", "_health", "_speed") groups=["enemies"]]
 z_index = 1
 collision_layer = 16
 collision_mask = 5
 script = ExtResource("1_rxwda")
-_pointValue = 100
+_pointValue = 616
 _weapon = NodePath("Shotgun")
 _sprite = NodePath("AnimatedSprite")
 _health = NodePath("HealthComponent")
 _speed = NodePath("SpeedComponent")
+metadata/_custom_type_script = "uid://cayeg228t3472"
 
 [node name="AnimatedSprite" type="AnimatedSprite2D" parent="." unique_id=1203939961]
 sprite_frames = SubResource("SpriteFrames_wno3y")

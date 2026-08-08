@@ -7,8 +7,8 @@
 [ext_resource type="PackedScene" uid="uid://ldiv54j5b0m3" path="res://Entities/PlayableCharacters/Reimu/Reimu.tscn" id="5_n0rhh"]
 [ext_resource type="AudioStream" uid="uid://r55uke54y2vk" path="res://Levels/DebugLevel/Assets/DebugLevelSoundtrack.ogg" id="6_4i2cl"]
 [ext_resource type="PackedScene" uid="uid://cljfb1nrmidxw" path="res://UI/Hud/Hud.tscn" id="7_ljaqd"]
-[ext_resource type="PackedScene" uid="uid://kccjmttaqp2q" path="res://Entities/Enemies/Spawning/FairySpawner.tscn" id="8_osfr4"]
-[ext_resource type="PackedScene" uid="uid://dr1xqi874edgh" path="res://Entities/Enemies/GenericEnemies/SmallFairy.tscn" id="9_kpwub"]
+[ext_resource type="PackedScene" uid="uid://kccjmttaqp2q" path="res://Entities/Enemies/Spawning/EnemySpawner.tscn" id="8_osfr4"]
+[ext_resource type="PackedScene" uid="uid://dr1xqi874edgh" path="res://Entities/Enemies/GenericEnemies/Fairies/SmallFairy.tscn" id="9_kpwub"]
 [ext_resource type="PackedScene" uid="uid://66mmcvf5xih1" path="res://Entities/Projectile/ProjectilePool.tscn" id="10_amjf5"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_3beo8"]
@@ -51,9 +51,9 @@ autoplay = true
 
 [node name="ProjectilePool" parent="." unique_id=93427511 instance=ExtResource("10_amjf5")]
 
-[node name="FairySpawner" parent="." unique_id=836321031 node_paths=PackedStringArray("_hud", "_spawnPaths") instance=ExtResource("8_osfr4")]
+[node name="EnemySpawner" parent="." unique_id=836321031 node_paths=PackedStringArray("_hud", "_spawnPaths") instance=ExtResource("8_osfr4")]
 _hud = NodePath("../Hud")
-_fairyPrefab = ExtResource("9_kpwub")
+_enemyPrefab = ExtResource("9_kpwub")
 _spawnPaths = [NodePath("../PathA/PathFollowA"), NodePath("../PathB/PathFollowB"), NodePath("../PathC/PathFollowC"), NodePath("../PathD/PathFollowD")]
 
 [node name="Background" parent="." unique_id=1237811369 instance=ExtResource("4_1ro0i")]
