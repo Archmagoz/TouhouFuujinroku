@@ -18,8 +18,8 @@ namespace TouhouFuujinroku.Entities.PlayableCharacters.Reimu
 
 		// Frames remaining on the shoot buffer — allows firing to register slightly after
 		// the button is released, preventing missed shots from brief input gaps.
-		private int _shootBuffer;
 		private const int ShootBufferFrames = 6; // ~0.1 s at 60 fps — tune to taste.
+		private int _shootBuffer;
 
 		// IDamageable implementation — simply forwards to the HealthComponent.
 		public void ApplyDamage(int amount) => _health.ApplyDamage(amount);
