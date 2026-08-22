@@ -10,7 +10,6 @@ namespace TouhouFuujinroku.Entities.Enemies.Spawning
     // Owns enemy spawn timing, path assignment, and score-reporting wiring.
     // Fully decoupled from the level: the level only places this node in the scene
     // and wires the exported references — it knows nothing about spawn logic.
-    [Icon("res://addons/at-icons/node2d/wrench.svg")]
     public partial class EnemySpawner : Node
     {
         [ExportGroup("Dependencies")]

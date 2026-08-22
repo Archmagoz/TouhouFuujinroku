@@ -11,7 +11,7 @@ namespace TouhouFuujinroku.Entities.Projectile
 	// All projectile nodes remain permanent children of this pool at all times,
 	// including while inactive — prevents Godot from reporting orphan nodes
 	// when scenes transition and instantiated nodes lose their parent.
-	[GlobalClass, Icon("res://addons/at-icons/node2d/wrench.svg")]
+	[GlobalClass]
 	public partial class ProjectilePool : Node
 	{
 		public static ProjectilePool Instance { get; private set; }

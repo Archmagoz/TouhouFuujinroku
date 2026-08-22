@@ -4,7 +4,7 @@ using TouhouFuujinroku.Interfaces;
 
 namespace TouhouFuujinroku.Entities.Projectile
 {
-	[GlobalClass, Icon("res://addons/at-icons/node2d/bullet.svg")]
+	[GlobalClass]
 	public partial class Projectile : Area2D
 	{
 		// Stamped by ProjectilePool.CreateProjectile() — routes Return() to the correct queue.

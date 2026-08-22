@@ -8,7 +8,7 @@ using TouhouFuujinroku.Interfaces;
 
 namespace TouhouFuujinroku.Entities.Enemies.GenericEnemies
 {
-	[GlobalClass, Icon("res://addons/at-icons/node2d/skull.svg")]
+	[GlobalClass]
 	public partial class GenericEnemy : Area2D, IDamageable, IScoreable
 	{
 		// Each GenericEnemy variant declares its own point value directly in the scene via export.
