@@ -9,7 +9,7 @@ namespace TouhouFuujinroku.Entities.PlayableCharacters.Reimu
 	{
 		[ExportGroup("Components")]
 		[Export] private ReimuAnimatedSprite _sprite;
-		[Export] private HealthComponent _health;
+		[Export] private PlayerHealthComponent _health;
 		[Export] private SpeedComponent _speed;
 		[Export] private ReimuWeapon _weapon;
 
@@ -26,14 +26,25 @@ namespace TouhouFuujinroku.Entities.PlayableCharacters.Reimu
 
 		// Godot overrides ------------------------------------------------------------------------------------
 
+		public override void _Ready()
+		{
+			_health.PlayerDied += OnPlayerDied;
+			_health.Respawned += OnRespawned;
+			_health.GameOver += OnGameOver;
+		}
+
 		public override void _PhysicsProcess(double delta)
 		{
+			if (_health.IsDead) return;
+
 			HandleMovement();
 			HandleShooting();
 		}
 
 		public override void _Process(double delta)
 		{
+			if (_health.IsDead) return;
+
 			HandleFocus(delta);
 			UpdateSprite();
 		}
@@ -77,6 +88,30 @@ namespace TouhouFuujinroku.Entities.PlayableCharacters.Reimu
 		private void UpdateSprite()
 		{
 			_sprite.UpdateSprite(_movementInput.X);
+		}
+
+		// Signal callbacks -----------------------------------------------------------------------------------
+
+		private void OnPlayerDied()
+		{
+			// Stops the body immediately and hands sprite control over to the death animation.
+			Velocity = Vector2.Zero;
+			_sprite.PlayDeath();
+		}
+
+		private void OnRespawned()
+		{
+			// _health.IsDead is already false at this point, so _PhysicsProcess/_Process
+			// resume on their own next frame — this just clears the death pose immediately
+			// instead of waiting one extra frame for input-driven UpdateSprite to override it.
+			_sprite.UpdateSprite(0f);
+		}
+
+		private void OnGameOver()
+		{
+			// Entity stays permanently in IsDead == true (no further Reset call), so
+			// movement/shooting/sprite updates remain locked automatically.
+			// Hook point for external systems (game over screen, scene transition, etc.).
 		}
 	}
 }

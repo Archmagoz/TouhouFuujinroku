@@ -44,17 +44,17 @@ _label = NodePath("DebugFPS")
 _reimuBulletPrefab = ExtResource("2_amjf5")
 _greenDotBulletPrefab = ExtResource("3_axnee")
 
-[node name="Soundtrack" type="AudioStreamPlayer2D" parent="." unique_id=1250787388]
-stream = ExtResource("6_4i2cl")
-volume_db = -5.0
-autoplay = true
-
 [node name="ProjectilePool" parent="." unique_id=93427511 instance=ExtResource("10_amjf5")]
 
 [node name="EnemySpawner" parent="." unique_id=836321031 node_paths=PackedStringArray("_hud", "_spawnPaths") instance=ExtResource("8_osfr4")]
 _hud = NodePath("../Hud")
 _enemyPrefab = ExtResource("9_kpwub")
 _spawnPaths = [NodePath("../PathA/PathFollowA"), NodePath("../PathB/PathFollowB"), NodePath("../PathC/PathFollowC"), NodePath("../PathD/PathFollowD")]
+
+[node name="Soundtrack" type="AudioStreamPlayer2D" parent="." unique_id=1250787388]
+stream = ExtResource("6_4i2cl")
+volume_db = -5.0
+autoplay = true
 
 [node name="Background" parent="." unique_id=1237811369 instance=ExtResource("4_1ro0i")]
 position = Vector2(-81, 0)

@@ -2,6 +2,7 @@
 
 [ext_resource type="Texture2D" uid="uid://dmand0bis1vhi" path="res://UI/MainMenu/Assets/MainMenuSpritesheet.png" id="1_8fkdr"]
 [ext_resource type="Script" uid="uid://yym15kl5lpkb" path="res://UI/MainMenu/MainMenu.cs" id="1_fw0vt"]
+[ext_resource type="AudioStream" uid="uid://cbnil6bckh8j3" path="res://UI/MainMenu/Assets/MainMenuSoundtrack.ogg" id="2_8x0bb"]
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_fw0vt"]
 atlas = ExtResource("1_8fkdr")
@@ -40,6 +41,12 @@ layout_mode = 3
 anchors_preset = 0
 scale = Vector2(1.4799998, 1.4799998)
 script = ExtResource("1_fw0vt")
+
+[node name="Soundtrack" type="AudioStreamPlayer2D" parent="." unique_id=920897826]
+scale = Vector2(0.99999994, 0.99999994)
+stream = ExtResource("2_8x0bb")
+volume_db = -5.0
+autoplay = true
 
 [node name="Background" type="TextureRect" parent="." unique_id=94049739]
 layout_mode = 0

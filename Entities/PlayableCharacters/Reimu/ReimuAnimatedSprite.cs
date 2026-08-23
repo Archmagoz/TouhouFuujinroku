@@ -11,6 +11,7 @@ namespace TouhouFuujinroku.Entities.PlayableCharacters.Reimu
 		private const string RightAnimation = "right";
 		private const string LeftLoopAnimation = "left_loop";
 		private const string RightLoopAnimation = "right_loop";
+		private const string DeathAnimation = "death";
 
 		// Public API -------------------------------------------------------------------------------------------
 
@@ -19,6 +20,11 @@ namespace TouhouFuujinroku.Entities.PlayableCharacters.Reimu
 			if (inputX < 0) PlayLeft();
 			else if (inputX > 0) PlayRight();
 			else PlayDefault();
+		}
+
+		public void PlayDeath()
+		{
+			Play(DeathAnimation);
 		}
 
 		// Helpers ----------------------------------------------------------------------------------------------

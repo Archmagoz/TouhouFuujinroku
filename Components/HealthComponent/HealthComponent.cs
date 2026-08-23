@@ -10,7 +10,7 @@ namespace TouhouFuujinroku.Components
 		[Signal] public delegate void DeathEventHandler();
 
 		// Base value (assigned via editor).
-		[Export] private int _maxHealth = 100;
+		[Export] protected int _maxHealth = 100;
 
 		// Runtime state — managed internally by the component.
 		private int _currentHealth;

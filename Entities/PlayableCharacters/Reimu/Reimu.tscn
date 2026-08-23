@@ -2,9 +2,9 @@
 
 [ext_resource type="Texture2D" uid="uid://jveli1y7vv" path="res://Entities/PlayableCharacters/Assets/Spritesheet.png" id="1_118g0"]
 [ext_resource type="Script" uid="uid://dirlw4yfch0mq" path="res://Entities/PlayableCharacters/Reimu/Reimu.cs" id="1_v87c3"]
+[ext_resource type="PackedScene" uid="uid://csx4k1ewihkwm" path="res://Components/PlayerHealthComponent/PlayerHealthComponent.tscn" id="2_6xvey"]
 [ext_resource type="Script" uid="uid://c47fphfrle78r" path="res://Entities/PlayableCharacters/Reimu/ReimuAnimatedSprite.cs" id="3_6xvey"]
 [ext_resource type="PackedScene" uid="uid://dxj0lkshro5gy" path="res://Components/SpeedComponent/SpeedComponent.tscn" id="3_buwra"]
-[ext_resource type="PackedScene" uid="uid://qnkfyeixmb6m" path="res://Components/HealthComponent/HealthComponent.tscn" id="4_dhsxb"]
 [ext_resource type="PackedScene" uid="uid://bd843vt4pvk5p" path="res://Entities/PlayableCharacters/Reimu/ReimuWeapon.tscn" id="6_e10mn"]
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_v87c3"]
@@ -105,6 +105,11 @@ region = Rect2(224, 96, 32, 48)
 
 [sub_resource type="SpriteFrames" id="SpriteFrames_yem7q"]
 animations = [{
+"frames": [],
+"loop": 1,
+"name": &"death",
+"speed": 5.0
+}, {
 "frames": [{
 "duration": 1.0,
 "texture": SubResource("AtlasTexture_v87c3")
@@ -234,13 +239,20 @@ radius = 7.0
 collision_mask = 26
 script = ExtResource("1_v87c3")
 _sprite = NodePath("ReimuAnimatedSprite")
-_health = NodePath("HealthComponent")
+_health = NodePath("PlayerHealthComponent")
 _speed = NodePath("SpeedComponent")
 _weapon = NodePath("ReimuWeapon")
+
+[node name="PlayerHealthComponent" parent="." unique_id=1355624808 instance=ExtResource("2_6xvey")]
+
+[node name="SpeedComponent" parent="." unique_id=1899239882 instance=ExtResource("3_buwra")]
+_currentSpeed = 300.0
+_maxSpeed = 300.0
 
 [node name="ReimuAnimatedSprite" type="AnimatedSprite2D" parent="." unique_id=1329335674]
 position = Vector2(1, 0)
 sprite_frames = SubResource("SpriteFrames_yem7q")
+animation = &"death"
 autoplay = "default"
 script = ExtResource("3_6xvey")
 
@@ -248,12 +260,5 @@ script = ExtResource("3_6xvey")
 shape = SubResource("CircleShape2D_118g0")
 
 [node name="ReimuWeapon" parent="." unique_id=150880922 instance=ExtResource("6_e10mn")]
-
-[node name="HealthComponent" parent="." unique_id=1821635083 instance=ExtResource("4_dhsxb")]
-_maxHealth = 5
-
-[node name="SpeedComponent" parent="." unique_id=1899239882 instance=ExtResource("3_buwra")]
-_currentSpeed = 300.0
-_maxSpeed = 300.0
 
 [connection signal="animation_finished" from="ReimuAnimatedSprite" to="ReimuAnimatedSprite" method="OnAnimationFinished"]
