@@ -235,12 +235,12 @@ animations = [{
 [sub_resource type="CircleShape2D" id="CircleShape2D_118g0"]
 radius = 7.0
 
-[node name="Reimu" type="CharacterBody2D" unique_id=2024202319 node_paths=PackedStringArray("_sprite", "_health", "_speed", "_weapon")]
+[node name="Reimu" type="CharacterBody2D" unique_id=2024202319 node_paths=PackedStringArray("_health", "_speed", "_sprite", "_weapon")]
 collision_mask = 26
 script = ExtResource("1_v87c3")
-_sprite = NodePath("ReimuAnimatedSprite")
 _health = NodePath("PlayerHealthComponent")
 _speed = NodePath("SpeedComponent")
+_sprite = NodePath("ReimuAnimatedSprite")
 _weapon = NodePath("ReimuWeapon")
 
 [node name="PlayerHealthComponent" parent="." unique_id=1355624808 instance=ExtResource("2_6xvey")]
@@ -252,13 +252,12 @@ _maxSpeed = 300.0
 [node name="ReimuAnimatedSprite" type="AnimatedSprite2D" parent="." unique_id=1329335674]
 position = Vector2(1, 0)
 sprite_frames = SubResource("SpriteFrames_yem7q")
-animation = &"death"
 autoplay = "default"
 script = ExtResource("3_6xvey")
 
+[node name="ReimuWeapon" parent="." unique_id=150880922 instance=ExtResource("6_e10mn")]
+
 [node name="ReimuHitbox" type="CollisionShape2D" parent="." unique_id=227582417]
 shape = SubResource("CircleShape2D_118g0")
-
-[node name="ReimuWeapon" parent="." unique_id=150880922 instance=ExtResource("6_e10mn")]
 
 [connection signal="animation_finished" from="ReimuAnimatedSprite" to="ReimuAnimatedSprite" method="OnAnimationFinished"]

@@ -8,9 +8,9 @@ namespace TouhouFuujinroku.Entities.PlayableCharacters.Reimu
 	public partial class Reimu : CharacterBody2D, IDamageable
 	{
 		[ExportGroup("Components")]
-		[Export] private ReimuAnimatedSprite _sprite;
 		[Export] private PlayerHealthComponent _health;
 		[Export] private SpeedComponent _speed;
+		[Export] private ReimuAnimatedSprite _sprite;
 		[Export] private ReimuWeapon _weapon;
 
 		// Raw directional input built each physics frame.
