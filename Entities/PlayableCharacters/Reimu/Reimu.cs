@@ -21,6 +21,9 @@ namespace TouhouFuujinroku.Entities.PlayableCharacters.Reimu
 		private const int ShootBufferFrames = 6; // ~0.1 s at 60 fps — tune to taste.
 		private int _shootBuffer;
 
+		// Reimu should be the only acess point for its properties, so we can expose them here.
+		public bool IsDead => _health.IsDead;
+
 		// IDamageable implementation — simply forwards to the HealthComponent.
 		public void ApplyDamage(int amount) => _health.ApplyDamage(amount);
 
@@ -35,7 +38,7 @@ namespace TouhouFuujinroku.Entities.PlayableCharacters.Reimu
 
 		public override void _PhysicsProcess(double delta)
 		{
-			if (_health.IsDead) return;
+			if (IsDead) return;
 
 			HandleMovement();
 			HandleShooting();
@@ -43,7 +46,7 @@ namespace TouhouFuujinroku.Entities.PlayableCharacters.Reimu
 
 		public override void _Process(double delta)
 		{
-			if (_health.IsDead) return;
+			if (IsDead) return;
 
 			HandleFocus(delta);
 			UpdateSprite();
@@ -101,7 +104,7 @@ namespace TouhouFuujinroku.Entities.PlayableCharacters.Reimu
 
 		private void OnRespawned()
 		{
-			// _health.IsDead is already false at this point, so _PhysicsProcess/_Process
+			// IsDead is already false at this point, so _PhysicsProcess/_Process
 			// resume on their own next frame — this just clears the death pose immediately
 			// instead of waiting one extra frame for input-driven UpdateSprite to override it.
 			_sprite.UpdateSprite(0f);
