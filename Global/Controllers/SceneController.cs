@@ -17,13 +17,15 @@ namespace TouhouFuujinroku.Global.Controllers
 	{
 		public static SceneController Instance { get; private set; }
 
-		// Preloaded scenes -------------------------------------------------------------------------------------
+		#region Fields
+
+		// Preloaded scenes
 		// Eagerly loaded in _Ready so GD.Load runs after the engine is fully initialised;
 		// avoids hitting the ResourceLoader before the scene tree is ready.
 
 		private readonly Dictionary<Scene, PackedScene> _preloadedScenes = new();
 
-		// Lazy scenes ------------------------------------------------------------------------------------------
+		// Lazy scenes
 		// Resolved from disk on first request, then promoted to _preloadedScenes so
 		// subsequent transitions skip the disk entirely.
 
@@ -32,7 +34,9 @@ namespace TouhouFuujinroku.Global.Controllers
 			{ Scene.DebugLevel, "res://Levels/DebugLevel/DebugLevel.tscn" },
 		};
 
-		// Godot overrides --------------------------------------------------------------------------------------
+		#endregion // Fields
+
+		#region Godot overrides
 
 		public override void _Ready()
 		{
@@ -51,7 +55,9 @@ namespace TouhouFuujinroku.Global.Controllers
 			_preloadedScenes[Scene.OptionsMenu] = GD.Load<PackedScene>("res://UI/OptionsMenu/OptionsMenu.tscn");
 		}
 
-		// Public API -------------------------------------------------------------------------------------------
+		#endregion // Godot overrides
+
+		#region Public API
 
 		// Frees the current scene before adding the incoming one to guarantee
 		// only one scene is alive at a time, even within a single frame.
@@ -78,7 +84,9 @@ namespace TouhouFuujinroku.Global.Controllers
 			Instance.GetTree().Quit();
 		}
 
-		// Helpers -----------------------------------------------------------------------------------------------
+		#endregion // Public API
+
+		#region Helpers
 
 		// Checks _preloadedScenes first; on a miss, loads from _lazyPaths and promotes
 		// the result into _preloadedScenes so the disk is only read once per lazy scene.
@@ -105,5 +113,7 @@ namespace TouhouFuujinroku.Global.Controllers
 			packed = null;
 			return false;
 		}
+
+		#endregion // Helpers
 	}
 }

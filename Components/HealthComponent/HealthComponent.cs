@@ -5,9 +5,14 @@ namespace TouhouFuujinroku.Components
 	[GlobalClass]
 	public partial class HealthComponent : Component
 	{
-		// Signal Handlers.
+		#region Signals
+
 		[Signal] public delegate void HealthChangedEventHandler(int current, int max);
 		[Signal] public delegate void DeathEventHandler();
+
+		#endregion // Signals
+
+		#region Fields
 
 		// Base value (assigned via editor).
 		[Export] protected int _maxHealth = 100;
@@ -20,7 +25,9 @@ namespace TouhouFuujinroku.Components
 		public int CurrentHealth => _currentHealth;
 		public bool IsDead => _currentHealth <= 0;
 
-		// Godot overrides --------------------------------------------------------------------------------------
+		#endregion // Fields
+
+		#region Godot overrides
 
 		public override void _Ready()
 		{
@@ -28,7 +35,9 @@ namespace TouhouFuujinroku.Components
 			_currentHealth = _maxHealth;
 		}
 
-		// Public API -------------------------------------------------------------------------------------------
+		#endregion // Godot overrides
+
+		#region Public API
 
 		public void Reset()
 		{
@@ -63,7 +72,9 @@ namespace TouhouFuujinroku.Components
 			UpdateHealth(0);
 		}
 
-		// Helpers ----------------------------------------------------------------------------------------------
+		#endregion // Public API
+
+		#region Helpers
 
 		private void UpdateHealth(int value)
 		{
@@ -80,9 +91,14 @@ namespace TouhouFuujinroku.Components
 				OnDeath();
 		}
 
-		private void OnDeath()
+		// Virtual death hook — invoked exactly once on the alive-to-dead transition.
+		// Derived components must call base.OnDeath() first so Death is always emitted
+		// before any derived logic runs.
+		protected virtual void OnDeath()
 		{
 			EmitSignal(SignalName.Death);
 		}
+
+		#endregion // Helpers
 	}
 }

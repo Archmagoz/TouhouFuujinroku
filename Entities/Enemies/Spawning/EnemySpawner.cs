@@ -12,6 +12,8 @@ namespace TouhouFuujinroku.Entities.Enemies.Spawning
     // and wires the exported references — it knows nothing about spawn logic.
     public partial class EnemySpawner : Node
     {
+        #region Fields
+
         [ExportGroup("Dependencies")]
         // Reports kills through the Hud's public API — the spawner has no knowledge
         // of Score or any other internal HUD widget.
@@ -41,19 +43,23 @@ namespace TouhouFuujinroku.Entities.Enemies.Spawning
         private float _elapsed;
         private float _spawnCooldown;
 
-        // Godot overrides --------------------------------------------------------------------------------------
+        #endregion // Fields
+
+        #region Godot overrides
 
         public override void _Ready()
         {
             _spawnCooldown = _spawnIntervalStart;
         }
 
-        public override void _Process(double delta)
+        public override void _PhysicsProcess(double delta)
         {
             HandleSpawning(delta);
         }
 
-        // Helpers ----------------------------------------------------------------------------------------------
+        #endregion // Godot overrides
+
+        #region Helpers
 
         // Decrements the spawn timer and fires an enemy when it expires.
         // The interval shrinks linearly from _spawnIntervalStart to _spawnIntervalEnd
@@ -97,5 +103,7 @@ namespace TouhouFuujinroku.Entities.Enemies.Spawning
             if (_hud != null && enemy is IScoreable scoreable)
                 scoreable.Died += _hud.ReportScore;
         }
+
+        #endregion // Helpers
     }
 }

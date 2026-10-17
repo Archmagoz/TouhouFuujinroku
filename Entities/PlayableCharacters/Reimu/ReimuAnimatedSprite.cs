@@ -5,7 +5,8 @@ namespace TouhouFuujinroku.Entities.PlayableCharacters.Reimu
 	[GlobalClass]
 	public partial class ReimuAnimatedSprite : AnimatedSprite2D
 	{
-		// Animation name constants — must match the names defined in the AnimatedSprite2D resource.
+		#region Fields
+
 		private const string DefaultAnimation = "default";
 		private const string LeftAnimation = "left";
 		private const string RightAnimation = "right";
@@ -13,7 +14,9 @@ namespace TouhouFuujinroku.Entities.PlayableCharacters.Reimu
 		private const string RightLoopAnimation = "right_loop";
 		private const string DeathAnimation = "death";
 
-		// Public API -------------------------------------------------------------------------------------------
+		#endregion // Fields
+
+		#region Public API
 
 		public void UpdateSprite(float inputX)
 		{
@@ -27,7 +30,9 @@ namespace TouhouFuujinroku.Entities.PlayableCharacters.Reimu
 			Play(DeathAnimation);
 		}
 
-		// Helpers ----------------------------------------------------------------------------------------------
+		#endregion // Public API
+
+		#region Helpers
 
 		private void PlayDefault()
 		{
@@ -55,5 +60,7 @@ namespace TouhouFuujinroku.Entities.PlayableCharacters.Reimu
 			if (Animation == LeftAnimation) Play(LeftLoopAnimation);
 			else if (Animation == RightAnimation) Play(RightLoopAnimation);
 		}
+
+		#endregion // Helpers
 	}
 }

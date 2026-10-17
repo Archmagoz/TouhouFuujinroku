@@ -8,6 +8,8 @@ namespace TouhouFuujinroku.Levels.DebugLevel
 {
 	public partial class DebugLevel : Node2D
 	{
+		#region Fields
+
 		[ExportGroup("Components")]
 		[Export] private RichTextLabel _label;
 
@@ -15,7 +17,9 @@ namespace TouhouFuujinroku.Levels.DebugLevel
 		[Export] private PackedScene _reimuBulletPrefab;
 		[Export] private PackedScene _greenDotBulletPrefab;
 
-		// Godot overrides --------------------------------------------------------------------------------------
+		#endregion // Fields
+
+		#region Godot overrides
 
 		public override void _Ready()
 		{
@@ -29,9 +33,11 @@ namespace TouhouFuujinroku.Levels.DebugLevel
 			ProjectilePool.Instance.Initialize(prewarmConfig);
 		}
 
-		public override void _Process(double delta)
+		public override void _PhysicsProcess(double delta)
 		{
 			_label.Text = $"DEBUG\nFPS: {Engine.GetFramesPerSecond()}";
 		}
+
+		#endregion // Godot overrides
 	}
 }

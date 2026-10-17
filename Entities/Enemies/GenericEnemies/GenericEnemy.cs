@@ -11,15 +11,13 @@ namespace TouhouFuujinroku.Entities.Enemies.GenericEnemies
 	[GlobalClass]
 	public partial class GenericEnemy : Area2D, IDamageable, IScoreable
 	{
+		#region Fields
+
 		// Each GenericEnemy variant declares its own point value directly in the scene via export.
 		[Export] private long _pointValue;
 		public long PointValue => _pointValue;
 
-		// IScoreable implementation — raised on death with the point value.
-		public event Action<long> Died;
-
-		// Components -------------------------------------------------------------------------------------------
-
+		// Components
 		[ExportGroup("Components")]
 		// Weapon node composed directly into this scene — configured entirely on the weapon side.
 		[Export] private EnemyWeapon _weapon;
@@ -34,10 +32,9 @@ namespace TouhouFuujinroku.Entities.Enemies.GenericEnemies
 		// Locks movement and firing during the death animation — set on Death signal.
 		private bool _dying = false;
 
-		// IDamageable implementation — forwards damage to the HealthComponent.
-		public void ApplyDamage(int amount) => _health.ApplyDamage(amount);
+		#endregion // Fields
 
-		// Godot overrides --------------------------------------------------------------------------------------
+		#region Godot overrides
 
 		public override void _PhysicsProcess(double delta)
 		{
@@ -47,7 +44,15 @@ namespace TouhouFuujinroku.Entities.Enemies.GenericEnemies
 			_weapon.TryFire();
 		}
 
-		// Public API -------------------------------------------------------------------------------------------
+		#endregion // Godot overrides
+
+		#region Public API
+
+		// IScoreable implementation — raised on death with the point value.
+		public event Action<long> Died;
+
+		// IDamageable implementation — forwards damage to the HealthComponent.
+		public void ApplyDamage(int amount) => _health.ApplyDamage(amount);
 
 		// Receives an already-duplicated PathFollow2D owned exclusively by this enemy.
 		// Called by the spawner immediately after instantiation.
@@ -58,7 +63,27 @@ namespace TouhouFuujinroku.Entities.Enemies.GenericEnemies
 			GlobalPosition = _pathFollow.GlobalPosition;
 		}
 
-		// Helpers ----------------------------------------------------------------------------------------------
+		#endregion // Public API
+
+		#region Event handlers
+
+		// Triggered by HealthComponent.Death — locks movement, plays death animation,
+		// and queues the node for removal once the animation finishes.
+		private void OnDeath()
+		{
+			_dying = true;
+			_pathFollow?.QueueFree();
+
+			// Notify score listeners before the animation starts — node is still valid here.
+			Died?.Invoke(_pointValue);
+
+			_sprite.Play("death");
+			_sprite.AnimationFinished += QueueFree;
+		}
+
+		#endregion // Event handlers
+
+		#region Helpers
 
 		private void HandleMovement(double delta)
 		{
@@ -75,18 +100,6 @@ namespace TouhouFuujinroku.Entities.Enemies.GenericEnemies
 			}
 		}
 
-		// Triggered by HealthComponent.Death — locks movement, plays death animation,
-		// and queues the node for removal once the animation finishes.
-		private void OnDeath()
-		{
-			_dying = true;
-			_pathFollow.QueueFree();
-
-			// Notify score listeners before the animation starts — node is still valid here.
-			Died.Invoke(_pointValue);
-
-			_sprite.Play("death");
-			_sprite.AnimationFinished += QueueFree;
-		}
+		#endregion // Helpers
 	}
 }

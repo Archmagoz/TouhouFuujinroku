@@ -14,6 +14,8 @@ namespace TouhouFuujinroku.Entities.Projectile
 	[GlobalClass]
 	public partial class ProjectilePool : Node
 	{
+		#region Fields
+
 		public static ProjectilePool Instance { get; private set; }
 
 		// One queue per prefab — each projectile type maintains its own recycling bin.
@@ -26,7 +28,9 @@ namespace TouhouFuujinroku.Entities.Projectile
 		// Guards Rent() against being called outside a level context.
 		private bool _initialized;
 
-		// Godot overrides -------------------------------------------------------------------------------------
+		#endregion // Fields
+
+		#region Godot overrides
 
 		public override void _Ready()
 		{
@@ -48,7 +52,9 @@ namespace TouhouFuujinroku.Entities.Projectile
 				Instance = null;
 		}
 
-		// Public API -------------------------------------------------------------------------------------------
+		#endregion // Godot overrides
+
+		#region Public API
 
 		// Marks the pool as ready to serve projectiles.
 		// Calls Clear() first so re-entering a level starts from a clean state.
@@ -127,7 +133,9 @@ namespace TouhouFuujinroku.Entities.Projectile
 			queue.Enqueue(projectile);
 		}
 
-		// Helpers ---------------------------------------------------------------------------------------------
+		#endregion // Public API
+
+		#region Helpers
 
 		// Pops from the existing queue or falls through to CreateProjectile if the pool is empty.
 		private Projectile GetOrCreate(PackedScene prefab)
@@ -144,9 +152,8 @@ namespace TouhouFuujinroku.Entities.Projectile
 		private Projectile CreateProjectile(PackedScene prefab)
 		{
 			var node = prefab.Instantiate();
-			var projectile = node as Projectile;
 
-			if (projectile == null)
+			if (node is not Projectile projectile)
 			{
 				node.QueueFree();
 				GD.PushError($"ProjectilePool: prefab root is not a Projectile — got {node.GetType().Name}. " +
@@ -177,5 +184,7 @@ namespace TouhouFuujinroku.Entities.Projectile
 			projectile.Monitoring = active;
 			projectile.Monitorable = active;
 		}
+
+		#endregion // Helpers
 	}
 }

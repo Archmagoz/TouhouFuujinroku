@@ -7,6 +7,8 @@ namespace TouhouFuujinroku.Entities.PlayableCharacters.Reimu
 {
 	public partial class Reimu : CharacterBody2D, IDamageable
 	{
+		#region Fields
+
 		[ExportGroup("Components")]
 		[Export] private PlayerHealthComponent _health;
 		[Export] private SpeedComponent _speed;
@@ -24,35 +26,56 @@ namespace TouhouFuujinroku.Entities.PlayableCharacters.Reimu
 		// Reimu should be the only acess point for its properties, so we can expose them here.
 		public bool IsDead => _health.IsDead;
 
-		// IDamageable implementation — simply forwards to the HealthComponent.
-		public void ApplyDamage(int amount) => _health.ApplyDamage(amount);
+		#endregion // Fields
 
-		// Godot overrides ------------------------------------------------------------------------------------
-
-		public override void _Ready()
-		{
-			_health.PlayerDied += OnPlayerDied;
-			_health.Respawned += OnRespawned;
-			_health.GameOver += OnGameOver;
-		}
+		#region Godot overrides
 
 		public override void _PhysicsProcess(double delta)
 		{
 			if (IsDead) return;
 
+			HandleFocus(delta);
 			HandleMovement();
+			UpdateSprite();
 			HandleShooting();
 		}
 
-		public override void _Process(double delta)
-		{
-			if (IsDead) return;
+		#endregion // Godot overrides
 
-			HandleFocus(delta);
-			UpdateSprite();
+		#region Public API
+
+		// IDamageable implementation — simply forwards to the HealthComponent.
+		public void ApplyDamage(int amount) => _health.ApplyDamage(amount);
+
+		#endregion // Public API
+
+		#region Event handlers
+
+		private void OnPlayerDied()
+		{
+			// Stops the body immediately and hands sprite control over to the death animation.
+			Velocity = Vector2.Zero;
+			_sprite.PlayDeath();
 		}
 
-		// Private helpers ------------------------------------------------------------------------------------
+		private void OnRespawned()
+		{
+			// IsDead is already false at this point, so _PhysicsProcess/_Process
+			// resume on their own next frame — this just clears the death pose immediately
+			// instead of waiting one extra frame for input-driven UpdateSprite to override it.
+			_sprite.UpdateSprite(0f);
+		}
+
+		private void OnGameOver()
+		{
+			// Entity stays permanently in IsDead == true (no further Reset call), so
+			// movement/shooting/sprite updates remain locked automatically.
+			// Hook point for external systems (game over screen, scene transition, etc.).
+		}
+
+		#endregion // Event handlers
+
+		#region Helpers
 
 		private void HandleMovement()
 		{
@@ -93,28 +116,6 @@ namespace TouhouFuujinroku.Entities.PlayableCharacters.Reimu
 			_sprite.UpdateSprite(_movementInput.X);
 		}
 
-		// Signal callbacks -----------------------------------------------------------------------------------
-
-		private void OnPlayerDied()
-		{
-			// Stops the body immediately and hands sprite control over to the death animation.
-			Velocity = Vector2.Zero;
-			_sprite.PlayDeath();
-		}
-
-		private void OnRespawned()
-		{
-			// IsDead is already false at this point, so _PhysicsProcess/_Process
-			// resume on their own next frame — this just clears the death pose immediately
-			// instead of waiting one extra frame for input-driven UpdateSprite to override it.
-			_sprite.UpdateSprite(0f);
-		}
-
-		private void OnGameOver()
-		{
-			// Entity stays permanently in IsDead == true (no further Reset call), so
-			// movement/shooting/sprite updates remain locked automatically.
-			// Hook point for external systems (game over screen, scene transition, etc.).
-		}
+		#endregion // Helpers
 	}
 }

@@ -7,11 +7,11 @@ namespace TouhouFuujinroku.Entities.Projectile
 	[GlobalClass]
 	public partial class Projectile : Area2D
 	{
+		#region Fields
+
 		// Stamped by ProjectilePool.CreateProjectile() — routes Return() to the correct queue.
 		// Never set this manually; treat it as pool-internal state.
 		public PackedScene Prefab { get; set; }
-
-		// Configuration ---------------------------------------------------------------------------------------
 
 		[ExportGroup("Configuration")]
 		[Export] private float _speed = 300f;
@@ -25,7 +25,9 @@ namespace TouhouFuujinroku.Entities.Projectile
 		// in the autoload subtree rather than the level scene.
 		private const float CullBoundary = 1000f;
 
-		// Godot overrides -------------------------------------------------------------------------------------
+		#endregion // Fields
+
+		#region Godot overrides
 
 		public override void _Process(double delta)
 		{
@@ -37,7 +39,9 @@ namespace TouhouFuujinroku.Entities.Projectile
 				ProjectilePool.Instance.Return(this);
 		}
 
-		// Public API ------------------------------------------------------------------------------------------
+		#endregion // Godot overrides
+
+		#region Public API
 
 		// Called by ProjectilePool.Rent() immediately after the node is re-enabled.
 		// Resets all runtime state so recycled instances behave like fresh ones.
@@ -48,7 +52,9 @@ namespace TouhouFuujinroku.Entities.Projectile
 			_direction = Vector2.FromAngle(angle);
 		}
 
-		// Helpers ---------------------------------------------------------------------------------------------
+		#endregion // Public API
+
+		#region Helpers
 
 		// Applies damage to any IDamageable in the overlapping area.
 		// Collision layer filtering is handled in the editor — no type checks needed here.
@@ -63,5 +69,7 @@ namespace TouhouFuujinroku.Entities.Projectile
 			if (body is IDamageable damageable)
 				damageable.ApplyDamage(_damage);
 		}
+
+		#endregion // Helpers
 	}
 }

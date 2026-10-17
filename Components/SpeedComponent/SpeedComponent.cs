@@ -5,8 +5,13 @@ namespace TouhouFuujinroku.Components
 	[GlobalClass]
 	public partial class SpeedComponent : Component
 	{
-		// Signal Handler.
+		#region Signals
+
 		[Signal] public delegate void SpeedChangedEventHandler(float current, float max);
+
+		#endregion // Signals
+
+		#region Fields
 
 		// Base values (assigned via editor).
 		[Export] private float _currentSpeed = 10f;
@@ -19,7 +24,9 @@ namespace TouhouFuujinroku.Components
 		public float CurrentSpeed => _currentSpeed;
 		public float MaxSpeed => _maxSpeed;
 
-		// Godot overrides --------------------------------------------------------------------------------------
+		#endregion // Fields
+
+		#region Godot overrides
 
 		public override void _Ready()
 		{
@@ -27,7 +34,9 @@ namespace TouhouFuujinroku.Components
 			_defaultSpeed = _currentSpeed;
 		}
 
-		// Public API -------------------------------------------------------------------------------------------
+		#endregion // Godot overrides
+
+		#region Public API
 
 		public void Reset()
 		{
@@ -53,7 +62,9 @@ namespace TouhouFuujinroku.Components
 			UpdateSpeed(_currentSpeed - amount);
 		}
 
-		// Helpers ----------------------------------------------------------------------------------------------
+		#endregion // Public API
+
+		#region Helpers
 
 		private void UpdateSpeed(float value)
 		{
@@ -65,5 +76,7 @@ namespace TouhouFuujinroku.Components
 			if (!Mathf.IsEqualApprox(_currentSpeed, oldSpeed))
 				EmitSignal(SignalName.SpeedChanged, _currentSpeed, _maxSpeed);
 		}
+
+		#endregion // Helpers
 	}
 }

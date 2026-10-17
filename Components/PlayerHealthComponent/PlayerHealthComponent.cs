@@ -5,15 +5,18 @@ namespace TouhouFuujinroku.Components
     [GlobalClass]
     public partial class PlayerHealthComponent : HealthComponent
     {
-        // Signal Handlers.
-        [Signal] public delegate void PlayerDiedEventHandler();
+        #region Signals
+
         [Signal] public delegate void LivesChangedEventHandler(int current, int max);
         [Signal] public delegate void RespawnedEventHandler();
         [Signal] public delegate void GameOverEventHandler();
 
-        // Base values (assigned via editor).
-        [Export] private int _maxLives = 5;
+        #endregion // Signals
+
+        #region Fields
+
         [Export] private float _respawnDelay = 1.5f; // Seconds the entity stays dead before reviving.
+        [Export] private int _maxLives = 5;
 
         // Fixed per-life health — the player is always one-shot per life, regardless
         // of whatever value is set on the exported _maxHealth field in the editor.
@@ -26,7 +29,9 @@ namespace TouhouFuujinroku.Components
         public int MaxLives => _maxLives;
         public int CurrentLives => _currentLives;
 
-        // Godot overrides --------------------------------------------------------------------------------------
+        #endregion // Fields
+
+        #region Godot overrides
 
         public override void _Ready()
         {
@@ -37,17 +42,18 @@ namespace TouhouFuujinroku.Components
             base._Ready();
 
             _currentLives = _maxLives;
-
-            Death += OnDeath;
         }
 
-        // Signal callbacks ---------------------------------------------------------------------------------------
+        #endregion // Godot overrides
 
-        private async void OnDeath()
+        #region Event handlers
+
+        protected override async void OnDeath()
         {
-            // Forwards the base death event as a player-specific signal.
+            // Extends the base death hook — base.OnDeath() emits Death first, so listeners
+            // (e.g. the death animation) react before the lives are decremented.
             // Keeps this component purely reactive — no game logic here.
-            EmitSignal(SignalName.PlayerDied);
+            base.OnDeath();
 
             _currentLives--;
             EmitSignal(SignalName.LivesChanged, _currentLives, _maxLives);
@@ -65,5 +71,7 @@ namespace TouhouFuujinroku.Components
             Reset();
             EmitSignal(SignalName.Respawned);
         }
+
+        #endregion // Event handlers
     }
 }

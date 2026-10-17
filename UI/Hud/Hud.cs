@@ -7,15 +7,21 @@ namespace TouhouFuujinroku.UI.Hud
     // this keeps Score, and any future HUD elements, as implementation details.
     public partial class Hud : Control
     {
+        #region Fields
+
         [ExportGroup("Components")]
         [Export] private Score.Score _score;
 
-        // Public API -----------------------------------------------------------------------------------------
+        #endregion // Fields
+
+        #region Public API
 
         // Forwards points to the Score widget — call this from anywhere an enemy dies.
         public void ReportScore(long points) => _score.AddScore(points);
 
         // Resets all HUD state — call this on game start or continue.
         public void Reset() => _score.Reset();
+
+        #endregion // Public API
     }
 }

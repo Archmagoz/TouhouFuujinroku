@@ -10,7 +10,7 @@ namespace TouhouFuujinroku.Entities.PlayableCharacters.Reimu
 	[GlobalClass]
 	public partial class ReimuWeapon : Node2D
 	{
-		// Configuration ---------------------------------------------------------------------------------------
+		#region Fields
 
 		[ExportGroup("Configuration")]
 		[ExportSubgroup("Formation")]
@@ -27,7 +27,7 @@ namespace TouhouFuujinroku.Entities.PlayableCharacters.Reimu
 		[Export] private float _focusForwardY = -15f;
 
 		[ExportSubgroup("Firing")]
-		// Seconds between shot.
+		// Seconds between shots.
 		[Export] private float _fireRate = 0.1f;
 
 		// Bullet prefab instantiated on each shot.
@@ -35,8 +35,6 @@ namespace TouhouFuujinroku.Entities.PlayableCharacters.Reimu
 
 		// Audio played on each shot — optional, may be null.
 		[Export] private AudioStreamPlayer2D _shotSound;
-
-		// State ----------------------------------------------------------------------------------------------
 
 		// One full clockwise rotation per second.
 		private static readonly float RotationSpeed = Mathf.Tau;
@@ -57,7 +55,9 @@ namespace TouhouFuujinroku.Entities.PlayableCharacters.Reimu
 		// Seconds remaining before the next shot is allowed.
 		private float _cooldown;
 
-		// Godot overrides ------------------------------------------------------------------------------------
+		#endregion // Fields
+
+		#region Godot overrides
 
 		public override void _Ready()
 		{
@@ -95,7 +95,7 @@ namespace TouhouFuujinroku.Entities.PlayableCharacters.Reimu
 			];
 		}
 
-		public override void _Process(double delta)
+		public override void _PhysicsProcess(double delta)
 		{
 			float f = (float)delta;
 
@@ -111,7 +111,9 @@ namespace TouhouFuujinroku.Entities.PlayableCharacters.Reimu
 			}
 		}
 
-		// Public API -----------------------------------------------------------------------------------------
+		#endregion // Godot overrides
+
+		#region Public API
 
 		// Smoothly shifts sprite offsets toward the focused or normal formation.
 		// Call every frame while the focus state may be changing.
@@ -140,7 +142,9 @@ namespace TouhouFuujinroku.Entities.PlayableCharacters.Reimu
 			_shotSound.Play();
 		}
 
-		// Helpers ---------------------------------------------------------------------------------------------
+		#endregion // Public API
+
+		#region Helpers
 
 		// Yields the current GlobalPosition of every cached fire-origin marker.
 		private IEnumerable<Vector2> GetFireOrigins()
@@ -152,5 +156,7 @@ namespace TouhouFuujinroku.Entities.PlayableCharacters.Reimu
 		// Frame-rate-independent lerp weight via exponential decay — 1 - e^(-speed * delta).
 		private static float ExponentialLerp(float speed, float delta) =>
 			1f - Mathf.Exp(-speed * delta);
+
+		#endregion // Helpers
 	}
 }

@@ -6,7 +6,7 @@ namespace TouhouFuujinroku.Entities.Enemies.GenericEnemies.Weapons
     // Composed directly into the enemy scene; no runtime instantiation needed.
     public abstract partial class EnemyWeapon : Node2D
     {
-        // Configuration --------------------------------------------------------------------------------------
+        #region Fields
 
         [ExportGroup("Configuration")]
         // Bullet prefab instantiated on each shot — defined per weapon, not per enemy.
@@ -24,22 +24,26 @@ namespace TouhouFuujinroku.Entities.Enemies.GenericEnemies.Weapons
         private int _remainingShots;
         private float _cooldown;
 
-        // Godot overrides ------------------------------------------------------------------------------------
+        #endregion // Fields
+
+        #region Godot overrides
 
         public override void _Ready()
         {
             _remainingShots = _shotCount;
         }
 
-        public override void _Process(double delta)
+        public override void _PhysicsProcess(double delta)
         {
             if (_cooldown > 0f) _cooldown -= (float)delta;
         }
 
-        // Public API -----------------------------------------------------------------------------------------
+        #endregion // Godot overrides
+
+        #region Public API
 
         // Attempts to fire a shot; silently no-ops while on cooldown or quota is exhausted.
-        // Call every frame from the owning enemy's _Process().
+        // Call every frame from the owning enemy's _PhysicsProcess().
         public void TryFire()
         {
             if (_remainingShots <= 0 || _cooldown > 0f || _bulletPrefab == null) return;
@@ -50,7 +54,13 @@ namespace TouhouFuujinroku.Entities.Enemies.GenericEnemies.Weapons
             _shotSound.Play();
         }
 
+        #endregion // Public API
+
+        #region Helpers
+
         // Fires a shot using the stored prefab — implementation defined by each weapon type.
         protected abstract void Fire(PackedScene prefab);
+
+        #endregion // Helpers
     }
 }
