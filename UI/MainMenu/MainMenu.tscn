@@ -3,6 +3,7 @@
 [ext_resource type="Texture2D" uid="uid://dmand0bis1vhi" path="res://UI/MainMenu/Assets/MainMenuSpritesheet.png" id="1_8fkdr"]
 [ext_resource type="Script" uid="uid://yym15kl5lpkb" path="res://UI/MainMenu/MainMenu.cs" id="1_fw0vt"]
 [ext_resource type="AudioStream" uid="uid://cbnil6bckh8j3" path="res://UI/MainMenu/Assets/MainMenuSoundtrack.ogg" id="2_8x0bb"]
+[ext_resource type="AudioStream" uid="uid://7ktyeisdi1um" path="res://UI/Assets/SelectHitSound.wav" id="3_nahvw"]
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_fw0vt"]
 atlas = ExtResource("1_8fkdr")
@@ -47,6 +48,9 @@ scale = Vector2(0.99999994, 0.99999994)
 stream = ExtResource("2_8x0bb")
 volume_db = -5.0
 autoplay = true
+
+[node name="SelectSFX" type="AudioStreamPlayer2D" parent="." unique_id=145795049]
+stream = ExtResource("3_nahvw")
 
 [node name="Background" type="TextureRect" parent="." unique_id=94049739]
 layout_mode = 0
@@ -99,6 +103,15 @@ texture_hover = SubResource("AtlasTexture_ri767")
 texture_disabled = SubResource("AtlasTexture_4elqj")
 texture_focused = SubResource("AtlasTexture_ri767")
 
+[connection signal="focus_entered" from="BtnGameStart" to="." method="OnButtonFocusEntered"]
+[connection signal="mouse_entered" from="BtnGameStart" to="." method="OnButtonMouseEntered"]
+[connection signal="mouse_exited" from="BtnGameStart" to="." method="OnButtonMouseExited"]
 [connection signal="pressed" from="BtnGameStart" to="." method="OnGameStartPressed"]
+[connection signal="focus_entered" from="BtnOpition" to="." method="OnButtonFocusEntered"]
+[connection signal="mouse_entered" from="BtnOpition" to="." method="OnButtonMouseEntered"]
+[connection signal="mouse_exited" from="BtnOpition" to="." method="OnButtonMouseExited"]
 [connection signal="pressed" from="BtnOpition" to="." method="OnOptionsPressed"]
+[connection signal="focus_entered" from="BtnQuit" to="." method="OnButtonFocusEntered"]
+[connection signal="mouse_entered" from="BtnQuit" to="." method="OnButtonMouseEntered"]
+[connection signal="mouse_exited" from="BtnQuit" to="." method="OnButtonMouseExited"]
 [connection signal="pressed" from="BtnQuit" to="." method="OnQuitPressed"]
