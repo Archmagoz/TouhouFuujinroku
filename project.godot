@@ -23,8 +23,9 @@ buses/default_bus_layout=""
 
 [autoload]
 
-Fullscreen="*uid://c5qwaxiekp4ye"
+MusicController="*uid://bbl7f54b6erww"
 SceneController="*uid://gmfyv628gegv"
+Fullscreen="*uid://c5qwaxiekp4ye"
 
 [display]
 
