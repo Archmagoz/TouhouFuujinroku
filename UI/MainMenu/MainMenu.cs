@@ -45,7 +45,11 @@ namespace TouhouFuujinroku.UI
 
 		#region Helpers
 
-		private static void OnGameStartPressed() => SceneController.Instance.TransitionTo(Scene.DebugLevel);
+		private static void OnGameStartPressed()
+		{
+			MusicController.Instance.Stop();
+			SceneController.Instance.TransitionTo(Scene.DebugLevel);
+		}
 		private static void OnOptionsPressed() => SceneController.Instance.TransitionTo(Scene.OptionsMenu);
 		private static void OnQuitPressed() => SceneController.Instance.QuitGame();
 
