@@ -1,11 +1,13 @@
 using Godot;
 
+using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace TouhouFuujinroku.Global.Controllers
 {
 	// Identifies every scene the controller knows how to load.
-	// Add a new entry here before registering the scene in SceneController.
+	// Add a new entry here before registering its path in SceneController._scenePaths.
 	public enum Scene
 	{
 		MainMenu,
@@ -13,28 +15,74 @@ namespace TouhouFuujinroku.Global.Controllers
 		DebugLevel,
 	}
 
+	// Autoload responsible for scene changes.
+	//
+	// Transition pipeline:
+	//   1. Fade out (overlay alpha 0 -> 1) while the next scene loads on worker threads.
+	//   2. Wait for both the fade and the load to finish.
+	//   3. Swap the scenes while the screen is fully covered.
+	//   4. Fade in (overlay alpha 1 -> 0).
+	//
+	// Loading and fading run concurrently, so a fast load costs nothing beyond the fade itself.
 	public partial class SceneController : Node
 	{
 		public static SceneController Instance { get; private set; }
 
+		#region Configuration
+
+		// Kept as plain properties because this script is typically registered as a script-only
+		// autoload, where [Export] values cannot be edited in the inspector.
+		public float FadeOutDuration { get; set; } = 0.15f;
+		public float FadeInDuration { get; set; } = 0.15f;
+		public Color FadeColor { get; set; } = Colors.Black;
+
+		// Draws above any gameplay or UI CanvasLayer.
+		private const int FadeLayerIndex = 128;
+
+		#endregion // Configuration
+
+		#region Events
+
+		// Raised on the main thread. Useful for pausing gameplay, disabling input, etc.
+		public event Action<Scene> TransitionStarted;
+		public event Action<Scene> TransitionFinished;
+
+		#endregion // Events
+
 		#region Fields
 
-		// Preloaded scenes
-		// Eagerly loaded in _Ready so GD.Load runs after the engine is fully initialised;
-		// avoids hitting the ResourceLoader before the scene tree is ready.
-
-		private readonly Dictionary<Scene, PackedScene> _preloadedScenes = new();
-
-		// Lazy scenes
-		// Resolved from disk on first request, then promoted to _preloadedScenes so
-		// subsequent transitions skip the disk entirely.
-
-		private readonly Dictionary<Scene, string> _lazyPaths = new()
+		// Single source of truth for scene paths. Every scene is loaded the same way
+		// (threaded request), so there is no distinction between "eager" and "lazy" scenes
+		// beyond whether they are listed in _warmupScenes.
+		private readonly Dictionary<Scene, string> _scenePaths = new()
 		{
-			{ Scene.DebugLevel, "res://Levels/DebugLevel/DebugLevel.tscn" },
+			{ Scene.MainMenu,    "res://UI/MainMenu/MainMenu.tscn" },
+			{ Scene.OptionsMenu, "res://UI/OptionsMenu/OptionsMenu.tscn" },
+			{ Scene.DebugLevel,  "res://Levels/DebugLevel/DebugLevel.tscn" },
 		};
 
+		// Scenes requested in the background at startup so the first transition to them is instant.
+		private static readonly Scene[] _warmupScenes = [Scene.MainMenu, Scene.OptionsMenu];
+
+		// Resolved scenes. Once a PackedScene is here, later transitions skip the disk entirely.
+		private readonly Dictionary<Scene, PackedScene> _cache = [];
+
+		// Loads currently running. Prevents issuing duplicate threaded requests for the same
+		// scene (e.g. a warm-up still running when the player already clicked the button).
+		private readonly Dictionary<Scene, Task<PackedScene>> _inFlight = [];
+
+		private CanvasLayer _fadeLayer;
+		private ColorRect _fadeRect;
+
+		private bool _isTransitioning;
+
 		#endregion // Fields
+
+		#region Properties
+
+		public bool IsTransitioning => _isTransitioning;
+
+		#endregion // Properties
 
 		#region Godot overrides
 
@@ -49,71 +97,276 @@ namespace TouhouFuujinroku.Global.Controllers
 
 			Instance = this;
 
-			// Load eagerly-required scenes here rather than in field initialisers so
-			// GD.Load runs inside a valid engine frame with a live ResourceLoader.
-			_preloadedScenes[Scene.MainMenu] = GD.Load<PackedScene>("res://UI/MainMenu/MainMenu.tscn");
-			_preloadedScenes[Scene.OptionsMenu] = GD.Load<PackedScene>("res://UI/OptionsMenu/OptionsMenu.tscn");
+			// The controller must keep working while the tree is paused (e.g. leaving a
+			// pause menu to the main menu). Tweens are configured the same way in FadeAsync.
+			ProcessMode = ProcessModeEnum.Always;
+
+			BuildFadeOverlay();
+
+			// Fire-and-forget: the result is stored in _cache by the loading routine.
+			foreach (var id in _warmupScenes)
+				_ = GetSceneAsync(id);
+		}
+
+		public override void _ExitTree()
+		{
+			// Avoid leaving a dangling reference to a freed node.
+			if (Instance == this)
+				Instance = null;
 		}
 
 		#endregion // Godot overrides
 
 		#region Public API
 
-		// Frees the current scene before adding the incoming one to guarantee
-		// only one scene is alive at a time, even within a single frame.
-		public void TransitionTo(Scene id)
+		// Fire-and-forget entry point, convenient for signal handlers and button callbacks.
+		// Prefer TransitionToAsync when the caller needs to await completion.
+		public void TransitionTo(Scene id) => _ = TransitionToAsync(id);
+
+		// Changes to the given scene with a fade transition.
+		// Requests made while another transition is running are rejected rather than queued,
+		// which avoids double-clicks stacking transitions.
+		public async Task TransitionToAsync(Scene id)
 		{
-			if (!TryResolveScene(id, out var packed))
+			if (_isTransitioning)
 			{
-				GD.PushWarning($"[SceneController] No scene registered for '{id}'. " +
-								"Add it to _preloadedScenes or _lazyPaths.");
+				GD.PushWarning($"[SceneController] Ignoring transition to '{id}': another transition is in progress.");
 				return;
 			}
 
-			GetTree().CurrentScene.QueueFree();
+			_isTransitioning = true;
+			TransitionStarted?.Invoke(id);
 
-			var incoming = packed.Instantiate();
-			GetTree().Root.AddChild(incoming);
-			GetTree().CurrentScene = incoming;
+			try
+			{
+				ShowOverlay();
+
+				// Start loading BEFORE fading so both run concurrently.
+				// Task<T> is only awaited after the fade, so no frame is blocked.
+				Task<PackedScene> loadTask = GetSceneAsync(id);
+
+				await FadeAsync(1f, FadeOutDuration);
+
+				PackedScene packed = await loadTask;
+
+				// On failure, keep the current scene alive and just fade back in.
+				if (packed != null)
+				{
+					SwapScene(packed);
+
+					// Let the new scene render at least one frame under the overlay so
+					// its first (potentially heavy) frame is never visible to the player.
+					await ToSignal(GetTree(), SceneTree.SignalName.ProcessFrame);
+				}
+
+				await FadeAsync(0f, FadeInDuration);
+			}
+			catch (Exception e)
+			{
+				// This method is usually fire-and-forget; an unobserved exception would vanish silently.
+				GD.PushError($"[SceneController] Transition to '{id}' failed: {e}");
+			}
+			finally
+			{
+				// Always restore a clean state, even if something above threw.
+				HideOverlay();
+				_isTransitioning = false;
+				TransitionFinished?.Invoke(id);
+			}
 		}
 
 		// Quits the game from any scene, including the main menu.
-		public void QuitGame()
+		public async void QuitGame()
 		{
-			// aqui entra fade-out, save, etc no futuro
-			Instance.GetTree().Quit();
+			if (_isTransitioning)
+				return;
+
+			_isTransitioning = true;
+			ShowOverlay();
+
+			// Hook for future work: save game, flush settings, play a farewell sound, etc.
+			await FadeAsync(1f, FadeOutDuration);
+
+			GetTree().Quit();
 		}
+
+		// Requests a scene in the background without transitioning to it.
+		// Call this ahead of time (e.g. when hovering a "Play" button).
+		public void Preload(Scene id) => _ = GetSceneAsync(id);
 
 		#endregion // Public API
 
-		#region Helpers
+		#region Scene resolution
 
-		// Checks _preloadedScenes first; on a miss, loads from _lazyPaths and promotes
-		// the result into _preloadedScenes so the disk is only read once per lazy scene.
-		private bool TryResolveScene(Scene id, out PackedScene packed)
+		// Returns a cached scene, joins a load already in progress, or starts a new one.
+		private Task<PackedScene> GetSceneAsync(Scene id)
 		{
-			if (_preloadedScenes.TryGetValue(id, out packed))
-				return true;
+			if (_cache.TryGetValue(id, out var cached))
+				return Task.FromResult(cached);
 
-			if (_lazyPaths.TryGetValue(id, out var path))
-			{
-				packed = GD.Load<PackedScene>(path);
+			if (_inFlight.TryGetValue(id, out var running))
+				return running;
 
-				if (packed == null)
-				{
-					GD.PushError($"[SceneController] GD.Load returned null for path '{path}'. " +
-								 "Verify the file exists and is exported.");
-					return false;
-				}
+			Task<PackedScene> task = LoadSceneAsync(id);
 
-				_preloadedScenes[id] = packed;
-				return true;
-			}
+			// Only track tasks that are genuinely asynchronous. A task that already completed
+			// (early failure) would otherwise sit in the dictionary forever.
+			if (!task.IsCompleted)
+				_inFlight[id] = task;
 
-			packed = null;
-			return false;
+			return task;
 		}
 
-		#endregion // Helpers
+		// Loads a PackedScene using Godot's threaded ResourceLoader.
+		// Disk IO and resource parsing happen on worker threads; this method only polls the
+		// status once per frame on the main thread, so it never blocks rendering.
+		// Returns null on failure.
+		private async Task<PackedScene> LoadSceneAsync(Scene id)
+		{
+			try
+			{
+				if (!_scenePaths.TryGetValue(id, out var path))
+				{
+					GD.PushWarning($"[SceneController] No scene registered for '{id}'. Add it to _scenePaths.");
+					return null;
+				}
+
+				// useSubThreads lets the loader parallelise dependencies (textures, scripts, etc.).
+				Error requestError = ResourceLoader.LoadThreadedRequest(path, "PackedScene", useSubThreads: true);
+
+				if (requestError != Error.Ok)
+				{
+					GD.PushError($"[SceneController] Failed to request '{path}': {requestError}.");
+					return null;
+				}
+
+				// Reused across polls to avoid allocating a new Array every frame.
+				var progress = new Godot.Collections.Array();
+
+				while (true)
+				{
+					var status = ResourceLoader.LoadThreadedGetStatus(path, progress);
+
+					switch (status)
+					{
+						case ResourceLoader.ThreadLoadStatus.InProgress:
+							// Yield to the engine; resume next frame on the main thread.
+							await ToSignal(GetTree(), SceneTree.SignalName.ProcessFrame);
+							break;
+
+						case ResourceLoader.ThreadLoadStatus.Loaded:
+							if (ResourceLoader.LoadThreadedGet(path) is not PackedScene packed)
+							{
+								GD.PushError($"[SceneController] '{path}' loaded, but it is not a PackedScene.");
+								return null;
+							}
+
+							_cache[id] = packed;
+							return packed;
+
+						default: // Failed or InvalidResource
+							GD.PushError($"[SceneController] Threaded load of '{path}' ended with status '{status}'. " +
+										 "Verify the file exists and is exported.");
+							return null;
+					}
+				}
+			}
+			finally
+			{
+				_inFlight.Remove(id);
+			}
+		}
+
+		#endregion // Scene resolution
+
+		#region Scene swapping
+
+		// Removes the current scene from the tree BEFORE adding the incoming one.
+		// QueueFree alone only defers destruction to the end of the frame, so both scenes
+		// would coexist for a frame. Removing first makes "one scene alive" actually true
+		// (the old node is still freed safely at end of frame).
+		private void SwapScene(PackedScene packed)
+		{
+			SceneTree tree = GetTree();
+			Node current = tree.CurrentScene;
+
+			if (IsInstanceValid(current))
+			{
+				tree.Root.RemoveChild(current);
+				current.QueueFree();
+			}
+
+			// Instantiate() runs on the main thread: scene nodes are not thread-safe to build and
+			// attach. If a specific scene becomes heavy here, split its setup into stages.
+			Node incoming = packed.Instantiate();
+			tree.Root.AddChild(incoming);
+			tree.CurrentScene = incoming;
+		}
+
+		#endregion // Scene swapping
+
+		#region Fade overlay
+
+		// Built in code so the controller has no dependency on an extra .tscn file.
+		private void BuildFadeOverlay()
+		{
+			_fadeLayer = new CanvasLayer
+			{
+				Name = "FadeLayer",
+				Layer = FadeLayerIndex,
+			};
+
+			_fadeRect = new ColorRect
+			{
+				Name = "FadeRect",
+				Color = new Color(FadeColor, 0f),
+				MouseFilter = Control.MouseFilterEnum.Ignore,
+				Visible = false, // Hidden while idle: no draw cost, no input interception.
+			};
+
+			_fadeRect.SetAnchorsPreset(Control.LayoutPreset.FullRect);
+
+			_fadeLayer.AddChild(_fadeRect);
+			AddChild(_fadeLayer);
+		}
+
+		private void ShowOverlay()
+		{
+			_fadeRect.Color = new Color(FadeColor, _fadeRect.Color.A);
+
+			// Stop swallows clicks so the player cannot interact with the old scene mid-fade.
+			_fadeRect.MouseFilter = Control.MouseFilterEnum.Stop;
+			_fadeRect.Visible = true;
+		}
+
+		private void HideOverlay()
+		{
+			_fadeRect.Color = new Color(FadeColor, 0f);
+			_fadeRect.MouseFilter = Control.MouseFilterEnum.Ignore;
+			_fadeRect.Visible = false;
+		}
+
+		// Animates the overlay alpha to the target value and completes when the tween ends.
+		private async Task FadeAsync(float targetAlpha, float duration)
+		{
+			if (duration <= 0f)
+			{
+				_fadeRect.Color = new Color(FadeColor, targetAlpha);
+				return;
+			}
+
+			Tween tween = CreateTween();
+
+			// Keep animating even if the tree is paused.
+			tween.SetPauseMode(Tween.TweenPauseMode.Process);
+
+			tween.TweenProperty(_fadeRect, "color:a", targetAlpha, duration)
+				 .SetTrans(Tween.TransitionType.Sine)
+				 .SetEase(Tween.EaseType.InOut);
+
+			await ToSignal(tween, Tween.SignalName.Finished);
+		}
+
+		#endregion // Fade overlay
 	}
 }
