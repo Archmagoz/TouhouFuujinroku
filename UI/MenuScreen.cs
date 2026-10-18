@@ -4,38 +4,62 @@ using TouhouFuujinroku.Global.Controllers;
 
 namespace TouhouFuujinroku.UI
 {
+    /// <summary>
+    /// Base class for menu screens. Provides the shared button focus behavior: a squash and stretch
+    /// animation, a selection sound, and synchronization between mouse hover and keyboard or gamepad focus.
+    /// <para>
+    /// Each button's signals must be connected in the editor to the handlers of this class:
+    /// <c>focus_entered</c> to <see cref="OnButtonFocusEntered"/>, <c>focus_exited</c> to
+    /// <see cref="OnButtonFocusExited"/>, <c>mouse_entered</c> to <see cref="OnButtonMouseEntered"/>,
+    /// and <c>mouse_exited</c> to <see cref="OnButtonMouseExited"/>.
+    /// </para>
+    /// </summary>
     public abstract partial class MenuScreen : Control
     {
         #region Constants
 
         // Focus animation tuning. The stretch phase exaggerates the horizontal axis while squashing
         // the vertical one (squash & stretch), then settles into a slightly enlarged resting scale.
+
+        /// <summary>Scale at the peak of the stretch phase: wider and flatter than the resting scale.</summary>
         private static readonly Vector2 StretchPeakScale = new(1.18f, 0.9f);
+
+        /// <summary>Slightly enlarged scale a focused button settles into.</summary>
         private static readonly Vector2 FocusedRestScale = new(1.06f, 1.06f);
 
-        private const float StretchDuration = 0.06f; // Seconds to reach the stretch peak.
-        private const float SettleDuration = 0.14f;  // Seconds to settle into the focused resting scale.
-        private const float UnfocusDuration = 0.1f;  // Seconds to return to the default scale.
+        /// <summary>Seconds to reach the stretch peak.</summary>
+        private const float StretchDuration = 0.06f;
 
-        // Metadata key used to store the running tween on each button. Storing it on the node
-        // avoids a separate dictionary and needs no cleanup when the button is freed.
+        /// <summary>Seconds to settle into the focused resting scale.</summary>
+        private const float SettleDuration = 0.14f;
+
+        /// <summary>Seconds to return to the default scale.</summary>
+        private const float UnfocusDuration = 0.1f;
+
+        /// <summary>
+        /// Metadata key used to store the running tween on each button. Storing it on the node
+        /// avoids a separate dictionary and needs no cleanup when the button is freed.
+        /// </summary>
         private const string TweenMetaKey = "focus_tween";
 
         #endregion // Constants
 
         #region Fields
 
-        // Button currently displaying the focused visual state. Signals connected through the
-        // editor carry no arguments, so this field is how the handlers know which button to animate.
+        /// <summary>
+        /// Button currently displaying the focused visual state. Signals connected through the editor
+        /// carry no arguments, so this field is how the handlers know which button to animate.
+        /// </summary>
         private BaseButton _focusedButton;
 
         #endregion // Fields
 
         #region Event handlers
 
-        // Connect these methods in the editor to each button's signals:
-        // focus_entered, focus_exited, mouse_entered and mouse_exited.
-
+        /// <summary>
+        /// Handles a button's <c>focus_entered</c> signal: resets the previously focused button,
+        /// plays the selection sound, and animates the new button to its focused state.
+        /// </summary>
         private void OnButtonFocusEntered()
         {
             // At focus_entered time the viewport already reports the new focus owner.
@@ -53,6 +77,10 @@ namespace TouhouFuujinroku.UI
             AnimateFocus(button, focused: true);
         }
 
+        /// <summary>
+        /// Handles a button's <c>focus_exited</c> signal. The unfocus is evaluated at the end of the frame,
+        /// once focus has settled.
+        /// </summary>
         private void OnButtonFocusExited()
         {
             // The focus owner is unreliable while focus_exited is being emitted (it may still be
@@ -61,6 +89,10 @@ namespace TouhouFuujinroku.UI
             Callable.From(ClearFocusedButtonIfLostFocus).CallDeferred();
         }
 
+        /// <summary>
+        /// Handles a button's <c>mouse_entered</c> signal by grabbing focus, keeping mouse and
+        /// keyboard or gamepad navigation in sync.
+        /// </summary>
         private void OnButtonMouseEntered()
         {
             // Workaround for Godot bug: focus_entered doesn't fire on mouse hover.
@@ -69,6 +101,10 @@ namespace TouhouFuujinroku.UI
                 button.GrabFocus();
         }
 
+        /// <summary>
+        /// Handles a button's <c>mouse_exited</c> signal by releasing the focused button,
+        /// but only if the mouse is no longer over it.
+        /// </summary>
         private void OnButtonMouseExited()
         {
             if (_focusedButton == null)
@@ -84,6 +120,10 @@ namespace TouhouFuujinroku.UI
 
         #region Focus tracking
 
+        /// <summary>
+        /// Resets the tracked button to its unfocused state if it no longer owns focus.
+        /// Runs deferred, so it also tolerates the button having been freed in the meantime.
+        /// </summary>
         private void ClearFocusedButtonIfLostFocus()
         {
             if (_focusedButton == null || !IsInstanceValid(_focusedButton) || _focusedButton.HasFocus())
@@ -93,12 +133,22 @@ namespace TouhouFuujinroku.UI
             _focusedButton = null;
         }
 
+        /// <summary>
+        /// Gets the control currently under the mouse, if it is a button.
+        /// </summary>
+        /// <returns>The hovered <see cref="BaseButton"/>, or null if the hovered control is not a button.</returns>
         private BaseButton GetHoveredButton() => GetViewport().GuiGetHoveredControl() as BaseButton;
 
         #endregion // Focus tracking
 
         #region Animation
 
+        /// <summary>
+        /// Animates a button to its focused or unfocused scale, cancelling any animation already running on it.
+        /// Focusing plays a stretch phase followed by a settle with a slight overshoot; unfocusing returns to the default scale.
+        /// </summary>
+        /// <param name="button">Button to animate.</param>
+        /// <param name="focused">True to play the focus animation, false to return to the default scale.</param>
         private static void AnimateFocus(BaseButton button, bool focused)
         {
             KillTween(button);
@@ -130,10 +180,13 @@ namespace TouhouFuujinroku.UI
             }
         }
 
+        /// <summary>
+        /// Cancels the tween stored on the button, if any, so rapid focus changes never leave
+        /// two tweens fighting over the same <c>scale</c> property.
+        /// </summary>
+        /// <param name="button">Button whose running tween should be stopped.</param>
         private static void KillTween(BaseButton button)
         {
-            // Cancels the previous tween so rapid focus changes never leave two tweens
-            // fighting over the same "scale" property.
             if (!button.HasMeta(TweenMetaKey))
                 return;
 

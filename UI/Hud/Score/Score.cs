@@ -2,27 +2,45 @@ using Godot;
 
 namespace TouhouFuujinroku.UI.Hud.Score
 {
-    // Self-contained score system — owns state, renders digits, and exposes the public API.
-    // Digit sprites are loaded from the HBoxContainer child at runtime; no exports needed.
+    /// <summary>
+    /// Self-contained score system: owns the state, renders the digits, and exposes the public API.
+    /// <para>
+    /// Digit sprites are collected from the <see cref="HBoxContainer"/> child at runtime, so no exports are needed.
+    /// Each sprite must be an animation-frame strip with one frame per digit (frame 0 to 9).
+    /// </para>
+    /// </summary>
     public partial class Score : Control
     {
         #region Fields
 
+        /// <summary>
+        /// Current score value.
+        /// </summary>
         private long _score;
+
+        /// <summary>
+        /// Digit sprites indexed by decimal place: index 0 shows the units digit, index 1 the tens digit, and so on.
+        /// Entries are null for container children that are not <see cref="Sprite2D"/>.
+        /// </summary>
         private Sprite2D[] _digits;
 
         #endregion // Fields
 
         #region Public API
 
-        // Adds points and refreshes the display — call this on enemy death.
+        /// <summary>
+        /// Adds points to the score and refreshes the display. Call this on enemy death.
+        /// </summary>
+        /// <param name="points">Points to add.</param>
         public void AddScore(long points)
         {
             _score += points;
             UpdateDisplay();
         }
 
-        // Resets the score to zero — call this on game start or continue.
+        /// <summary>
+        /// Resets the score to zero and refreshes the display. Call this on game start or continue.
+        /// </summary>
         public void Reset()
         {
             _score = 0;
@@ -43,8 +61,11 @@ namespace TouhouFuujinroku.UI.Hud.Score
 
         #region Helpers
 
-        // Locates the HBoxContainer child and collects its Sprite2D children left to right.
-        // Index 0 = most significant digit; index N-1 = units digit.
+        /// <summary>
+        /// Locates the <see cref="HBoxContainer"/> child and collects its <see cref="Sprite2D"/> children in child order.
+        /// The array index equals the decimal place shown by that sprite, so the first child must be the units digit.
+        /// Leaves the digits unset (and the display untouched) if no container is found.
+        /// </summary>
         private void LoadDigits()
         {
             HBoxContainer container = null;
@@ -66,8 +87,11 @@ namespace TouhouFuujinroku.UI.Hud.Score
                     _digits[i] = sprite;
         }
 
-        // Decomposes the score into individual digits and sets each sprite frame accordingly.
-        // All digits are always visible — leading zeros shown to fill the display uniformly.
+        /// <summary>
+        /// Decomposes the score into individual digits and sets each sprite frame accordingly.
+        /// All digits are always visible: leading zeros are shown to fill the display uniformly.
+        /// A score with more digits than sprites displays only its least significant digits.
+        /// </summary>
         private void UpdateDisplay()
         {
             if (_digits == null) return;
@@ -78,7 +102,7 @@ namespace TouhouFuujinroku.UI.Hud.Score
             {
                 if (_digits[i] == null) continue;
 
-                // Index 0 is the rightmost (least significant) digit — place increases left to right.
+                // Sprite i shows the digit at decimal place i: index 0 is the units digit.
                 long divisor = (long)Mathf.Pow(10, i);
                 int digit = (int)(_score / divisor % 10);
 

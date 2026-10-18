@@ -13,11 +13,11 @@ namespace TouhouFuujinroku.Entities.Enemies.Spawning.Waves
             // Pattern defined once and reused: left-to-right sweep at 20% of the playfield height.
             var leftToRight = PathPattern.Line(new Vector2(-0.1f, 0.2f), new Vector2(1.1f, 0.2f));
 
-            // t = 1s: 6 enemies enter from the left, one every 0.5s.
-            Spawn(time: 1f, count: 6, interval: 0.5f, path: leftToRight);
+            // t = 1s: 8 enemies enter from the left, one every 0.5s.
+            Spawn(time: 1f, count: 8, interval: 0.5f, path: leftToRight);
 
             // t = 5s: the same sweep reflected, entering from the right.
-            Spawn(time: 5f, count: 6, interval: 0.5f, path: leftToRight.Mirrored());
+            Spawn(time: 5f, count: 8, interval: 0.5f, path: leftToRight.Mirrored());
 
             // t = 10s: 8 enemies descend through the center on a snaking trajectory.
             var snake = PathPattern.Sine(new Vector2(0.5f, -0.1f), new Vector2(0.5f, 1.1f), amplitude: 0.15f, cycles: 2.5f);

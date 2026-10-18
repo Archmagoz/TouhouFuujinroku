@@ -6,54 +6,87 @@ using System.Threading.Tasks;
 
 namespace TouhouFuujinroku.Global.Controllers
 {
-	// Identifies every scene the controller knows how to load.
-	// Add a new entry here before registering its path in SceneController._scenePaths.
+	/// <summary>
+	/// Identifies every scene the controller knows how to load.
+	/// Add a new entry here before registering its path in <c>SceneController._scenePaths</c>.
+	/// </summary>
 	public enum Scene
 	{
+		/// <summary>Main menu, the entry point of the game.</summary>
 		MainMenu,
+
+		/// <summary>Options menu.</summary>
 		OptionsMenu,
+
+		/// <summary>Sandbox level used to test gameplay systems.</summary>
 		DebugLevel,
 	}
 
-	// Autoload responsible for scene changes.
-	//
-	// Transition pipeline:
-	//   1. Fade out (overlay alpha 0 -> 1) while the next scene loads on worker threads.
-	//   2. Wait for both the fade and the load to finish.
-	//   3. Swap the scenes while the screen is fully covered.
-	//   4. Fade in (overlay alpha 1 -> 0).
-	//
-	// Loading and fading run concurrently, so a fast load costs nothing beyond the fade itself.
+	/// <summary>
+	/// Autoload responsible for scene changes.
+	/// <para>
+	/// Transition pipeline:
+	/// <list type="number">
+	/// <item><description>Fade out (overlay alpha 0 to 1) while the next scene loads on worker threads.</description></item>
+	/// <item><description>Wait for both the fade and the load to finish.</description></item>
+	/// <item><description>Swap the scenes while the screen is fully covered.</description></item>
+	/// <item><description>Fade in (overlay alpha 1 to 0).</description></item>
+	/// </list>
+	/// </para>
+	/// <para>
+	/// Loading and fading run concurrently, so a fast load costs nothing beyond the fade itself.
+	/// </para>
+	/// </summary>
 	public partial class SceneController : Node
 	{
+		/// <summary>
+		/// Singleton instance, assigned in <c>_Ready</c> and cleared in <c>_ExitTree</c>.
+		/// </summary>
 		public static SceneController Instance { get; private set; }
 
 		#region Configuration
 
 		// Kept as plain properties because this script is typically registered as a script-only
 		// autoload, where [Export] values cannot be edited in the inspector.
+
+		/// <summary>Duration, in seconds, of the fade to the overlay color. 0 or less skips the animation.</summary>
 		public float FadeOutDuration { get; set; } = 0.15f;
+
+		/// <summary>Duration, in seconds, of the fade back to the scene. 0 or less skips the animation.</summary>
 		public float FadeInDuration { get; set; } = 0.15f;
+
+		/// <summary>Color of the transition overlay.</summary>
 		public Color FadeColor { get; set; } = Colors.Black;
 
-		// Draws above any gameplay or UI CanvasLayer.
+		/// <summary>
+		/// Canvas layer of the fade overlay. High enough to draw above any gameplay or UI CanvasLayer.
+		/// </summary>
 		private const int FadeLayerIndex = 128;
 
 		#endregion // Configuration
 
 		#region Events
 
-		// Raised on the main thread. Useful for pausing gameplay, disabling input, etc.
+		/// <summary>
+		/// Raised on the main thread when a transition begins, with the target scene.
+		/// Useful for pausing gameplay, disabling input, and so on.
+		/// </summary>
 		public event Action<Scene> TransitionStarted;
+
+		/// <summary>
+		/// Raised on the main thread when a transition ends, successfully or not, with the target scene.
+		/// </summary>
 		public event Action<Scene> TransitionFinished;
 
 		#endregion // Events
 
 		#region Fields
 
-		// Single source of truth for scene paths. Every scene is loaded the same way
-		// (threaded request), so there is no distinction between "eager" and "lazy" scenes
-		// beyond whether they are listed in _warmupScenes.
+		/// <summary>
+		/// Single source of truth for scene paths. Every scene is loaded the same way (threaded request),
+		/// so there is no distinction between "eager" and "lazy" scenes beyond whether they are listed
+		/// in <see cref="_warmupScenes"/>.
+		/// </summary>
 		private readonly Dictionary<Scene, string> _scenePaths = new()
 		{
 			{ Scene.MainMenu,    "res://UI/MainMenu/MainMenu.tscn" },
@@ -61,25 +94,36 @@ namespace TouhouFuujinroku.Global.Controllers
 			{ Scene.DebugLevel,  "res://Levels/DebugLevel/DebugLevel.tscn" },
 		};
 
-		// Scenes requested in the background at startup so the first transition to them is instant.
+		/// <summary>
+		/// Scenes requested in the background at startup so the first transition to them is instant.
+		/// </summary>
 		private static readonly Scene[] _warmupScenes = [Scene.MainMenu, Scene.OptionsMenu];
 
-		// Resolved scenes. Once a PackedScene is here, later transitions skip the disk entirely.
+		/// <summary>
+		/// Resolved scenes. Once a <see cref="PackedScene"/> is here, later transitions skip the disk entirely.
+		/// </summary>
 		private readonly Dictionary<Scene, PackedScene> _cache = [];
 
-		// Loads currently running. Prevents issuing duplicate threaded requests for the same
-		// scene (e.g. a warm-up still running when the player already clicked the button).
+		/// <summary>
+		/// Loads currently running. Prevents issuing duplicate threaded requests for the same scene
+		/// (e.g. a warm-up still running when the player already clicked the button).
+		/// </summary>
 		private readonly Dictionary<Scene, Task<PackedScene>> _inFlight = [];
 
+		/// <summary>Canvas layer hosting the fade overlay.</summary>
 		private CanvasLayer _fadeLayer;
+
+		/// <summary>Full-screen rectangle whose alpha is animated to cover and reveal the screen.</summary>
 		private ColorRect _fadeRect;
 
+		/// <summary>True while a transition (or a quit) is running. Further requests are rejected.</summary>
 		private bool _isTransitioning;
 
 		#endregion // Fields
 
 		#region Properties
 
+		/// <summary>True while a scene transition is in progress.</summary>
 		public bool IsTransitioning => _isTransitioning;
 
 		#endregion // Properties
@@ -119,13 +163,21 @@ namespace TouhouFuujinroku.Global.Controllers
 
 		#region Public API
 
-		// Fire-and-forget entry point, convenient for signal handlers and button callbacks.
-		// Prefer TransitionToAsync when the caller needs to await completion.
+		/// <summary>
+		/// Fire-and-forget entry point, convenient for signal handlers and button callbacks.
+		/// Prefer <see cref="TransitionToAsync"/> when the caller needs to await completion.
+		/// </summary>
+		/// <param name="id">Scene to transition to.</param>
 		public void TransitionTo(Scene id) => _ = TransitionToAsync(id);
 
-		// Changes to the given scene with a fade transition.
-		// Requests made while another transition is running are rejected rather than queued,
-		// which avoids double-clicks stacking transitions.
+		/// <summary>
+		/// Changes to the given scene with a fade transition.
+		/// Requests made while another transition is running are rejected rather than queued,
+		/// which avoids double-clicks stacking transitions.
+		/// If the scene fails to load, the current scene is kept and the screen simply fades back in.
+		/// </summary>
+		/// <param name="id">Scene to transition to.</param>
+		/// <returns>A task that completes when the fade-in has finished.</returns>
 		public async Task TransitionToAsync(Scene id)
 		{
 			if (_isTransitioning)
@@ -175,7 +227,10 @@ namespace TouhouFuujinroku.Global.Controllers
 			}
 		}
 
-		// Quits the game from any scene, including the main menu.
+		/// <summary>
+		/// Quits the game from any scene, including the main menu, after fading the screen out.
+		/// Ignored while a transition is running.
+		/// </summary>
 		public async void QuitGame()
 		{
 			if (_isTransitioning)
@@ -190,15 +245,22 @@ namespace TouhouFuujinroku.Global.Controllers
 			GetTree().Quit();
 		}
 
-		// Requests a scene in the background without transitioning to it.
-		// Call this ahead of time (e.g. when hovering a "Play" button).
+		/// <summary>
+		/// Requests a scene in the background without transitioning to it.
+		/// Call this ahead of time (e.g. when hovering a "Play" button).
+		/// </summary>
+		/// <param name="id">Scene to load in advance.</param>
 		public void Preload(Scene id) => _ = GetSceneAsync(id);
 
 		#endregion // Public API
 
 		#region Scene resolution
 
-		// Returns a cached scene, joins a load already in progress, or starts a new one.
+		/// <summary>
+		/// Returns a cached scene, joins a load already in progress, or starts a new one.
+		/// </summary>
+		/// <param name="id">Scene to resolve.</param>
+		/// <returns>A task producing the loaded scene, or null if loading failed.</returns>
 		private Task<PackedScene> GetSceneAsync(Scene id)
 		{
 			if (_cache.TryGetValue(id, out var cached))
@@ -217,10 +279,13 @@ namespace TouhouFuujinroku.Global.Controllers
 			return task;
 		}
 
-		// Loads a PackedScene using Godot's threaded ResourceLoader.
-		// Disk IO and resource parsing happen on worker threads; this method only polls the
-		// status once per frame on the main thread, so it never blocks rendering.
-		// Returns null on failure.
+		/// <summary>
+		/// Loads a <see cref="PackedScene"/> using Godot's threaded <see cref="ResourceLoader"/>.
+		/// Disk IO and resource parsing happen on worker threads; this method only polls the status
+		/// once per frame on the main thread, so it never blocks rendering.
+		/// </summary>
+		/// <param name="id">Scene to load. Must be registered in <c>_scenePaths</c>.</param>
+		/// <returns>The loaded scene, also stored in the cache, or null on failure.</returns>
 		private async Task<PackedScene> LoadSceneAsync(Scene id)
 		{
 			try
@@ -281,10 +346,14 @@ namespace TouhouFuujinroku.Global.Controllers
 
 		#region Scene swapping
 
-		// Removes the current scene from the tree BEFORE adding the incoming one.
-		// QueueFree alone only defers destruction to the end of the frame, so both scenes
-		// would coexist for a frame. Removing first makes "one scene alive" actually true
-		// (the old node is still freed safely at end of frame).
+		/// <summary>
+		/// Replaces the current scene with a new instance of the given one.
+		/// The current scene is removed from the tree BEFORE the incoming one is added.
+		/// <c>QueueFree</c> alone only defers destruction to the end of the frame, so both scenes would coexist
+		/// for a frame. Removing first makes "one scene alive" actually true (the old node is still freed
+		/// safely at end of frame).
+		/// </summary>
+		/// <param name="packed">Scene to instantiate and make current.</param>
 		private void SwapScene(PackedScene packed)
 		{
 			SceneTree tree = GetTree();
@@ -307,7 +376,10 @@ namespace TouhouFuujinroku.Global.Controllers
 
 		#region Fade overlay
 
-		// Built in code so the controller has no dependency on an extra .tscn file.
+		/// <summary>
+		/// Creates the overlay nodes in code so the controller has no dependency on an extra .tscn file.
+		/// The overlay starts hidden and fully transparent.
+		/// </summary>
 		private void BuildFadeOverlay()
 		{
 			_fadeLayer = new CanvasLayer
@@ -330,6 +402,10 @@ namespace TouhouFuujinroku.Global.Controllers
 			AddChild(_fadeLayer);
 		}
 
+		/// <summary>
+		/// Makes the overlay visible and applies the current <see cref="FadeColor"/>, keeping its alpha.
+		/// Input is blocked so the player cannot interact with the old scene mid-fade.
+		/// </summary>
 		private void ShowOverlay()
 		{
 			_fadeRect.Color = new Color(FadeColor, _fadeRect.Color.A);
@@ -339,6 +415,9 @@ namespace TouhouFuujinroku.Global.Controllers
 			_fadeRect.Visible = true;
 		}
 
+		/// <summary>
+		/// Resets the overlay to its idle state: transparent, hidden, and not intercepting input.
+		/// </summary>
 		private void HideOverlay()
 		{
 			_fadeRect.Color = new Color(FadeColor, 0f);
@@ -346,7 +425,12 @@ namespace TouhouFuujinroku.Global.Controllers
 			_fadeRect.Visible = false;
 		}
 
-		// Animates the overlay alpha to the target value and completes when the tween ends.
+		/// <summary>
+		/// Animates the overlay alpha to the target value. Keeps running while the tree is paused.
+		/// </summary>
+		/// <param name="targetAlpha">Final alpha, from 0 (transparent) to 1 (opaque).</param>
+		/// <param name="duration">Animation time in seconds. 0 or less applies the value instantly.</param>
+		/// <returns>A task that completes when the tween ends.</returns>
 		private async Task FadeAsync(float targetAlpha, float duration)
 		{
 			if (duration <= 0f)
