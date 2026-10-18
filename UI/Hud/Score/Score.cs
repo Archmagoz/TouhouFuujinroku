@@ -6,10 +6,14 @@ namespace TouhouFuujinroku.UI.Hud.Score
     // Digit sprites are loaded from the HBoxContainer child at runtime; no exports needed.
     public partial class Score : Control
     {
+        #region Fields
+
         private long _score;
         private Sprite2D[] _digits;
 
-        // Public API -----------------------------------------------------------------------------------------
+        #endregion // Fields
+
+        #region Public API
 
         // Adds points and refreshes the display — call this on enemy death.
         public void AddScore(long points)
@@ -25,7 +29,9 @@ namespace TouhouFuujinroku.UI.Hud.Score
             UpdateDisplay();
         }
 
-        // Godot overrides ------------------------------------------------------------------------------------
+        #endregion // Public API
+
+        #region Godot overrides
 
         public override void _Ready()
         {
@@ -33,7 +39,9 @@ namespace TouhouFuujinroku.UI.Hud.Score
             UpdateDisplay();
         }
 
-        // Private helpers ------------------------------------------------------------------------------------
+        #endregion // Godot overrides
+
+        #region Helpers
 
         // Locates the HBoxContainer child and collects its Sprite2D children left to right.
         // Index 0 = most significant digit; index N-1 = units digit.
@@ -78,5 +86,7 @@ namespace TouhouFuujinroku.UI.Hud.Score
                 _digits[i].Visible = true;
             }
         }
+
+        #endregion // Helpers
     }
 }
