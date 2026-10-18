@@ -1,6 +1,6 @@
 [gd_scene format=3 uid="uid://cj5118oxipcj6"]
 
-[ext_resource type="Texture2D" uid="uid://dmand0bis1vhi" path="res://UI/MainMenu/Assets/MainMenuSpritesheet.png" id="1_8fkdr"]
+[ext_resource type="Texture2D" uid="uid://dmand0bis1vhi" path="res://UI/Assets/UISpritesheet.png" id="1_8fkdr"]
 [ext_resource type="Script" uid="uid://yym15kl5lpkb" path="res://UI/MainMenu/MainMenu.cs" id="1_fw0vt"]
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_fw0vt"]

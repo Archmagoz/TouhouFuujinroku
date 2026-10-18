@@ -40,6 +40,7 @@ _enemyPrefabs = Dictionary[String, PackedScene]({
 stream = ExtResource("6_4i2cl")
 volume_db = -5.0
 autoplay = true
+bus = &"BGM"
 
 [node name="Background" parent="." unique_id=1237811369 instance=ExtResource("4_1ro0i")]
 z_index = -10

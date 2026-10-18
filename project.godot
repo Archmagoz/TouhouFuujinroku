@@ -19,7 +19,7 @@ config/windows_native_icon="res://_icons/icon.ico"
 
 [audio]
 
-buses/default_bus_layout=""
+buses/default_bus_layout="uid://bu4qal7nfspap"
 
 [autoload]
 
