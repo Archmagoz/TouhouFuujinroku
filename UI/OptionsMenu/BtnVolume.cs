@@ -1,7 +1,7 @@
 using Godot;
 
-using TouhouFuujinroku.Global.Settings;
 using TouhouFuujinroku.Global.Controllers;
+using TouhouFuujinroku.Global.Settings.Audio;
 
 namespace TouhouFuujinroku.UI.OptionsMenu
 {

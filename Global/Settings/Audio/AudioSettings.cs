@@ -3,7 +3,7 @@ using Godot;
 using System;
 using System.Collections.Generic;
 
-namespace TouhouFuujinroku.Global.Settings
+namespace TouhouFuujinroku.Global.Settings.Audio
 {
     /// <summary>
     /// Audio channels that have an independent volume setting. Each channel is routed through its own audio bus.
