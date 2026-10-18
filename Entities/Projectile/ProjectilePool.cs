@@ -4,28 +4,43 @@ using System.Collections.Generic;
 
 namespace TouhouFuujinroku.Entities.Projectile
 {
-	// Lifecycle-aware object pool for all projectiles in the game.
-	// Instanced as a child node inside each level's scene — not an Autoload.
-	// Call Initialize() on level _Ready() and Clear() on level _ExitTree().
-	//
-	// All projectile nodes remain permanent children of this pool at all times,
-	// including while inactive — prevents Godot from reporting orphan nodes
-	// when scenes transition and instantiated nodes lose their parent.
+	/// <summary>
+	/// Lifecycle-aware object pool for all projectiles in the game.
+	/// <para>
+	/// Instanced as a child node inside each level's scene, not as an Autoload. The level calls
+	/// <see cref="Initialize"/> on <c>_Ready</c> and <see cref="Clear"/> on <c>_ExitTree</c>.
+	/// </para>
+	/// <para>
+	/// All projectile nodes remain permanent children of the pool at all times, including while inactive.
+	/// This prevents Godot from reporting orphan nodes when scenes transition and instantiated nodes
+	/// lose their parent.
+	/// </para>
+	/// </summary>
 	[GlobalClass]
 	public partial class ProjectilePool : Node
 	{
 		#region Fields
 
+		/// <summary>
+		/// Pool of the currently loaded level. Set when the pool enters the tree and cleared when it leaves,
+		/// so it never points at a freed node.
+		/// </summary>
 		public static ProjectilePool Instance { get; private set; }
 
-		// One queue per prefab — each projectile type maintains its own recycling bin.
+		/// <summary>
+		/// One queue per prefab. Each projectile type maintains its own recycling bin.
+		/// </summary>
 		private readonly Dictionary<PackedScene, Queue<Projectile>> _pools = [];
 
-		// Tracks every projectile currently rented out — guards Return() against
-		// being called more than once for the same instance (double-return).
+		/// <summary>
+		/// Every projectile currently rented out. Guards <see cref="Return"/> against being called
+		/// more than once for the same instance (double-return).
+		/// </summary>
 		private readonly HashSet<Projectile> _rented = [];
 
-		// Guards Rent() against being called outside a level context.
+		/// <summary>
+		/// Guards <see cref="Rent"/> against being called outside a level context.
+		/// </summary>
 		private bool _initialized;
 
 		#endregion // Fields
@@ -44,10 +59,10 @@ namespace TouhouFuujinroku.Entities.Projectile
 			Instance = this;
 		}
 
-		// Clears the static reference when the level unloads — without this, Instance
-		// would keep pointing at a freed node after the level (and this pool) is gone.
 		public override void _ExitTree()
 		{
+			// Clears the static reference when the level unloads — without this, Instance
+			// would keep pointing at a freed node after the level (and this pool) is gone.
 			if (Instance == this)
 				Instance = null;
 		}
@@ -56,9 +71,13 @@ namespace TouhouFuujinroku.Entities.Projectile
 
 		#region Public API
 
-		// Marks the pool as ready to serve projectiles.
-		// Calls Clear() first so re-entering a level starts from a clean state.
-		// optionalPrewarm: prefab/count pairs instantiated immediately to avoid first-use stutter.
+		/// <summary>
+		/// Marks the pool as ready to serve projectiles. Calls <see cref="Clear"/> first,
+		/// so re-entering a level starts from a clean state.
+		/// </summary>
+		/// <param name="optionalPrewarm">
+		/// Prefab and count pairs instantiated immediately to avoid first-use stutter. Optional.
+		/// </param>
 		public void Initialize(Dictionary<PackedScene, int> optionalPrewarm = null)
 		{
 			Clear();
@@ -71,8 +90,11 @@ namespace TouhouFuujinroku.Entities.Projectile
 					Return(CreateProjectile(prefab));
 		}
 
-		// Frees every projectile node — both active and pooled — then resets pool state.
-		// Safe to call mid-level; GetChildren() covers nodes currently rented (outside any queue).
+		/// <summary>
+		/// Frees every projectile node, both active and pooled, then resets the pool state.
+		/// Safe to call mid-level: <c>GetChildren()</c> also covers nodes currently rented out
+		/// (which are outside any queue).
+		/// </summary>
 		public void Clear()
 		{
 			foreach (var child in GetChildren())
@@ -83,8 +105,16 @@ namespace TouhouFuujinroku.Entities.Projectile
 			_initialized = false;
 		}
 
-		// Pops or creates a Projectile, re-enables all its systems, and calls Initialize()
-		// to set position and angle. Returns null with a warning if called outside a level.
+		/// <summary>
+		/// Pops or creates a projectile, re-enables all its systems, and initializes its position and angle.
+		/// </summary>
+		/// <param name="prefab">Projectile scene to rent. Its root node must be a <see cref="Projectile"/>.</param>
+		/// <param name="position">Spawn position of the projectile.</param>
+		/// <param name="angle">Travel direction in radians.</param>
+		/// <returns>
+		/// The activated projectile, or null (with a warning) if called outside an active level
+		/// or if the prefab could not be instantiated as a <see cref="Projectile"/>.
+		/// </returns>
 		public Projectile Rent(PackedScene prefab, Vector2 position, float angle)
 		{
 			if (!_initialized)
@@ -103,8 +133,12 @@ namespace TouhouFuujinroku.Entities.Projectile
 			return projectile;
 		}
 
-		// Disables all projectile systems and re-enqueues it for reuse.
-		// The node stays in the tree as a child of this pool — never reparented or freed.
+		/// <summary>
+		/// Disables all projectile systems and re-enqueues the projectile for reuse.
+		/// The node stays in the tree as a child of this pool: it is never reparented or freed.
+		/// Duplicate returns and projectiles created outside the pool are rejected with a diagnostic.
+		/// </summary>
+		/// <param name="projectile">Projectile to give back to the pool.</param>
 		public void Return(Projectile projectile)
 		{
 			if (projectile.Prefab == null)
@@ -137,7 +171,11 @@ namespace TouhouFuujinroku.Entities.Projectile
 
 		#region Helpers
 
-		// Pops from the existing queue or falls through to CreateProjectile if the pool is empty.
+		/// <summary>
+		/// Pops from the existing queue, or falls through to <see cref="CreateProjectile"/> if the queue is empty.
+		/// </summary>
+		/// <param name="prefab">Projectile scene to fetch.</param>
+		/// <returns>A disabled projectile ready to be activated, or null if creation failed.</returns>
 		private Projectile GetOrCreate(PackedScene prefab)
 		{
 			if (_pools.TryGetValue(prefab, out var queue) && queue.Count > 0)
@@ -146,9 +184,13 @@ namespace TouhouFuujinroku.Entities.Projectile
 			return CreateProjectile(prefab);
 		}
 
-		// Instantiates a node, verifies its root is a Projectile, stamps its prefab reference,
-		// and adopts it as a permanent child in a disabled state.
-		// Caller is responsible for enqueuing via Return() or activating via Rent().
+		/// <summary>
+		/// Instantiates a node, verifies its root is a <see cref="Projectile"/>, stamps its prefab reference,
+		/// and adopts it as a permanent child in a disabled state.
+		/// The caller is responsible for enqueuing it via <see cref="Return"/> or activating it via <see cref="Rent"/>.
+		/// </summary>
+		/// <param name="prefab">Projectile scene to instantiate.</param>
+		/// <returns>The new disabled projectile, or null (with an error) if the root node is not a <see cref="Projectile"/>.</returns>
 		private Projectile CreateProjectile(PackedScene prefab)
 		{
 			var node = prefab.Instantiate();
@@ -174,8 +216,12 @@ namespace TouhouFuujinroku.Entities.Projectile
 			return projectile;
 		}
 
-		// Toggles every system that would let a disabled projectile affect the simulation —
-		// visibility, per-frame callbacks, and both collision roles.
+		/// <summary>
+		/// Toggles every system that would let a disabled projectile affect the simulation:
+		/// visibility, per-frame callbacks, and both collision roles.
+		/// </summary>
+		/// <param name="projectile">Projectile to enable or disable.</param>
+		/// <param name="active">True to enable all systems, false to disable them.</param>
 		private void SetProjectileActive(Projectile projectile, bool active)
 		{
 			projectile.Visible = active;

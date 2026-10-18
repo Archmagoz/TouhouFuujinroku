@@ -2,26 +2,49 @@ using Godot;
 
 namespace TouhouFuujinroku.Entities.Enemies.GenericEnemies.Weapons
 {
-    // Self-contained enemy weapon — owns all combat configuration (cadence, quota, prefab, audio).
-    // Composed directly into the enemy scene; no runtime instantiation needed.
+    /// <summary>
+    /// Base class for self-contained enemy weapons.
+    /// <para>
+    /// A weapon owns all of its combat configuration (cadence, shot quota, bullet prefab, audio) and is
+    /// composed directly into the enemy scene, so no runtime instantiation is needed. The owning enemy only
+    /// calls <see cref="TryFire"/>; how a shot is actually fired is defined by each derived weapon type
+    /// through <see cref="Fire"/>.
+    /// </para>
+    /// </summary>
     public abstract partial class EnemyWeapon : Node2D
     {
         #region Fields
 
+        /// <summary>
+        /// Bullet prefab instantiated on each shot. Defined per weapon, not per enemy.
+        /// </summary>
         [ExportGroup("Configuration")]
-        // Bullet prefab instantiated on each shot — defined per weapon, not per enemy.
         [Export] private PackedScene _bulletPrefab;
 
-        // Total shots fired before this weapon goes silent.
+        /// <summary>
+        /// Total shots fired before this weapon goes silent. A value of 0 disables the weapon.
+        /// </summary>
         [Export] private int _shotCount;
 
-        // Seconds between shots.
+        /// <summary>
+        /// Seconds between shots.
+        /// </summary>
         [Export] private float _fireRate;
 
+        /// <summary>
+        /// Sound played on every shot. Required: <see cref="TryFire"/> assumes it is assigned.
+        /// </summary>
         [ExportGroup("Components")]
         [Export] private AudioStreamPlayer2D _shotSound;
 
+        /// <summary>
+        /// Shots left in the quota. Initialized from <c>_shotCount</c> on spawn.
+        /// </summary>
         private int _remainingShots;
+
+        /// <summary>
+        /// Seconds until the next shot is allowed. Starts at 0, so the first shot is available immediately.
+        /// </summary>
         private float _cooldown;
 
         #endregion // Fields
@@ -42,8 +65,11 @@ namespace TouhouFuujinroku.Entities.Enemies.GenericEnemies.Weapons
 
         #region Public API
 
-        // Attempts to fire a shot; silently no-ops while on cooldown or quota is exhausted.
-        // Call every frame from the owning enemy's _PhysicsProcess().
+        /// <summary>
+        /// Attempts to fire a shot. Silently does nothing while on cooldown, once the shot quota
+        /// is exhausted, or if no bullet prefab is assigned.
+        /// Intended to be called every frame from the owning enemy's <c>_PhysicsProcess</c>.
+        /// </summary>
         public void TryFire()
         {
             if (_remainingShots <= 0 || _cooldown > 0f || _bulletPrefab == null) return;
@@ -58,7 +84,10 @@ namespace TouhouFuujinroku.Entities.Enemies.GenericEnemies.Weapons
 
         #region Helpers
 
-        // Fires a shot using the stored prefab — implementation defined by each weapon type.
+        /// <summary>
+        /// Fires a single shot. The firing pattern (direction, spread, spawn position) is defined by each weapon type.
+        /// </summary>
+        /// <param name="prefab">Bullet prefab to instantiate, as configured on this weapon.</param>
         protected abstract void Fire(PackedScene prefab);
 
         #endregion // Helpers

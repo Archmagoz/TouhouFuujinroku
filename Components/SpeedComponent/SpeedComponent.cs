@@ -2,26 +2,50 @@ using Godot;
 
 namespace TouhouFuujinroku.Components
 {
+	/// <summary>
+	/// Reusable speed container for any entity that moves.
+	/// <para>
+	/// The component owns the speed state and enforces its invariants (value always within
+	/// 0 and <see cref="MaxSpeed"/>). Owners read <see cref="CurrentSpeed"/> to move and react
+	/// to <see cref="SpeedChanged"/>, and never write the state directly.
+	/// </para>
+	/// </summary>
 	[GlobalClass]
 	public partial class SpeedComponent : Component
 	{
 		#region Signals
 
+		/// <summary>
+		/// Emitted whenever the current speed actually changes.
+		/// Not emitted on initialization, so listeners should read <see cref="CurrentSpeed"/> once when connecting.
+		/// </summary>
+		/// <param name="current">Speed value after the change.</param>
+		/// <param name="max">Maximum speed value.</param>
 		[Signal] public delegate void SpeedChangedEventHandler(float current, float max);
 
 		#endregion // Signals
 
 		#region Fields
 
-		// Base values (assigned via editor).
+		/// <summary>
+		/// Initial speed, assigned via the editor. Also the baseline restored by <see cref="Reset"/>.
+		/// </summary>
 		[Export] private float _currentSpeed = 10f;
+
+		/// <summary>
+		/// Upper bound for the speed value, assigned via the editor.
+		/// </summary>
 		[Export] private float _maxSpeed = 100f;
 
-		// Runtime state — cached initial speed for reset operations.
+		/// <summary>
+		/// Speed captured on spawn, used as the baseline for <see cref="Reset"/>.
+		/// </summary>
 		private float _defaultSpeed;
 
-		// Public read-only fields for external access to current speed state.
+		/// <summary>Current speed value, always between 0 and <see cref="MaxSpeed"/>.</summary>
 		public float CurrentSpeed => _currentSpeed;
+
+		/// <summary>Maximum speed value.</summary>
 		public float MaxSpeed => _maxSpeed;
 
 		#endregion // Fields
@@ -30,7 +54,7 @@ namespace TouhouFuujinroku.Components
 
 		public override void _Ready()
 		{
-			// Captures initial speed as baseline for future resets.
+			// Captured here (not at field initialization) so the editor-assigned value is the one stored.
 			_defaultSpeed = _currentSpeed;
 		}
 
@@ -38,27 +62,38 @@ namespace TouhouFuujinroku.Components
 
 		#region Public API
 
+		/// <summary>
+		/// Restores the speed configured in the editor, undoing any runtime modification.
+		/// </summary>
 		public void Reset()
 		{
-			// Restores speed to its initial configured value.
 			UpdateSpeed(_defaultSpeed);
 		}
 
+		/// <summary>
+		/// Overrides the current speed directly.
+		/// </summary>
+		/// <param name="value">New speed value. Clamped to 0 and <see cref="MaxSpeed"/>.</param>
 		public void SetSpeed(float value)
 		{
-			// Directly overrides current speed (clamped internally).
 			UpdateSpeed(value);
 		}
 
+		/// <summary>
+		/// Increases the speed relative to its current value, capped at <see cref="MaxSpeed"/>.
+		/// </summary>
+		/// <param name="amount">Amount to add. Expected to be non-negative; use <see cref="ReduceSpeed"/> to decrease.</param>
 		public void AddSpeed(float amount)
 		{
-			// Increases speed relative to current value.
 			UpdateSpeed(_currentSpeed + amount);
 		}
 
+		/// <summary>
+		/// Decreases the speed relative to its current value, floored at 0.
+		/// </summary>
+		/// <param name="amount">Amount to subtract. Expected to be non-negative; use <see cref="AddSpeed"/> to increase.</param>
 		public void ReduceSpeed(float amount)
 		{
-			// Decreases speed relative to current value.
 			UpdateSpeed(_currentSpeed - amount);
 		}
 
@@ -66,13 +101,18 @@ namespace TouhouFuujinroku.Components
 
 		#region Helpers
 
+		/// <summary>
+		/// Single write point for the speed state. Clamps the value and emits
+		/// <see cref="SpeedChanged"/> only when it actually changed.
+		/// </summary>
+		/// <param name="value">Requested speed value, clamped to 0 and <see cref="MaxSpeed"/>.</param>
 		private void UpdateSpeed(float value)
 		{
-			// Centralized speed mutation logic with clamping and change detection.
 			var oldSpeed = _currentSpeed;
 
 			_currentSpeed = Mathf.Clamp(value, 0, _maxSpeed);
 
+			// Approximate comparison avoids spurious signals from float rounding noise.
 			if (!Mathf.IsEqualApprox(_currentSpeed, oldSpeed))
 				EmitSignal(SignalName.SpeedChanged, _currentSpeed, _maxSpeed);
 		}

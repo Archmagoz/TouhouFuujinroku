@@ -7,52 +7,100 @@ using TouhouFuujinroku.Entities.Projectile;
 
 namespace TouhouFuujinroku.Entities.PlayableCharacters.Reimu
 {
+	/// <summary>
+	/// Reimu's weapon: four orbiting option sprites that trail the player, rotate continuously,
+	/// fire straight-up projectiles, and shift formation when focus is held.
+	/// <para>
+	/// Each sprite is a child of this node and owns one or more <see cref="Marker2D"/> children that act as
+	/// fire origins. Because markers are children of the rotating sprites, their global positions already
+	/// reflect the current formation every frame.
+	/// </para>
+	/// <para>
+	/// Sprite order is significant and is defined by child order in the scene:
+	/// 0 bottom-left, 1 top-left, 2 top-right, 3 bottom-right.
+	/// </para>
+	/// </summary>
 	[GlobalClass]
 	public partial class ReimuWeapon : Node2D
 	{
 		#region Fields
 
+		/// <summary>
+		/// How fast each sprite chases its target position. Higher is snappier.
+		/// </summary>
 		[ExportGroup("Configuration")]
 		[ExportSubgroup("Formation")]
-		// How fast each sprite chases its target — higher = snappier.
 		[Export] private float _followSpeed = 64f;
 
-		// How fast offsets transition between normal and focus formation.
+		/// <summary>
+		/// How fast the offsets transition between the normal and focus formations.
+		/// </summary>
 		[Export] private float _focusTransitionSpeed = 10f;
 
-		// How much the side sprites shift inward on focus.
+		/// <summary>
+		/// Horizontal distance, in pixels, the side sprites shift inward on focus.
+		/// </summary>
 		[Export] private float _focusInwardX = 10f;
 
-		// How much the bottom sprites shift forward on focus.
+		/// <summary>
+		/// Vertical distance, in pixels, the bottom sprites shift forward on focus. Negative is up.
+		/// </summary>
 		[Export] private float _focusForwardY = -15f;
 
+		/// <summary>
+		/// Seconds between shots.
+		/// </summary>
 		[ExportSubgroup("Firing")]
-		// Seconds between shots.
 		[Export] private float _fireRate = 0.1f;
 
-		// Bullet prefab instantiated on each shot.
+		/// <summary>
+		/// Bullet prefab rented from the projectile pool on each shot.
+		/// </summary>
 		[Export] private PackedScene _bulletPrefab;
 
-		// Audio played on each shot — optional, may be null.
+		/// <summary>
+		/// Audio played on each shot. Optional, may be null.
+		/// </summary>
 		[Export] private AudioStreamPlayer2D _shotSound;
 
-		// One full clockwise rotation per second.
+		/// <summary>
+		/// Sprite rotation speed in radians per second: one full clockwise rotation per second.
+		/// </summary>
 		private static readonly float RotationSpeed = Mathf.Tau;
 
-		// Sprites (loaded in _Ready()) — order: 0 bottom-left, 1 top-left, 2 top-right, 3 bottom-right.
+		/// <summary>
+		/// Option sprites, collected in <c>_Ready</c>. Order: 0 bottom-left, 1 top-left, 2 top-right, 3 bottom-right.
+		/// </summary>
 		private Array<Sprite2D> _sprites = [];
 
-		// Fire-origin markers, cached once in _Ready() — rotate with their parent sprite,
-		// so GlobalPosition already reflects the current formation each frame.
+		/// <summary>
+		/// Fire-origin markers, cached once in <c>_Ready</c>. They rotate with their parent sprite.
+		/// </summary>
 		private Array<Marker2D> _fireOrigins = [];
 
-		// Per-sprite positions and offsets, sized in _Ready() after sprites are loaded.
+		/// <summary>
+		/// Smoothed world position of each sprite, chasing <c>GlobalPosition + offset</c> to create the trailing effect.
+		/// </summary>
 		private Vector2[] _positions = [];
+
+		/// <summary>
+		/// Resting offset of each sprite relative to the weapon, baked from its editor position.
+		/// </summary>
 		private Vector2[] _normalOffsets = [];
+
+		/// <summary>
+		/// Offset change applied to each sprite while focused, added on top of its normal offset.
+		/// </summary>
 		private Vector2[] _focusDeltas = [];
+
+		/// <summary>
+		/// Current offset of each sprite, interpolated between the normal and focus formations.
+		/// </summary>
 		private Vector2[] _offsets = [];
 
-		// Seconds remaining before the next shot is allowed.
+		/// <summary>
+		/// Seconds remaining before the next shot is allowed.
+		/// </summary>
 		private float _cooldown;
 
 		#endregion // Fields
@@ -115,8 +163,12 @@ namespace TouhouFuujinroku.Entities.PlayableCharacters.Reimu
 
 		#region Public API
 
-		// Smoothly shifts sprite offsets toward the focused or normal formation.
-		// Call every frame while the focus state may be changing.
+		/// <summary>
+		/// Smoothly shifts the sprite offsets toward the focused or normal formation.
+		/// Call every frame while the focus state may be changing.
+		/// </summary>
+		/// <param name="focused">True to move toward the focus formation, false to return to the normal one.</param>
+		/// <param name="delta">Physics frame time in seconds.</param>
 		public void ToggleFocusMode(bool focused, double delta)
 		{
 			float weight = ExponentialLerp(_focusTransitionSpeed, (float)delta);
@@ -128,7 +180,10 @@ namespace TouhouFuujinroku.Entities.PlayableCharacters.Reimu
 			}
 		}
 
-		// Attempts to fire from all sprite origins; silently no-ops while on cooldown.
+		/// <summary>
+		/// Attempts to fire one projectile from every sprite origin.
+		/// Silently does nothing while on cooldown or if no bullet prefab is assigned.
+		/// </summary>
 		public void TryFire()
 		{
 			if (_cooldown > 0f || _bulletPrefab == null) return;
@@ -139,21 +194,29 @@ namespace TouhouFuujinroku.Entities.PlayableCharacters.Reimu
 			foreach (var origin in GetFireOrigins())
 				ProjectilePool.Instance.Rent(_bulletPrefab, origin, angle: -Mathf.Pi / 2f);
 
-			_shotSound.Play();
+			_shotSound?.Play();
 		}
 
 		#endregion // Public API
 
 		#region Helpers
 
-		// Yields the current GlobalPosition of every cached fire-origin marker.
+		/// <summary>
+		/// Enumerates the current global position of every cached fire-origin marker.
+		/// </summary>
+		/// <returns>One position per marker, evaluated at call time so it reflects the current formation.</returns>
 		private IEnumerable<Vector2> GetFireOrigins()
 		{
 			foreach (var marker in _fireOrigins)
 				yield return marker.GlobalPosition;
 		}
 
-		// Frame-rate-independent lerp weight via exponential decay — 1 - e^(-speed * delta).
+		/// <summary>
+		/// Computes a frame-rate-independent interpolation weight via exponential decay: 1 - e^(-speed * delta).
+		/// </summary>
+		/// <param name="speed">Decay rate. Higher values converge faster.</param>
+		/// <param name="delta">Frame time in seconds.</param>
+		/// <returns>A weight between 0 and 1 to pass to <c>Lerp</c>.</returns>
 		private static float ExponentialLerp(float speed, float delta) =>
 			1f - Mathf.Exp(-speed * delta);
 

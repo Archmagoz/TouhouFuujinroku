@@ -5,25 +5,49 @@ using TouhouFuujinroku.Interfaces;
 
 namespace TouhouFuujinroku.Entities.PlayableCharacters.Reimu
 {
+	/// <summary>
+	/// Playable character controller: reads input, moves the body, drives the sprite and weapon,
+	/// and reacts to the life cycle signals of its <see cref="PlayerHealthComponent"/>.
+	/// <para>
+	/// Reimu is the only access point to its own state. External systems query it through its public API
+	/// and never reach into its components directly.
+	/// </para>
+	/// </summary>
 	public partial class Reimu : CharacterBody2D, IDamageable
 	{
 		#region Fields
 
+		/// <summary>Lives and one-hit health state. Its signals drive the death, respawn, and game over handlers.</summary>
 		[ExportGroup("Components")]
 		[Export] private PlayerHealthComponent _health;
+
+		/// <summary>Source of the movement speed. Halved while focus is held.</summary>
 		[Export] private SpeedComponent _speed;
+
+		/// <summary>Sprite that reflects movement direction and plays the death animation.</summary>
 		[Export] private ReimuAnimatedSprite _sprite;
+
+		/// <summary>Weapon fired by the shoot input and switched between normal and focus modes.</summary>
 		[Export] private ReimuWeapon _weapon;
 
-		// Raw directional input built each physics frame.
+		/// <summary>
+		/// Raw directional input, rebuilt every physics frame.
+		/// </summary>
 		private Vector2 _movementInput;
 
-		// Frames remaining on the shoot buffer — allows firing to register slightly after
-		// the button is released, preventing missed shots from brief input gaps.
-		private const int ShootBufferFrames = 6; // ~0.1 s at 60 fps — tune to taste.
+		/// <summary>
+		/// Number of frames the shoot input stays active after the button is released (about 0.1 s at 60 fps).
+		/// Tune to taste.
+		/// </summary>
+		private const int ShootBufferFrames = 6;
+
+		/// <summary>
+		/// Frames remaining on the shoot buffer. Allows firing to register slightly after the button
+		/// is released, preventing missed shots from brief input gaps.
+		/// </summary>
 		private int _shootBuffer;
 
-		// Reimu should be the only acess point for its properties, so we can expose them here.
+		/// <summary>True while the player has no health. Exposed here so Reimu stays the only access point to its state.</summary>
 		public bool IsDead => _health.IsDead;
 
 		#endregion // Fields
@@ -44,39 +68,53 @@ namespace TouhouFuujinroku.Entities.PlayableCharacters.Reimu
 
 		#region Public API
 
-		// IDamageable implementation — simply forwards to the HealthComponent.
+		/// <summary>
+		/// Forwards damage to the <see cref="PlayerHealthComponent"/>.
+		/// </summary>
+		/// <param name="amount">Amount of damage to apply.</param>
 		public void ApplyDamage(int amount) => _health.ApplyDamage(amount);
 
 		#endregion // Public API
 
 		#region Event handlers
 
+		/// <summary>
+		/// Handles the health component's Death signal: stops the body immediately
+		/// and hands sprite control over to the death animation.
+		/// </summary>
 		private void OnPlayerDied()
 		{
-			// Stops the body immediately and hands sprite control over to the death animation.
 			Velocity = Vector2.Zero;
 			_sprite.PlayDeath();
 		}
 
+		/// <summary>
+		/// Handles the Respawned signal. <see cref="IsDead"/> is already false at this point, so
+		/// <c>_PhysicsProcess</c> resumes on its own next frame. This only clears the death pose immediately,
+		/// instead of waiting one extra frame for the input-driven sprite update to override it.
+		/// </summary>
 		private void OnRespawned()
 		{
-			// IsDead is already false at this point, so _PhysicsProcess/_Process
-			// resume on their own next frame — this just clears the death pose immediately
-			// instead of waiting one extra frame for input-driven UpdateSprite to override it.
 			_sprite.UpdateSprite(0f);
 		}
 
+		/// <summary>
+		/// Handles the GameOver signal. The entity stays permanently dead (no further reset),
+		/// so movement, shooting, and sprite updates remain locked automatically.
+		/// Hook point for external systems (game over screen, scene transition, and so on).
+		/// </summary>
 		private void OnGameOver()
 		{
-			// Entity stays permanently in IsDead == true (no further Reset call), so
-			// movement/shooting/sprite updates remain locked automatically.
-			// Hook point for external systems (game over screen, scene transition, etc.).
 		}
 
 		#endregion // Event handlers
 
 		#region Helpers
 
+		/// <summary>
+		/// Builds the movement input from the directional actions and moves the body.
+		/// Diagonal input is normalized so it is never faster than straight movement.
+		/// </summary>
 		private void HandleMovement()
 		{
 			_movementInput = Vector2.Zero;
@@ -90,6 +128,11 @@ namespace TouhouFuujinroku.Entities.PlayableCharacters.Reimu
 			MoveAndSlide();
 		}
 
+		/// <summary>
+		/// Applies focus mode: halves the movement speed and switches the weapon to its focused configuration
+		/// while the focus action is held.
+		/// </summary>
+		/// <param name="delta">Physics frame time in seconds, forwarded to the weapon's focus transition.</param>
 		private void HandleFocus(double delta)
 		{
 			bool focused = Input.IsActionPressed("focus");
@@ -97,8 +140,10 @@ namespace TouhouFuujinroku.Entities.PlayableCharacters.Reimu
 			_weapon.ToggleFocusMode(focused, delta);
 		}
 
-		// Feeds the shoot buffer on input and drains it each frame, forwarding to the
-		// fire controller. The buffer absorbs brief input gaps without skipping shots.
+		/// <summary>
+		/// Feeds the shoot buffer on input and drains it each frame, forwarding to the weapon.
+		/// The buffer absorbs brief input gaps without skipping shots.
+		/// </summary>
 		private void HandleShooting()
 		{
 			if (Input.IsActionPressed("shoot"))
@@ -111,6 +156,9 @@ namespace TouhouFuujinroku.Entities.PlayableCharacters.Reimu
 			}
 		}
 
+		/// <summary>
+		/// Updates the sprite with the horizontal input so it can lean toward the movement direction.
+		/// </summary>
 		private void UpdateSprite()
 		{
 			_sprite.UpdateSprite(_movementInput.X);

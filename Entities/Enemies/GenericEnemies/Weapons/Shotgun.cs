@@ -6,14 +6,22 @@ using TouhouFuujinroku.Entities.Projectile;
 
 namespace TouhouFuujinroku.Entities.Enemies.GenericEnemies.Weapons
 {
-	// Spread-shot weapon — fires one projectile per Marker2D child in a single salvo.
-	// Markers define shot directions; all projectiles spawn at the weapon's origin.
+	/// <summary>
+	/// Spread-shot weapon that fires one projectile per <see cref="Marker2D"/> child in a single salvo.
+	/// <para>
+	/// Markers define shot directions only; every projectile spawns at the weapon's origin.
+	/// Spread patterns are authored in the scene by placing markers, with no code changes needed.
+	/// </para>
+	/// </summary>
 	public partial class Shotgun : EnemyWeapon
 	{
 		#region Protected API
 
-		// Fires one projectile toward each Marker2D child, all spawning at GlobalPosition.
-		// The angle from origin to marker defines each projectile's travel direction.
+		/// <summary>
+		/// Fires one projectile toward each <see cref="Marker2D"/> child, all spawning at the weapon's
+		/// global position. The angle from the origin to a marker defines that projectile's travel direction.
+		/// </summary>
+		/// <param name="prefab">Bullet prefab rented from the <see cref="ProjectilePool"/> for each projectile.</param>
 		protected override void Fire(PackedScene prefab)
 		{
 			foreach (var (position, angle) in GetFireData())
@@ -24,8 +32,14 @@ namespace TouhouFuujinroku.Entities.Enemies.GenericEnemies.Weapons
 
 		#region Helpers
 
-		// Yields the spawn position and direction angle for each Marker2D child.
-		// All projectiles originate from GlobalPosition — markers define angles only.
+		/// <summary>
+		/// Enumerates the spawn position and direction angle for each <see cref="Marker2D"/> child.
+		/// Non-marker children are ignored.
+		/// </summary>
+		/// <returns>
+		/// One tuple per marker: the weapon's global position (shared by all markers) and the
+		/// angle of the marker's local position, in radians.
+		/// </returns>
 		private IEnumerable<(Vector2 position, float angle)> GetFireData()
 		{
 			foreach (var child in GetChildren())
