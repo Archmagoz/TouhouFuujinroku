@@ -1,0 +1,6 @@
+[gd_scene format=3 uid="uid://chl47sroglray"]
+
+[ext_resource type="Script" uid="uid://b0cjsxjhpx4ty" path="res://Entities/Enemies/Spawning/WaveDirector.cs" id="1_dcp8j"]
+
+[node name="WaveDirector" type="Node" unique_id=1417191657]
+script = ExtResource("1_dcp8j")
