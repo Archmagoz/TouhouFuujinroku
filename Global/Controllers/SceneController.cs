@@ -95,7 +95,7 @@ namespace TouhouFuujinroku.Global.Controllers
 			{ Scene.MainMenu,    "res://UI/MainMenu/MainMenu.tscn" },
 			{ Scene.OptionsMenu, "res://UI/OptionsMenu/OptionsMenu.tscn" },
 			{ Scene.DebugLevel,  "res://Levels/DebugLevel/DebugLevel.tscn" },
-			{ Scene.Level01, "res://Levels/Level01/Level01.tscn" },
+			{ Scene.Level01,     "res://Levels/Level01/Level01.tscn" },
 		};
 
 		/// <summary>
