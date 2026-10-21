@@ -1,0 +1,79 @@
+[gd_scene format=3 uid="uid://csyk2rmkkxf2o"]
+
+[ext_resource type="Script" uid="uid://dnboq0vvopbcn" path="res://Levels/Level01/Level01.cs" id="1_i4sge"]
+[ext_resource type="PackedScene" uid="uid://66mmcvf5xih1" path="res://Entities/Projectile/ProjectilePool.tscn" id="1_ml27q"]
+[ext_resource type="PackedScene" uid="uid://b6la2jobdl0tv" path="res://Entities/PlayableCharacters/Reimu/ReimuProjectile.tscn" id="2_8fwil"]
+[ext_resource type="PackedScene" uid="uid://chl47sroglray" path="res://Entities/Enemies/Spawning/WaveDirector.tscn" id="2_i4sge"]
+[ext_resource type="PackedScene" uid="uid://dr1xqi874edgh" path="res://Entities/Enemies/GenericEnemies/Fairies/SmallFairy.tscn" id="3_1aqau"]
+[ext_resource type="PackedScene" uid="uid://bltjhi4vk5tf3" path="res://Entities/Enemies/GenericEnemies/Projectile/GreenDot.tscn" id="3_1qgca"]
+[ext_resource type="AudioStream" uid="uid://r55uke54y2vk" path="res://Levels/DebugLevel/Assets/DebugLevelSoundtrack.ogg" id="4_ysb1f"]
+[ext_resource type="PackedScene" uid="uid://b5rqan2nxnd3j" path="res://Levels/DebugLevel/Background.tscn" id="5_8fwil"]
+[ext_resource type="PackedScene" uid="uid://ldiv54j5b0m3" path="res://Entities/PlayableCharacters/Reimu/Reimu.tscn" id="6_1qgca"]
+[ext_resource type="PackedScene" uid="uid://cljfb1nrmidxw" path="res://UI/Hud/Hud.tscn" id="7_6dskc"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_3beo8"]
+size = Vector2(26, 422)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_8yi1q"]
+size = Vector2(20, 422)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_4tne8"]
+size = Vector2(314, 20)
+
+[node name="Level01" type="Node2D" unique_id=641409104 node_paths=PackedStringArray("_waveDirector")]
+script = ExtResource("1_i4sge")
+_waveDirector = NodePath("WaveDirector")
+_reimuBulletPrefab = ExtResource("2_8fwil")
+_greenDotBulletPrefab = ExtResource("3_1qgca")
+
+[node name="ProjectilePool" parent="." unique_id=93427511 instance=ExtResource("1_ml27q")]
+
+[node name="WaveDirector" parent="." unique_id=1417191657 node_paths=PackedStringArray("_hud") instance=ExtResource("2_i4sge")]
+_hud = NodePath("../Hud")
+_enemyPrefabs = Dictionary[String, PackedScene]({
+"SmallFairy": ExtResource("3_1aqau"),
+"generic": ExtResource("3_1aqau")
+})
+
+[node name="Soundtrack" type="AudioStreamPlayer2D" parent="." unique_id=1250787388]
+stream = ExtResource("4_ysb1f")
+volume_db = -5.0
+autoplay = true
+bus = &"BGM"
+
+[node name="Background" parent="." unique_id=1237811369 instance=ExtResource("5_8fwil")]
+z_index = -10
+position = Vector2(-81, 0)
+
+[node name="CornersHitbox" type="StaticBody2D" parent="." unique_id=1958889644]
+collision_layer = 2
+
+[node name="Left" type="CollisionShape2D" parent="CornersHitbox" unique_id=787142925]
+position = Vector2(-267, 0)
+shape = SubResource("RectangleShape2D_3beo8")
+
+[node name="Right" type="CollisionShape2D" parent="CornersHitbox" unique_id=880642155]
+position = Vector2(71, 0)
+shape = SubResource("RectangleShape2D_8yi1q")
+
+[node name="Down" type="CollisionShape2D" parent="CornersHitbox" unique_id=311504753]
+position = Vector2(-97, 222)
+shape = SubResource("RectangleShape2D_4tne8")
+
+[node name="Up" type="CollisionShape2D" parent="CornersHitbox" unique_id=428785116]
+position = Vector2(-97, -222)
+shape = SubResource("RectangleShape2D_4tne8")
+
+[node name="Reimu" parent="." unique_id=2024202319 instance=ExtResource("6_1qgca")]
+z_index = 1
+position = Vector2(-108, 164)
+
+[node name="Hud" parent="." unique_id=1689239087 instance=ExtResource("7_6dskc")]
+offset_left = -293.0
+offset_top = -291.0
+offset_right = -293.0
+offset_bottom = -291.0
+
+[node name="Camera" type="Camera2D" parent="." unique_id=1545325962]
+z_index = 3
+zoom = Vector2(1.7, 1.7)

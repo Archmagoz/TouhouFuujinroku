@@ -20,6 +20,9 @@ namespace TouhouFuujinroku.Global.Controllers
 
 		/// <summary>Sandbox level used to test gameplay systems.</summary>
 		DebugLevel,
+
+		/// <summary>Stage 1 level.</summary>
+		Level01,
 	}
 
 	/// <summary>
@@ -92,12 +95,13 @@ namespace TouhouFuujinroku.Global.Controllers
 			{ Scene.MainMenu,    "res://UI/MainMenu/MainMenu.tscn" },
 			{ Scene.OptionsMenu, "res://UI/OptionsMenu/OptionsMenu.tscn" },
 			{ Scene.DebugLevel,  "res://Levels/DebugLevel/DebugLevel.tscn" },
+			{ Scene.Level01, "res://Levels/Level01/Level01.tscn" },
 		};
 
 		/// <summary>
 		/// Scenes requested in the background at startup so the first transition to them is instant.
 		/// </summary>
-		private static readonly Scene[] _warmupScenes = [Scene.MainMenu, Scene.OptionsMenu];
+		private static readonly Scene[] _warmupScenes = [Scene.MainMenu, Scene.OptionsMenu, Scene.Level01];
 
 		/// <summary>
 		/// Resolved scenes. Once a <see cref="PackedScene"/> is here, later transitions skip the disk entirely.

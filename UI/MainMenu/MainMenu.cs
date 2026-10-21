@@ -19,7 +19,7 @@ namespace TouhouFuujinroku.UI
 		private static void OnGameStartPressed()
 		{
 			MenuAudioController.Instance.StopMusic();
-			SceneController.Instance.TransitionTo(Scene.DebugLevel);
+			SceneController.Instance.TransitionTo(Scene.Level01);
 		}
 
 		/// <summary>
