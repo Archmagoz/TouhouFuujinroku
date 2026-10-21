@@ -37,7 +37,7 @@ _enemyPrefabs = Dictionary[String, PackedScene]({
 "generic": ExtResource("9_kpwub")
 })
 
-[node name="PlayFieldClearer" parent="." unique_id=246317081 node_paths=PackedStringArray("_reimu", "_waveDirector") instance=ExtResource("7_axnee")]
+[node name="PlayfieldClearer" parent="." unique_id=246317081 node_paths=PackedStringArray("_reimu", "_waveDirector") instance=ExtResource("7_axnee")]
 _reimu = NodePath("../Reimu")
 _waveDirector = NodePath("../WaveDirector")
 
