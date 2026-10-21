@@ -9,9 +9,11 @@ script = ExtResource("1_1aeay")
 
 [node name="MenuBGM" type="AudioStreamPlayer" parent="." unique_id=1347479912]
 stream = ExtResource("2_0kamv")
+volume_db = -5.0
 autoplay = true
 bus = &"BGM"
 
 [node name="SelectSFX" type="AudioStreamPlayer" parent="." unique_id=584679746]
 stream = ExtResource("3_0kamv")
+volume_db = -8.0
 bus = &"SE"

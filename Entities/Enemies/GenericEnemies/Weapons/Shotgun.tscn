@@ -25,4 +25,5 @@ position = Vector2(2, 5)
 
 [node name="ShotSound" type="AudioStreamPlayer2D" parent="." unique_id=1858571538]
 stream = ExtResource("2_icahy")
+volume_db = -8.0
 bus = &"SE"
