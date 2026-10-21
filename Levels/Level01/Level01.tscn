@@ -7,9 +7,10 @@
 [ext_resource type="PackedScene" uid="uid://dr1xqi874edgh" path="res://Entities/Enemies/GenericEnemies/Fairies/SmallFairy.tscn" id="3_1aqau"]
 [ext_resource type="PackedScene" uid="uid://bltjhi4vk5tf3" path="res://Entities/Enemies/GenericEnemies/Projectile/GreenDot.tscn" id="3_1qgca"]
 [ext_resource type="AudioStream" uid="uid://r55uke54y2vk" path="res://Levels/DebugLevel/Assets/DebugLevelSoundtrack.ogg" id="4_ysb1f"]
-[ext_resource type="PackedScene" uid="uid://b5rqan2nxnd3j" path="res://Levels/DebugLevel/Background.tscn" id="5_8fwil"]
+[ext_resource type="PackedScene" uid="uid://b5rqan2nxnd3j" path="res://Levels/Level01/Assets/Background.tscn" id="5_8fwil"]
 [ext_resource type="PackedScene" uid="uid://ldiv54j5b0m3" path="res://Entities/PlayableCharacters/Reimu/Reimu.tscn" id="6_1qgca"]
 [ext_resource type="PackedScene" uid="uid://cljfb1nrmidxw" path="res://UI/Hud/Hud.tscn" id="7_6dskc"]
+[ext_resource type="PackedScene" uid="uid://bc6ya2toky3oe" path="res://Levels/Tools/PlayFieldClearer.tscn" id="11_8fwil"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_3beo8"]
 size = Vector2(26, 422)
@@ -35,15 +36,19 @@ _enemyPrefabs = Dictionary[String, PackedScene]({
 "generic": ExtResource("3_1aqau")
 })
 
+[node name="PlayfieldClearer" parent="." unique_id=246317081 node_paths=PackedStringArray("_reimu", "_waveDirector") instance=ExtResource("11_8fwil")]
+_reimu = NodePath("../Reimu")
+_waveDirector = NodePath("../WaveDirector")
+
+[node name="Background" parent="." unique_id=1237811369 instance=ExtResource("5_8fwil")]
+z_index = -10
+position = Vector2(-81, 0)
+
 [node name="Soundtrack" type="AudioStreamPlayer2D" parent="." unique_id=1250787388]
 stream = ExtResource("4_ysb1f")
 volume_db = -5.0
 autoplay = true
 bus = &"BGM"
-
-[node name="Background" parent="." unique_id=1237811369 instance=ExtResource("5_8fwil")]
-z_index = -10
-position = Vector2(-81, 0)
 
 [node name="CornersHitbox" type="StaticBody2D" parent="." unique_id=1958889644]
 collision_layer = 2

@@ -131,6 +131,26 @@ namespace TouhouFuujinroku.Entities.Enemies.Spawning
             SetPhysicsProcess(false);
         }
 
+        /// <summary>
+        /// Cancels the active spawn groups currently spawning enemies, discarding their remaining unspawned units.
+        /// Future upcoming waves remain scheduled and will spawn at their original script times without delay or loss.
+        /// </summary>
+        public void CancelCurrentWave()
+        {
+            _activeGroups.Clear();
+        }
+
+        /// <summary>
+        /// Frees every enemy currently alive, without awarding score. Pending spawns are untouched, so the
+        /// script timeline keeps running. Each enemy's Path2D is freed together with it.
+        /// </summary>
+        public void ClearEnemies()
+        {
+            foreach (var child in GetChildren())
+                if (child is GenericEnemy enemy)
+                    enemy.QueueFree();
+        }
+
         #endregion // Public API
 
         #region Helpers

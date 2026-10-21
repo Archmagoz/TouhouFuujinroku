@@ -6,6 +6,7 @@
 [ext_resource type="Script" uid="uid://c47fphfrle78r" path="res://Entities/PlayableCharacters/Reimu/ReimuAnimatedSprite.cs" id="3_6xvey"]
 [ext_resource type="PackedScene" uid="uid://dxj0lkshro5gy" path="res://Components/SpeedComponent/SpeedComponent.tscn" id="3_buwra"]
 [ext_resource type="PackedScene" uid="uid://bd843vt4pvk5p" path="res://Entities/PlayableCharacters/Reimu/ReimuWeapon.tscn" id="6_e10mn"]
+[ext_resource type="AudioStream" uid="uid://dufkjcah1pypw" path="res://Entities/PlayableCharacters/Assets/DeadSFX.wav" id="7_e10mn"]
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_v87c3"]
 atlas = ExtResource("1_118g0")
@@ -233,21 +234,27 @@ animations = [{
 }]
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_118g0"]
-radius = 7.0
+radius = 6.0
 
-[node name="Reimu" type="CharacterBody2D" unique_id=2024202319 node_paths=PackedStringArray("_health", "_speed", "_sprite", "_weapon")]
+[node name="Reimu" type="CharacterBody2D" unique_id=2024202319 node_paths=PackedStringArray("_health", "_speed", "_sprite", "_weapon", "_deathSound")]
 collision_mask = 26
 script = ExtResource("1_v87c3")
 _health = NodePath("PlayerHealthComponent")
 _speed = NodePath("SpeedComponent")
 _sprite = NodePath("ReimuAnimatedSprite")
 _weapon = NodePath("ReimuWeapon")
+_deathSound = NodePath("DeadSFX")
 
 [node name="PlayerHealthComponent" parent="." unique_id=1355624808 instance=ExtResource("2_6xvey")]
 
 [node name="SpeedComponent" parent="." unique_id=1899239882 instance=ExtResource("3_buwra")]
 _currentSpeed = 300.0
 _maxSpeed = 300.0
+
+[node name="DeadSFX" type="AudioStreamPlayer2D" parent="." unique_id=1136081441]
+stream = ExtResource("7_e10mn")
+volume_db = -8.0
+bus = &"SE"
 
 [node name="ReimuAnimatedSprite" type="AnimatedSprite2D" parent="." unique_id=1329335674]
 position = Vector2(1, 0)

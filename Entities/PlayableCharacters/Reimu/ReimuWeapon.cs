@@ -197,6 +197,19 @@ namespace TouhouFuujinroku.Entities.PlayableCharacters.Reimu
 			_shotSound?.Play();
 		}
 
+		/// <summary>
+		/// Instantly moves every option sprite to its target position, skipping the trailing effect.
+		/// Call it after teleporting the owner, so the formation does not fly across the screen to catch up.
+		/// </summary>
+		public void SnapFormation()
+		{
+			for (int i = 0; i < _sprites.Count; i++)
+			{
+				_positions[i] = GlobalPosition + _offsets[i];
+				_sprites[i].GlobalPosition = _positions[i];
+			}
+		}
+
 		#endregion // Public API
 
 		#region Helpers

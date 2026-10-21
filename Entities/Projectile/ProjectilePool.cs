@@ -167,6 +167,18 @@ namespace TouhouFuujinroku.Entities.Projectile
 			queue.Enqueue(projectile);
 		}
 
+		/// <summary>
+		/// Returns every projectile currently in flight to the pool, e.g. to clear the screen.
+		/// Must not run inside a physics callback such as <c>area_entered</c>, because the engine blocks disabling
+		/// collision there. When reacting to a collision, defer the call (<c>CallDeferred</c>).
+		/// </summary>
+		public void ReturnAll()
+		{
+			// Iterate over a copy — Return() removes each projectile from _rented while we loop.
+			foreach (var projectile in new List<Projectile>(_rented))
+				Return(projectile);
+		}
+
 		#endregion // Public API
 
 		#region Helpers

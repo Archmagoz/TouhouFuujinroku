@@ -3,10 +3,11 @@
 [ext_resource type="Script" uid="uid://di8lk710vvgtk" path="res://Levels/DebugLevel/DebugLevel.cs" id="1_r64kg"]
 [ext_resource type="PackedScene" uid="uid://b6la2jobdl0tv" path="res://Entities/PlayableCharacters/Reimu/ReimuProjectile.tscn" id="2_amjf5"]
 [ext_resource type="PackedScene" uid="uid://bltjhi4vk5tf3" path="res://Entities/Enemies/GenericEnemies/Projectile/GreenDot.tscn" id="3_axnee"]
-[ext_resource type="PackedScene" uid="uid://b5rqan2nxnd3j" path="res://Levels/DebugLevel/Background.tscn" id="4_1ro0i"]
 [ext_resource type="PackedScene" uid="uid://ldiv54j5b0m3" path="res://Entities/PlayableCharacters/Reimu/Reimu.tscn" id="5_n0rhh"]
 [ext_resource type="PackedScene" uid="uid://chl47sroglray" path="res://Entities/Enemies/Spawning/WaveDirector.tscn" id="5_r64kg"]
 [ext_resource type="AudioStream" uid="uid://r55uke54y2vk" path="res://Levels/DebugLevel/Assets/DebugLevelSoundtrack.ogg" id="6_4i2cl"]
+[ext_resource type="PackedScene" uid="uid://c33mpeki1sj3u" path="res://Levels/DebugLevel/Assets/Background.tscn" id="7_amjf5"]
+[ext_resource type="PackedScene" uid="uid://bc6ya2toky3oe" path="res://Levels/Tools/PlayFieldClearer.tscn" id="7_axnee"]
 [ext_resource type="PackedScene" uid="uid://cljfb1nrmidxw" path="res://UI/Hud/Hud.tscn" id="7_ljaqd"]
 [ext_resource type="PackedScene" uid="uid://dr1xqi874edgh" path="res://Entities/Enemies/GenericEnemies/Fairies/SmallFairy.tscn" id="9_kpwub"]
 [ext_resource type="PackedScene" uid="uid://66mmcvf5xih1" path="res://Entities/Projectile/ProjectilePool.tscn" id="10_amjf5"]
@@ -36,15 +37,19 @@ _enemyPrefabs = Dictionary[String, PackedScene]({
 "generic": ExtResource("9_kpwub")
 })
 
+[node name="PlayFieldClearer" parent="." unique_id=246317081 node_paths=PackedStringArray("_reimu", "_waveDirector") instance=ExtResource("7_axnee")]
+_reimu = NodePath("../Reimu")
+_waveDirector = NodePath("../WaveDirector")
+
+[node name="Background" parent="." unique_id=1237811369 instance=ExtResource("7_amjf5")]
+z_index = -10
+position = Vector2(-90, 0)
+
 [node name="Soundtrack" type="AudioStreamPlayer2D" parent="." unique_id=1250787388]
 stream = ExtResource("6_4i2cl")
 volume_db = -5.0
 autoplay = true
 bus = &"BGM"
-
-[node name="Background" parent="." unique_id=1237811369 instance=ExtResource("4_1ro0i")]
-z_index = -10
-position = Vector2(-81, 0)
 
 [node name="CornersHitbox" type="StaticBody2D" parent="." unique_id=1958889644]
 collision_layer = 2
