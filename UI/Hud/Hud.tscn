@@ -3,6 +3,7 @@
 [ext_resource type="Script" uid="uid://cf0aii5e28tvs" path="res://UI/Hud/Hud.cs" id="1_hdg5h"]
 [ext_resource type="Texture2D" uid="uid://bhesd5w5ub3or" path="res://UI/Hud/Assets/Hud.png" id="1_pa3cw"]
 [ext_resource type="PackedScene" uid="uid://jugsva0n4t4k" path="res://UI/Hud/Score/Score.tscn" id="2_rt2hf"]
+[ext_resource type="PackedScene" uid="uid://coecwvo04wi0e" path="res://UI/Hud/HiScore/HiScore.tscn" id="3_d3x5k"]
 [ext_resource type="PackedScene" uid="uid://dael2bp6eygmh" path="res://UI/Hud/Lives/Lives.tscn" id="4_7ha4p"]
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_pa3cw"]
@@ -62,7 +63,19 @@ offset_right = 432.0
 offset_bottom = 204.0
 texture = SubResource("AtlasTexture_7ha4p")
 
-[node name="Score" parent="." unique_id=1159864689 instance=ExtResource("2_rt2hf")]
+[node name="HiScore" parent="." unique_id=1159864689 instance=ExtResource("3_d3x5k")]
+layout_mode = 1
+anchors_preset = 0
+anchor_right = 0.0
+anchor_bottom = 0.0
+offset_left = 431.0
+offset_top = 104.0
+offset_right = 431.0
+offset_bottom = 104.0
+grow_horizontal = 1
+grow_vertical = 1
+
+[node name="Score" parent="." unique_id=1899556583 instance=ExtResource("2_rt2hf")]
 layout_mode = 1
 anchors_preset = 0
 anchor_right = 0.0
