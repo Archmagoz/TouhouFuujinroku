@@ -48,6 +48,18 @@ namespace TouhouFuujinroku.Global.Controllers
         public void PlayMenuSelectSFX() => _selectSfxPlayer.Play();
 
         /// <summary>
+        /// Starts the menu music if it is not already playing. Safe to call on every menu screen entry:
+        /// it does nothing on first boot (already playing) or when returning from the options menu,
+        /// and restarts the music after the gameplay level stopped it.
+        /// </summary>
+        public void PlayMusic()
+        {
+            if (_menuBgmPlayer.Playing) return;
+
+            _menuBgmPlayer.Play();
+        }
+
+        /// <summary>
         /// Stops the menu background music, typically when leaving the menu for a level.
         /// </summary>
         public void StopMusic() => _menuBgmPlayer.Stop();

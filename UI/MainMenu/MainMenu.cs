@@ -1,3 +1,5 @@
+using Godot;
+
 using TouhouFuujinroku.Global.Controllers;
 
 namespace TouhouFuujinroku.UI
@@ -8,9 +10,24 @@ namespace TouhouFuujinroku.UI
 	/// The handlers are connected in the editor to the <c>pressed</c> signal of their buttons.
 	/// Focus animation and selection sounds are inherited from <see cref="MenuScreen"/>.
 	/// </para>
+	/// <para>
+	/// The menu music is owned by <see cref="MenuAudioController"/>, which lives outside any scene and
+	/// therefore never replays on its own. The screen asks for it every time it is entered.
+	/// </para>
 	/// </summary>
 	public partial class MainMenu : MenuScreen
 	{
+		#region Godot overrides
+
+		public override void _Ready()
+		{
+			// Idempotent: does nothing if the music is already playing (first boot, or coming back
+			// from the options menu), and restarts it after the gameplay level stopped it.
+			MenuAudioController.Instance.PlayMusic();
+		}
+
+		#endregion // Godot overrides
+
 		#region Event handlers
 
 		/// <summary>
