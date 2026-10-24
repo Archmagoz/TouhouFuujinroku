@@ -21,10 +21,12 @@ size = Vector2(20, 422)
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_4tne8"]
 size = Vector2(314, 20)
 
-[node name="DebugLevel" type="Node2D" unique_id=641409104 node_paths=PackedStringArray("_label", "_waveDirector")]
+[node name="DebugLevel" type="Node2D" unique_id=641409104 node_paths=PackedStringArray("_label", "_waveDirector", "_player", "_hud")]
 script = ExtResource("1_r64kg")
 _label = NodePath("DebugFPS")
 _waveDirector = NodePath("WaveDirector")
+_player = NodePath("Reimu")
+_hud = NodePath("Hud")
 _reimuBulletPrefab = ExtResource("2_amjf5")
 _greenDotBulletPrefab = ExtResource("3_axnee")
 
