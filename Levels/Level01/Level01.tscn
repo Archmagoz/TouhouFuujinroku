@@ -21,9 +21,11 @@ size = Vector2(20, 422)
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_4tne8"]
 size = Vector2(314, 20)
 
-[node name="Level01" type="Node2D" unique_id=641409104 node_paths=PackedStringArray("_waveDirector")]
+[node name="Level01" type="Node2D" unique_id=641409104 node_paths=PackedStringArray("_waveDirector", "_player", "_hud")]
 script = ExtResource("1_i4sge")
 _waveDirector = NodePath("WaveDirector")
+_player = NodePath("Reimu")
+_hud = NodePath("Hud")
 _reimuBulletPrefab = ExtResource("2_8fwil")
 _greenDotBulletPrefab = ExtResource("3_1qgca")
 
@@ -82,3 +84,5 @@ offset_bottom = -291.0
 [node name="Camera" type="Camera2D" parent="." unique_id=1545325962]
 z_index = 3
 zoom = Vector2(1.7, 1.7)
+
+[connection signal="LivesChanged" from="Reimu" to="." method="OnPlayerLivesChanged"]

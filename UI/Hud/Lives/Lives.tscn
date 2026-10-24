@@ -1,0 +1,46 @@
+[gd_scene format=3 uid="uid://dael2bp6eygmh"]
+
+[ext_resource type="Script" uid="uid://ddv2vg7tcwpb4" path="res://UI/Hud/Lives/Lives.cs" id="1_woiaj"]
+[ext_resource type="Texture2D" uid="uid://bhesd5w5ub3or" path="res://UI/Hud/Assets/Hud.png" id="2_6pwe1"]
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_woiaj"]
+atlas = ExtResource("2_6pwe1")
+region = Rect2(528, 34, 17, 16)
+
+[node name="Lives" type="Control" unique_id=1865502423]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_right = -874.0
+offset_bottom = -703.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_woiaj")
+
+[node name="HBoxContainer" type="HBoxContainer" parent="." unique_id=1224549051]
+layout_mode = 0
+offset_left = 1.0
+offset_top = 1.0
+offset_right = 83.0
+offset_bottom = 15.0
+
+[node name="Star1" type="Sprite2D" parent="HBoxContainer" unique_id=1167253140]
+position = Vector2(7.5, 7)
+texture = SubResource("AtlasTexture_woiaj")
+
+[node name="Star2" type="Sprite2D" parent="HBoxContainer" unique_id=1098660937]
+position = Vector2(24.5, 7)
+texture = SubResource("AtlasTexture_woiaj")
+
+[node name="Star3" type="Sprite2D" parent="HBoxContainer" unique_id=455647016]
+position = Vector2(41.5, 7)
+texture = SubResource("AtlasTexture_woiaj")
+
+[node name="Star4" type="Sprite2D" parent="HBoxContainer" unique_id=1334845661]
+position = Vector2(58.5, 7)
+texture = SubResource("AtlasTexture_woiaj")
+
+[node name="Star5" type="Sprite2D" parent="HBoxContainer" unique_id=489909563]
+position = Vector2(75.5, 7)
+texture = SubResource("AtlasTexture_woiaj")

@@ -3,6 +3,7 @@
 [ext_resource type="Script" uid="uid://cf0aii5e28tvs" path="res://UI/Hud/Hud.cs" id="1_hdg5h"]
 [ext_resource type="Texture2D" uid="uid://bhesd5w5ub3or" path="res://UI/Hud/Assets/Hud.png" id="1_pa3cw"]
 [ext_resource type="PackedScene" uid="uid://jugsva0n4t4k" path="res://UI/Hud/Score/Score.tscn" id="2_rt2hf"]
+[ext_resource type="PackedScene" uid="uid://dael2bp6eygmh" path="res://UI/Hud/Lives/Lives.tscn" id="4_7ha4p"]
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_pa3cw"]
 atlas = ExtResource("1_pa3cw")
@@ -20,7 +21,7 @@ region = Rect2(289.04794, 32.99499, 63.789948, 40.306835)
 atlas = ExtResource("1_pa3cw")
 region = Rect2(298.00137, 72.6156, 56.77426, 38.838554)
 
-[node name="Hud" type="Control" unique_id=1689239087 node_paths=PackedStringArray("_score")]
+[node name="Hud" type="Control" unique_id=1689239087 node_paths=PackedStringArray("_score", "_lives")]
 z_index = 3
 layout_mode = 3
 anchors_preset = 15
@@ -30,7 +31,7 @@ grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("1_hdg5h")
 _score = NodePath("Score")
-metadata/_edit_vertical_guides_ = [432.0]
+_lives = NodePath("Lives")
 
 [node name="BG01" type="TextureRect" parent="." unique_id=1025087550]
 layout_mode = 0
@@ -70,5 +71,17 @@ offset_left = 431.0
 offset_top = 125.0
 offset_right = 431.0
 offset_bottom = 125.0
+grow_horizontal = 1
+grow_vertical = 1
+
+[node name="Lives" parent="." unique_id=1865502423 instance=ExtResource("4_7ha4p")]
+layout_mode = 1
+anchors_preset = 0
+anchor_right = 0.0
+anchor_bottom = 0.0
+offset_left = 432.0
+offset_top = 169.0
+offset_right = 432.0
+offset_bottom = 169.0
 grow_horizontal = 1
 grow_vertical = 1

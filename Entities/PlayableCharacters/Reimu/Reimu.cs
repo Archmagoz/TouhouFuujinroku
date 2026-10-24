@@ -1,7 +1,5 @@
 using Godot;
 
-using System;
-
 using TouhouFuujinroku.Components;
 using TouhouFuujinroku.Interfaces;
 
@@ -13,7 +11,8 @@ namespace TouhouFuujinroku.Entities.PlayableCharacters.Reimu
 	/// <para>
 	/// Reimu is the only access point to its own state. External systems query it through its public API
 	/// and never reach into its components directly. They react to its life cycle through the
-	/// <see cref="Died"/>, <see cref="Respawned"/>, and <see cref="GameOver"/> events.
+	/// <see cref="Died"/>, <see cref="Respawned"/>, <see cref="GameOver"/>, and <see cref="LivesChanged"/> signals,
+	/// connected in the editor.
 	/// </para>
 	/// <para>
 	/// After each respawn the player returns to the position where the level started and is invincible for
@@ -22,9 +21,40 @@ namespace TouhouFuujinroku.Entities.PlayableCharacters.Reimu
 	/// </summary>
 	public partial class Reimu : CharacterBody2D, IDamageable
 	{
+		#region Signals
+
+		/// <summary>
+		/// Emitted when the player is hit and dies, before the respawn delay. Listeners typically clear the
+		/// playfield. It may be emitted from inside a physics callback, so listeners that change collision
+		/// state must connect with the Deferred flag.
+		/// </summary>
+		[Signal] public delegate void DiedEventHandler();
+
+		/// <summary>
+		/// Emitted when the player comes back to life, already at the respawn position and invincible.
+		/// </summary>
+		[Signal] public delegate void RespawnedEventHandler();
+
+		/// <summary>
+		/// Emitted when the last life is lost. The player stays dead.
+		/// </summary>
+		[Signal] public delegate void GameOverEventHandler();
+
+		/// <summary>
+		/// Emitted whenever the number of remaining lives changes, after the new value is already in effect.
+		/// Not emitted on initialization, so listeners should read <see cref="Lives"/> once when connecting.
+		/// </summary>
+		/// <param name="current">Remaining lives after the change.</param>
+		/// <param name="max">Maximum number of lives.</param>
+		[Signal] public delegate void LivesChangedEventHandler(int current, int max);
+
+		#endregion // Signals
+
 		#region Fields
 
-		/// <summary>Lives and one-hit health state. Its signals drive the death, respawn, and game over handlers.</summary>
+		#region Exported
+
+		/// <summary>Lives and one-hit health state. Its signals drive the death, respawn, lives, and game over handlers.</summary>
 		[ExportGroup("Components")]
 		[Export] private PlayerHealthComponent _health;
 
@@ -47,39 +77,15 @@ namespace TouhouFuujinroku.Entities.PlayableCharacters.Reimu
 		[ExportGroup("Respawn")]
 		[Export] private float _invincibilityDuration = 3f;
 
-		/// <summary>
-		/// Raised when the player is hit and dies, before the respawn delay. Listeners typically clear the
-		/// playfield. It may be raised from inside a physics callback, so listeners must defer any work that
-		/// changes collision state.
-		/// </summary>
-		public event Action Died;
+		#endregion // Exported
 
-		/// <summary>
-		/// Raised when the player comes back to life, already at the respawn position and invincible.
-		/// </summary>
-		public event Action Respawned;
-
-		/// <summary>
-		/// Raised when the last life is lost. The player stays dead.
-		/// </summary>
-		public event Action GameOver;
-
-		/// <summary>
-		/// Raw directional input, rebuilt every physics frame.
-		/// </summary>
-		private Vector2 _movementInput;
+		#region Constants
 
 		/// <summary>
 		/// Number of frames the shoot input stays active after the button is released (about 0.1 s at 60 fps).
 		/// Tune to taste.
 		/// </summary>
 		private const int ShootBufferFrames = 6;
-
-		/// <summary>
-		/// Frames remaining on the shoot buffer. Allows firing to register slightly after the button
-		/// is released, preventing missed shots from brief input gaps.
-		/// </summary>
-		private int _shootBuffer;
 
 		/// <summary>
 		/// Duration, in seconds, of each visible or faded phase of the invincibility blink.
@@ -91,6 +97,21 @@ namespace TouhouFuujinroku.Entities.PlayableCharacters.Reimu
 		/// </summary>
 		private const float FadedAlpha = 0.35f;
 
+		#endregion // Constants
+
+		#region Runtime state
+
+		/// <summary>
+		/// Raw directional input, rebuilt every physics frame.
+		/// </summary>
+		private Vector2 _movementInput;
+
+		/// <summary>
+		/// Frames remaining on the shoot buffer. Allows firing to register slightly after the button
+		/// is released, preventing missed shots from brief input gaps.
+		/// </summary>
+		private int _shootBuffer;
+
 		/// <summary>
 		/// Position the player had when the level started. Every respawn returns here, not to where the player died.
 		/// </summary>
@@ -101,13 +122,25 @@ namespace TouhouFuujinroku.Entities.PlayableCharacters.Reimu
 		/// </summary>
 		private float _invincibilityTimeLeft;
 
+		#endregion // Runtime state
+
+		#endregion // Fields
+
+		#region Properties
+
 		/// <summary>True while the player has no health. Exposed here so Reimu stays the only access point to its state.</summary>
 		public bool IsDead => _health.IsDead;
 
 		/// <summary>True while the player ignores damage after a respawn.</summary>
 		public bool IsInvincible => _invincibilityTimeLeft > 0f;
 
-		#endregion // Fields
+		/// <summary>Remaining lives, including the one currently in play.</summary>
+		public int Lives => _health.CurrentLives;
+
+		/// <summary>Maximum number of lives.</summary>
+		public int MaxLives => _health.MaxLives;
+
+		#endregion // Properties
 
 		#region Godot overrides
 
@@ -146,11 +179,11 @@ namespace TouhouFuujinroku.Entities.PlayableCharacters.Reimu
 
 		#endregion // Public API
 
-		#region Event handlers
+		#region Signal handlers
 
 		/// <summary>
 		/// Handles the health component's Death signal: stops the body immediately, discards any buffered
-		/// shots, hands sprite control over to the death animation, and notifies listeners.
+		/// shots, hides the sprite and weapon, plays the death sound, and emits <see cref="Died"/>.
 		/// </summary>
 		private void OnPlayerDied()
 		{
@@ -160,14 +193,27 @@ namespace TouhouFuujinroku.Entities.PlayableCharacters.Reimu
 			_weapon.SetVisible(false);
 			_deathSound.Play();
 
-			Died?.Invoke();
+			EmitSignal(SignalName.Died);
+		}
+
+		/// <summary>
+		/// Handles the health component's LivesChanged signal and republishes it as <see cref="LivesChanged"/>.
+		/// The component emits it after decrementing the lives, so <see cref="Lives"/> is already
+		/// up to date by the time listeners run.
+		/// </summary>
+		/// <param name="current">Remaining lives after the change.</param>
+		/// <param name="max">Maximum number of lives.</param>
+		private void OnLivesChanged(int current, int max)
+		{
+			EmitSignal(SignalName.LivesChanged, current, max);
 		}
 
 		/// <summary>
 		/// Handles the Respawned signal. <see cref="IsDead"/> is already false at this point, so
 		/// <c>_PhysicsProcess</c> resumes on its own next frame. Returns the player to the start position,
 		/// snaps the weapon formation to it, clears the death pose immediately (instead of waiting one extra
-		/// frame for the input-driven sprite update to override it), and starts the invincibility window.
+		/// frame for the input-driven sprite update to override it), starts the invincibility window,
+		/// and emits <see cref="Respawned"/>.
 		/// </summary>
 		private void OnRespawned()
 		{
@@ -179,7 +225,7 @@ namespace TouhouFuujinroku.Entities.PlayableCharacters.Reimu
 
 			_invincibilityTimeLeft = _invincibilityDuration;
 
-			Respawned?.Invoke();
+			EmitSignal(SignalName.Respawned);
 		}
 
 		/// <summary>
@@ -189,30 +235,14 @@ namespace TouhouFuujinroku.Entities.PlayableCharacters.Reimu
 		/// </summary>
 		private void OnGameOver()
 		{
-			GameOver?.Invoke();
+			EmitSignal(SignalName.GameOver);
 		}
 
-		#endregion // Event handlers
+		#endregion // Signal handlers
 
 		#region Helpers
 
-		/// <summary>
-		/// Counts down the invincibility window and blinks the sprite while it lasts.
-		/// Full opacity is restored on the frame the window ends.
-		/// </summary>
-		/// <param name="delta">Physics frame time in seconds.</param>
-		private void UpdateInvincibility(double delta)
-		{
-			if (_invincibilityTimeLeft <= 0f) return;
-
-			_invincibilityTimeLeft -= (float)delta;
-
-			bool faded = _invincibilityTimeLeft > 0f
-				&& Mathf.PosMod(_invincibilityTimeLeft, 2f * BlinkInterval) < BlinkInterval;
-
-			_sprite.Modulate = new Color(1f, 1f, 1f, faded ? FadedAlpha : 1f);
-			_weapon.Modulate = new Color(1f, 1f, 1f, faded ? FadedAlpha : 1f);
-		}
+		#region Input and movement
 
 		/// <summary>
 		/// Builds the movement input from the directional actions and moves the body.
@@ -259,6 +289,10 @@ namespace TouhouFuujinroku.Entities.PlayableCharacters.Reimu
 			}
 		}
 
+		#endregion // Input and movement
+
+		#region Presentation
+
 		/// <summary>
 		/// Updates the sprite with the horizontal input so it can lean toward the movement direction.
 		/// </summary>
@@ -266,6 +300,27 @@ namespace TouhouFuujinroku.Entities.PlayableCharacters.Reimu
 		{
 			_sprite.UpdateSprite(_movementInput.X);
 		}
+
+		/// <summary>
+		/// Counts down the invincibility window and blinks the sprite while it lasts.
+		/// Full opacity is restored on the frame the window ends.
+		/// </summary>
+		/// <param name="delta">Physics frame time in seconds.</param>
+		private void UpdateInvincibility(double delta)
+		{
+			if (_invincibilityTimeLeft <= 0f) return;
+
+			_invincibilityTimeLeft -= (float)delta;
+
+			bool faded = _invincibilityTimeLeft > 0f
+				&& Mathf.PosMod(_invincibilityTimeLeft, 2f * BlinkInterval) < BlinkInterval;
+
+			Color tint = new Color(1f, 1f, 1f, faded ? FadedAlpha : 1f);
+			_sprite.Modulate = tint;
+			_weapon.Modulate = tint;
+		}
+
+		#endregion // Presentation
 
 		#endregion // Helpers
 	}
