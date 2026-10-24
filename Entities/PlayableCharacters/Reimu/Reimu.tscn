@@ -234,7 +234,7 @@ animations = [{
 }]
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_118g0"]
-radius = 6.0
+radius = 5.0
 
 [node name="Reimu" type="CharacterBody2D" unique_id=2024202319 node_paths=PackedStringArray("_health", "_speed", "_sprite", "_weapon", "_deathSound")]
 collision_mask = 26
@@ -245,16 +245,16 @@ _sprite = NodePath("ReimuAnimatedSprite")
 _weapon = NodePath("ReimuWeapon")
 _deathSound = NodePath("DeadSFX")
 
-[node name="PlayerHealthComponent" parent="." unique_id=1355624808 instance=ExtResource("2_6xvey")]
-
-[node name="SpeedComponent" parent="." unique_id=1899239882 instance=ExtResource("3_buwra")]
-_currentSpeed = 300.0
-_maxSpeed = 300.0
-
 [node name="DeadSFX" type="AudioStreamPlayer2D" parent="." unique_id=1136081441]
 stream = ExtResource("7_e10mn")
 volume_db = -8.0
 bus = &"SE"
+
+[node name="SpeedComponent" parent="." unique_id=1899239882 instance=ExtResource("3_buwra")]
+_currentSpeed = 180.0
+_maxSpeed = 180.0
+
+[node name="PlayerHealthComponent" parent="." unique_id=1355624808 instance=ExtResource("2_6xvey")]
 
 [node name="ReimuAnimatedSprite" type="AnimatedSprite2D" parent="." unique_id=1329335674]
 position = Vector2(1, 0)
