@@ -105,6 +105,12 @@ namespace TouhouFuujinroku.Levels.Level01
             SceneController.Instance.TransitionTo(Scene.MainMenu);
         }
 
+        /// <summary>
+        /// Handles the player losing their last life: leaves the level and returns to the main menu.
+        /// Connected in the editor to <c>Reimu.GameOver</c>.
+        /// </summary>
+        private static void OnGameOver() => SceneController.Instance.TransitionTo(Scene.MainMenu);
+
         #endregion // Signal handlers
     }
 }

@@ -85,4 +85,5 @@ offset_bottom = -291.0
 z_index = 3
 zoom = Vector2(1.7, 1.7)
 
+[connection signal="GameOver" from="Reimu" to="." method="OnGameOver"]
 [connection signal="LivesChanged" from="Reimu" to="." method="OnPlayerLivesChanged"]
