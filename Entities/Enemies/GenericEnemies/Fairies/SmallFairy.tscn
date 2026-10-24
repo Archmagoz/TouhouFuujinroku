@@ -6,6 +6,7 @@
 [ext_resource type="PackedScene" uid="uid://bbfcxlk0s2cpm" path="res://Entities/Enemies/GenericEnemies/Weapons/Shotgun.tscn" id="5_tx7gd"]
 [ext_resource type="PackedScene" uid="uid://dxj0lkshro5gy" path="res://Components/SpeedComponent/SpeedComponent.tscn" id="6_ft0qj"]
 [ext_resource type="PackedScene" uid="uid://qnkfyeixmb6m" path="res://Components/HealthComponent/HealthComponent.tscn" id="7_gveti"]
+[ext_resource type="PackedScene" uid="uid://dn4gdcy8yree5" path="res://Components/DamageFlashComponent/DamageFlashComponent.tscn" id="7_rbmy3"]
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_ft0qj"]
 atlas = ExtResource("1_p7e3w")
@@ -114,7 +115,7 @@ animations = [{
 [sub_resource type="CircleShape2D" id="CircleShape2D_p7e3w"]
 radius = 9.0
 
-[node name="SmallFairy" type="Area2D" unique_id=111588079 node_paths=PackedStringArray("_weapon", "_sprite", "_health", "_speed") groups=["enemies"]]
+[node name="SmallFairy" type="Area2D" unique_id=111588079 node_paths=PackedStringArray("_weapon", "_sprite", "_health", "_speed", "_damageFlash") groups=["enemies"]]
 z_index = 1
 collision_layer = 16
 collision_mask = 5
@@ -124,6 +125,7 @@ _weapon = NodePath("Shotgun")
 _sprite = NodePath("AnimatedSprite")
 _health = NodePath("HealthComponent")
 _speed = NodePath("SpeedComponent")
+_damageFlash = NodePath("DamageFlashComponent")
 metadata/_custom_type_script = "uid://cayeg228t3472"
 
 [node name="AnimatedSprite" type="AnimatedSprite2D" parent="." unique_id=1203939961]
@@ -141,6 +143,9 @@ _shotCount = 3
 _currentSpeed = 100.0
 
 [node name="HealthComponent" parent="." unique_id=1821635083 instance=ExtResource("7_gveti")]
-_maxHealth = 20
+_maxHealth = 10
+
+[node name="DamageFlashComponent" parent="." unique_id=1713472781 node_paths=PackedStringArray("_target") instance=ExtResource("7_rbmy3")]
+_target = NodePath("../AnimatedSprite")
 
 [connection signal="Death" from="HealthComponent" to="." method="OnDeath"]

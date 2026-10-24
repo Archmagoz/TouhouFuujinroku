@@ -11,7 +11,7 @@ namespace TouhouFuujinroku.Entities.Enemies.GenericEnemies
 	/// <summary>
 	/// Basic enemy that follows a scripted path, fires its weapon continuously, and reports its score on death.
 	/// <para>
-	/// Each variant is a scene that configures its own components (health, speed, weapon, sprite) and
+	/// Each variant is a scene that configures its own components (health, speed, weapon, sprite, damage flash) and
 	/// point value through exports. Spawning, path creation, and score wiring are owned by the
 	/// <c>WaveDirector</c>, so the enemy only handles its own behavior.
 	/// </para>
@@ -43,6 +43,12 @@ namespace TouhouFuujinroku.Entities.Enemies.GenericEnemies
 
 		/// <summary>Source of the movement speed, in path pixels per second.</summary>
 		[Export] private SpeedComponent _speed;
+
+		/// <summary>
+		/// Blinks the sprite on every hit that does not kill the enemy. Optional: variants without it
+		/// simply give no hit feedback.
+		/// </summary>
+		[Export] private DamageFlashComponent _damageFlash;
 
 		/// <summary>
 		/// PathFollow2D owned exclusively by this enemy, created by the spawner together with its Path2D.
@@ -78,10 +84,18 @@ namespace TouhouFuujinroku.Entities.Enemies.GenericEnemies
 		public event Action<long> Died;
 
 		/// <summary>
-		/// Forwards damage to the <see cref="HealthComponent"/>.
+		/// Forwards damage to the <see cref="HealthComponent"/> and, if the enemy survives the hit,
+		/// plays the damage flash. A fatal hit raises Death synchronously, which sets <c>_dying</c>
+		/// and hands the sprite over to the death animation, so no flash is played over it.
 		/// </summary>
 		/// <param name="amount">Amount of damage to apply.</param>
-		public void ApplyDamage(int amount) => _health.ApplyDamage(amount);
+		public void ApplyDamage(int amount)
+		{
+			_health.ApplyDamage(amount);
+
+			if (!_dying && _damageFlash != null)
+				_damageFlash.Flash();
+		}
 
 		/// <summary>
 		/// Assigns the trajectory this enemy follows and snaps it to the starting point.
