@@ -67,6 +67,9 @@ namespace TouhouFuujinroku.Entities.PlayableCharacters.Reimu
 		/// <summary>Weapon fired by the shoot input and switched between normal and focus modes.</summary>
 		[Export] private ReimuWeapon _weapon;
 
+		/// <summary>Collision shape of the player, drawn only while focus is held so the hit area is visible.</summary>
+		[Export] private ReimuHitbox _hitbox;
+
 		/// <summary>Dead SE: played when the player dies, before the respawn delay.</summary>
 		[ExportGroup("Audio")]
 		[Export] private AudioStreamPlayer2D _deathSound;
@@ -183,7 +186,7 @@ namespace TouhouFuujinroku.Entities.PlayableCharacters.Reimu
 
 		/// <summary>
 		/// Handles the health component's Death signal: stops the body immediately, discards any buffered
-		/// shots, hides the sprite and weapon, plays the death sound, and emits <see cref="Died"/>.
+		/// shots, hides the sprite, weapon, and hitbox, plays the death sound, and emits <see cref="Died"/>.
 		/// </summary>
 		private void OnPlayerDied()
 		{
@@ -191,6 +194,7 @@ namespace TouhouFuujinroku.Entities.PlayableCharacters.Reimu
 			_shootBuffer = 0;
 			_sprite.SetVisible(false);
 			_weapon.SetVisible(false);
+			_hitbox.HideImmediately();
 			_deathSound.Play();
 
 			EmitSignal(SignalName.Died);
@@ -262,8 +266,8 @@ namespace TouhouFuujinroku.Entities.PlayableCharacters.Reimu
 		}
 
 		/// <summary>
-		/// Applies focus mode: halves the movement speed and switches the weapon to its focused configuration
-		/// while the focus action is held.
+		/// Applies focus mode: halves the movement speed, switches the weapon to its focused configuration,
+		/// and draws the hitbox while the focus action is held.
 		/// </summary>
 		/// <param name="delta">Physics frame time in seconds, forwarded to the weapon's focus transition.</param>
 		private void HandleFocus(double delta)
@@ -271,6 +275,7 @@ namespace TouhouFuujinroku.Entities.PlayableCharacters.Reimu
 			bool focused = Input.IsActionPressed("focus");
 			_speed.SetSpeed(focused ? _speed.MaxSpeed / 2 : _speed.MaxSpeed);
 			_weapon.ToggleFocusMode(focused, delta);
+			_hitbox.SetFocused(focused);
 		}
 
 		/// <summary>
