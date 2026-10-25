@@ -1,3 +1,5 @@
+using System.Collections.Generic;
+
 using Godot;
 
 using TouhouFuujinroku.Global.Controllers;
@@ -8,10 +10,9 @@ namespace TouhouFuujinroku.UI
     /// Base class for menu screens. Provides the shared button focus behavior: a squash and stretch
     /// animation, a selection sound, and synchronization between mouse hover and keyboard or gamepad focus.
     /// <para>
-    /// Each button's signals must be connected in the editor to the handlers of this class:
-    /// <c>focus_entered</c> to <see cref="OnButtonFocusEntered"/>, <c>focus_exited</c> to
-    /// <see cref="OnButtonFocusExited"/>, <c>mouse_entered</c> to <see cref="OnButtonMouseEntered"/>,
-    /// and <c>mouse_exited</c> to <see cref="OnButtonMouseExited"/>.
+    /// Every <see cref="TextureButton"/> found under the screen is linked automatically when the screen
+    /// enters the scene tree and unlinked when it exits, so no editor signal connections are needed
+    /// for the focus behavior. Buttons added at runtime can be linked with <see cref="RegisterButton"/>.
     /// </para>
     /// </summary>
     public abstract partial class MenuScreen : Control
@@ -47,12 +48,95 @@ namespace TouhouFuujinroku.UI
         #region Fields
 
         /// <summary>
-        /// Button currently displaying the focused visual state. Signals connected through the editor
-        /// carry no arguments, so this field is how the handlers know which button to animate.
+        /// Button currently displaying the focused visual state. The signal handlers take no arguments,
+        /// so this field is how they know which button to animate.
         /// </summary>
         private BaseButton _focusedButton;
 
+        /// <summary>
+        /// Buttons currently linked to the focus behavior. Kept so they can be unlinked symmetrically
+        /// on exit, without depending on a new tree search.
+        /// </summary>
+        private readonly List<TextureButton> _registeredButtons = [];
+
         #endregion // Fields
+
+        #region Godot overrides
+
+        /// <summary>
+        /// Links every <see cref="TextureButton"/> under this screen to the focus behavior.
+        /// Runs before <c>_Ready</c>, so derived screens can override <c>_Ready</c> without calling the base.
+        /// Descendants already exist in the tree at this point, even though they are not ready yet.
+        /// </summary>
+        public override void _EnterTree()
+        {
+            // owned: false also finds buttons inside instanced sub-scenes, which are not owned by this scene.
+            foreach (Node node in FindChildren("*", nameof(TextureButton), recursive: true, owned: false))
+            {
+                if (node is TextureButton button)
+                    RegisterButton(button);
+            }
+        }
+
+        /// <summary>
+        /// Unlinks every registered button and drops any focus state still being tracked.
+        /// </summary>
+        public override void _ExitTree()
+        {
+            // Iterates backwards because UnregisterButton removes entries from the list.
+            for (int i = _registeredButtons.Count - 1; i >= 0; i--)
+                UnregisterButton(_registeredButtons[i]);
+
+            _focusedButton = null;
+        }
+
+        #endregion // Godot overrides
+
+        #region Registration
+
+        /// <summary>
+        /// Links a button to the focus behavior. Called automatically for the buttons present when the
+        /// screen enters the tree; call it manually for buttons created at runtime.
+        /// Registering the same button twice has no effect.
+        /// </summary>
+        /// <param name="button">Button to link.</param>
+        protected void RegisterButton(TextureButton button)
+        {
+            if (_registeredButtons.Contains(button))
+                return;
+
+            button.FocusEntered += OnButtonFocusEntered;
+            button.FocusExited += OnButtonFocusExited;
+            button.MouseEntered += OnButtonMouseEntered;
+            button.MouseExited += OnButtonMouseExited;
+
+            _registeredButtons.Add(button);
+        }
+
+        /// <summary>
+        /// Unlinks a button from the focus behavior and restores its default scale.
+        /// Tolerates the button having been freed in the meantime.
+        /// </summary>
+        /// <param name="button">Button to unlink.</param>
+        protected void UnregisterButton(TextureButton button)
+        {
+            if (!_registeredButtons.Remove(button))
+                return;
+
+            if (!IsInstanceValid(button))
+                return;
+
+            button.FocusEntered -= OnButtonFocusEntered;
+            button.FocusExited -= OnButtonFocusExited;
+            button.MouseEntered -= OnButtonMouseEntered;
+            button.MouseExited -= OnButtonMouseExited;
+
+            // Stops any running tween so a button that outlives the screen is not left scaled.
+            KillTween(button);
+            button.Scale = Vector2.One;
+        }
+
+        #endregion // Registration
 
         #region Event handlers
 

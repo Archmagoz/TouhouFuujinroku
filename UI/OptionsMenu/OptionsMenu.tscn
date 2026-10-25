@@ -137,13 +137,4 @@ texture = SubResource("AtlasTexture_e567t")
 hframes = 10
 frame = 1
 
-[connection signal="focus_entered" from="BtnQuit" to="." method="OnButtonFocusEntered"]
-[connection signal="mouse_entered" from="BtnQuit" to="." method="OnButtonMouseEntered"]
-[connection signal="mouse_exited" from="BtnQuit" to="." method="OnButtonMouseExited"]
 [connection signal="pressed" from="BtnQuit" to="." method="OnQuitPressed"]
-[connection signal="focus_entered" from="BtnBgmVolume" to="." method="OnButtonFocusEntered"]
-[connection signal="mouse_entered" from="BtnBgmVolume" to="." method="OnButtonMouseEntered"]
-[connection signal="mouse_exited" from="BtnBgmVolume" to="." method="OnButtonMouseExited"]
-[connection signal="focus_entered" from="BtnSeVolume" to="." method="OnButtonFocusEntered"]
-[connection signal="mouse_entered" from="BtnSeVolume" to="." method="OnButtonMouseEntered"]
-[connection signal="mouse_exited" from="BtnSeVolume" to="." method="OnButtonMouseExited"]

@@ -37,9 +37,10 @@ namespace TouhouFuujinroku.UI.OptionsMenu
 		[Export] private int _dimFrameOffset = 10;
 
 		/// <summary>
-		/// Tint applied to the bright digits to dim them when the strip has no dim row.
+		/// Multiplicative tint applied to the value digits so they match the darker look of the button.
+		/// Each channel scales the texture color: 1 keeps it unchanged, 0 turns it fully black.
 		/// </summary>
-		[Export] private Color _dimTint = new(0.4f, 0.4f, 0.4f);
+		[Export] private Color _dimTint = new(0.3f, 0.3f, 0.3f);
 
 		/// <summary>
 		/// Digit sprites indexed by decimal place: index 0 shows the units digit.

@@ -92,15 +92,6 @@ texture_hover = SubResource("AtlasTexture_ri767")
 texture_disabled = SubResource("AtlasTexture_4elqj")
 texture_focused = SubResource("AtlasTexture_ri767")
 
-[connection signal="focus_entered" from="BtnGameStart" to="." method="OnButtonFocusEntered"]
-[connection signal="mouse_entered" from="BtnGameStart" to="." method="OnButtonMouseEntered"]
-[connection signal="mouse_exited" from="BtnGameStart" to="." method="OnButtonMouseExited"]
 [connection signal="pressed" from="BtnGameStart" to="." method="OnGameStartPressed"]
-[connection signal="focus_entered" from="BtnOpition" to="." method="OnButtonFocusEntered"]
-[connection signal="mouse_entered" from="BtnOpition" to="." method="OnButtonMouseEntered"]
-[connection signal="mouse_exited" from="BtnOpition" to="." method="OnButtonMouseExited"]
 [connection signal="pressed" from="BtnOpition" to="." method="OnOptionsPressed"]
-[connection signal="focus_entered" from="BtnQuit" to="." method="OnButtonFocusEntered"]
-[connection signal="mouse_entered" from="BtnQuit" to="." method="OnButtonMouseEntered"]
-[connection signal="mouse_exited" from="BtnQuit" to="." method="OnButtonMouseExited"]
 [connection signal="pressed" from="BtnQuit" to="." method="OnQuitPressed"]
