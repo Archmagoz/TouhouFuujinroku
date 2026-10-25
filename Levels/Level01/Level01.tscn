@@ -11,6 +11,7 @@
 [ext_resource type="PackedScene" uid="uid://ldiv54j5b0m3" path="res://Entities/PlayableCharacters/Reimu/Reimu.tscn" id="6_1qgca"]
 [ext_resource type="PackedScene" uid="uid://cljfb1nrmidxw" path="res://UI/Hud/Hud.tscn" id="7_6dskc"]
 [ext_resource type="PackedScene" uid="uid://bc6ya2toky3oe" path="res://Levels/Tools/PlayFieldClearer.tscn" id="11_8fwil"]
+[ext_resource type="PackedScene" uid="uid://chlonc6jy2if0" path="res://UI/Menu/PauseMenu/PauseMenu.tscn" id="12_1qgca"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_3beo8"]
 size = Vector2(26, 422)
@@ -74,6 +75,13 @@ shape = SubResource("RectangleShape2D_4tne8")
 [node name="Reimu" parent="." unique_id=2024202319 instance=ExtResource("6_1qgca")]
 z_index = 1
 position = Vector2(-108, 164)
+
+[node name="PauseMenu" parent="." unique_id=272337806 instance=ExtResource("12_1qgca")]
+visible = false
+offset_left = -357.0
+offset_top = -295.0
+offset_right = -357.0
+offset_bottom = -295.0
 
 [node name="Hud" parent="." unique_id=1689239087 instance=ExtResource("7_6dskc")]
 offset_left = -293.0

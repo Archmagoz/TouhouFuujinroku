@@ -1,6 +1,6 @@
-using System.Collections.Generic;
-
 using Godot;
+
+using System.Collections.Generic;
 
 using TouhouFuujinroku.Global.Controllers;
 
@@ -8,7 +8,14 @@ namespace TouhouFuujinroku.UI.Menu
 {
     /// <summary>
     /// Base class for menu screens. Provides the shared button focus behavior: a squash and stretch
-    /// animation, a selection sound, and synchronization between mouse hover and keyboard or gamepad focus.
+    /// animation, a tint based focused look, a selection sound, and synchronization between mouse hover
+    /// and keyboard or gamepad focus.
+    /// <para>
+    /// Button textures are authored in their selected variant. The unfocused look is produced by darkening the
+    /// button with <see cref="UnfocusedTint"/> through <c>SelfModulate</c>, and the focused look is the untouched
+    /// texture (<see cref="FocusedTint"/>). The scenes are expected to already store the unfocused tint on every
+    /// button, so the resting state is visible in the editor and no initial tint is applied by code.
+    /// </para>
     /// <para>
     /// Every <see cref="TextureButton"/> found under the screen is linked automatically when the screen
     /// enters the scene tree and unlinked when it exits, so no editor signal connections are needed
@@ -28,13 +35,22 @@ namespace TouhouFuujinroku.UI.Menu
         /// <summary>Slightly enlarged scale a focused button settles into.</summary>
         private static readonly Vector2 FocusedRestScale = new(1.06f, 1.06f);
 
+        /// <summary>
+        /// Multiplicative tint of an unfocused button (#333333). Each channel scales the texture color:
+        /// 1 keeps it unchanged, 0 turns it fully black. Must match the value stored in the scenes.
+        /// </summary>
+        private static readonly Color UnfocusedTint = new(0.2f, 0.2f, 0.2f);
+
+        /// <summary>Tint of a focused button: white leaves the texture colors unchanged.</summary>
+        private static readonly Color FocusedTint = Colors.White;
+
         /// <summary>Seconds to reach the stretch peak.</summary>
         private const float StretchDuration = 0.06f;
 
         /// <summary>Seconds to settle into the focused resting scale.</summary>
         private const float SettleDuration = 0.14f;
 
-        /// <summary>Seconds to return to the default scale.</summary>
+        /// <summary>Seconds to return to the default scale and tint.</summary>
         private const float UnfocusDuration = 0.1f;
 
         /// <summary>
@@ -96,7 +112,8 @@ namespace TouhouFuujinroku.UI.Menu
 
         /// <summary>
         /// Links a button to the focus behavior. Called automatically for the buttons present when the
-        /// screen enters the tree; call it manually for buttons created at runtime.
+        /// screen enters the tree; call it manually for buttons created at runtime, which should also start
+        /// with <see cref="UnfocusedTint"/> as their <c>SelfModulate</c>.
         /// Registering the same button twice has no effect.
         /// </summary>
         /// <param name="button">Button to link.</param>
@@ -114,7 +131,7 @@ namespace TouhouFuujinroku.UI.Menu
         }
 
         /// <summary>
-        /// Unlinks a button from the focus behavior and restores its default scale.
+        /// Unlinks a button from the focus behavior and restores its default scale and unfocused tint.
         /// Tolerates the button having been freed in the meantime.
         /// </summary>
         /// <param name="button">Button to unlink.</param>
@@ -131,9 +148,10 @@ namespace TouhouFuujinroku.UI.Menu
             button.MouseEntered -= OnButtonMouseEntered;
             button.MouseExited -= OnButtonMouseExited;
 
-            // Stops any running tween so a button that outlives the screen is not left scaled.
+            // Stops any running tween so a button that outlives the screen is not left scaled or lit up.
             KillTween(button);
             button.Scale = Vector2.One;
+            button.SelfModulate = UnfocusedTint;
         }
 
         #endregion // Registration
@@ -228,14 +246,19 @@ namespace TouhouFuujinroku.UI.Menu
         #region Animation
 
         /// <summary>
-        /// Animates a button to its focused or unfocused scale, cancelling any animation already running on it.
-        /// Focusing plays a stretch phase followed by a settle with a slight overshoot; unfocusing returns to the default scale.
+        /// Animates a button to its focused or unfocused look, cancelling any animation already running on it.
+        /// The tint is applied immediately, before the animation starts, so the button is already lit (or dimmed)
+        /// on the first frame of the scale animation. Focusing then plays a stretch phase followed by a settle with a
+        /// slight overshoot. Unfocusing returns to the default scale.
         /// </summary>
         /// <param name="button">Button to animate.</param>
-        /// <param name="focused">True to play the focus animation, false to return to the default scale.</param>
+        /// <param name="focused">True to play the focus animation, false to return to the resting look.</param>
         private static void AnimateFocus(BaseButton button, bool focused)
         {
             KillTween(button);
+
+            // The tint is not tweened: it changes instantly, before the scale animation begins.
+            button.SelfModulate = focused ? FocusedTint : UnfocusedTint;
 
             // Scales from the button center instead of the top-left corner. Updated on every
             // animation because the button size may have changed since the last one.
@@ -266,7 +289,7 @@ namespace TouhouFuujinroku.UI.Menu
 
         /// <summary>
         /// Cancels the tween stored on the button, if any, so rapid focus changes never leave
-        /// two tweens fighting over the same <c>scale</c> property.
+        /// two tweens fighting over the same <c>scale</c> or <c>self_modulate</c> property.
         /// </summary>
         /// <param name="button">Button whose running tween should be stopped.</param>
         private static void KillTween(BaseButton button)

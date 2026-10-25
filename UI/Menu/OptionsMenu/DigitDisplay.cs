@@ -40,7 +40,7 @@ namespace TouhouFuujinroku.UI.Menu.OptionsMenu
 		/// Multiplicative tint applied to the value digits so they match the darker look of the button.
 		/// Each channel scales the texture color: 1 keeps it unchanged, 0 turns it fully black.
 		/// </summary>
-		[Export] private Color _dimTint = new(0.3f, 0.3f, 0.3f);
+		[Export] private Color _dimTint = new(0.2f, 0.2f, 0.2f);
 
 		/// <summary>
 		/// Digit sprites indexed by decimal place: index 0 shows the units digit.

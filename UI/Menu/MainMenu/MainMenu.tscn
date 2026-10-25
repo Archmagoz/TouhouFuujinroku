@@ -1,45 +1,33 @@
 [gd_scene format=3 uid="uid://cj5118oxipcj6"]
 
-[ext_resource type="Texture2D" uid="uid://dmand0bis1vhi" path="res://UI/Assets/UISpritesheet.png" id="1_8fkdr"]
-[ext_resource type="Script" uid="uid://yym15kl5lpkb" path="res://UI/Menu/MainMenu/MainMenu.cs" id="1_fw0vt"]
+[ext_resource type="Script" uid="uid://yym15kl5lpkb" path="res://UI/Menu/MainMenu/MainMenu.cs" id="1_8xrsp"]
+[ext_resource type="Texture2D" uid="uid://dmand0bis1vhi" path="res://UI/Assets/UISpritesheet.png" id="2_ytnr8"]
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_fw0vt"]
-atlas = ExtResource("1_8fkdr")
+atlas = ExtResource("2_ytnr8")
 region = Rect2(39.957764, 47.967968, 640.17786, 480.04315)
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_8fkdr"]
-atlas = ExtResource("1_8fkdr")
+atlas = ExtResource("2_ytnr8")
 region = Rect2(44.107605, 540.2565, 511.5708, 114.8761)
 
-[sub_resource type="AtlasTexture" id="AtlasTexture_8x0bb"]
-atlas = ExtResource("1_8fkdr")
-region = Rect2(851.78046, 47.7007, 149.50256, 29.371368)
-
 [sub_resource type="AtlasTexture" id="AtlasTexture_nahvw"]
-atlas = ExtResource("1_8fkdr")
+atlas = ExtResource("2_ytnr8")
 region = Rect2(691.8448, 47.899464, 149.13458, 29.261242)
 
-[sub_resource type="AtlasTexture" id="AtlasTexture_1dhmk"]
-atlas = ExtResource("1_8fkdr")
-region = Rect2(803.1521, 271.92822, 93.93353, 32.311737)
-
 [sub_resource type="AtlasTexture" id="AtlasTexture_a712v"]
-atlas = ExtResource("1_8fkdr")
+atlas = ExtResource("2_ytnr8")
 region = Rect2(691.1172, 271.95688, 93.97595, 32.085144)
 
-[sub_resource type="AtlasTexture" id="AtlasTexture_4elqj"]
-atlas = ExtResource("1_8fkdr")
-region = Rect2(770.88855, 303.83066, 63.30603, 31.341919)
-
 [sub_resource type="AtlasTexture" id="AtlasTexture_ri767"]
-atlas = ExtResource("1_8fkdr")
+atlas = ExtResource("2_ytnr8")
 region = Rect2(690.88257, 304.05157, 63.018982, 31.118988)
 
 [node name="MainMenu" type="Control" unique_id=1993999925]
 layout_mode = 3
 anchors_preset = 0
 scale = Vector2(1.4799998, 1.4799998)
-script = ExtResource("1_fw0vt")
+script = ExtResource("1_8xrsp")
 
 [node name="Background" type="TextureRect" parent="." unique_id=94049739]
 layout_mode = 0
@@ -57,40 +45,31 @@ scale = Vector2(0.70156556, 0.7015655)
 texture = SubResource("AtlasTexture_8fkdr")
 
 [node name="BtnGameStart" type="TextureButton" parent="." unique_id=2135349243]
+self_modulate = Color(0.2, 0.2, 0.2, 1)
 layout_mode = 0
 offset_left = 414.0
 offset_top = 156.0
 offset_right = 567.0
 offset_bottom = 185.0
-texture_normal = SubResource("AtlasTexture_8x0bb")
-texture_pressed = SubResource("AtlasTexture_nahvw")
-texture_hover = SubResource("AtlasTexture_nahvw")
-texture_disabled = SubResource("AtlasTexture_8x0bb")
-texture_focused = SubResource("AtlasTexture_nahvw")
+texture_normal = SubResource("AtlasTexture_nahvw")
 
 [node name="BtnOpition" type="TextureButton" parent="." unique_id=2135972990]
+self_modulate = Color(0.2, 0.2, 0.2, 1)
 layout_mode = 0
 offset_left = 469.0
 offset_top = 344.0
 offset_right = 562.0
 offset_bottom = 376.0
-texture_normal = SubResource("AtlasTexture_1dhmk")
-texture_pressed = SubResource("AtlasTexture_a712v")
-texture_hover = SubResource("AtlasTexture_a712v")
-texture_disabled = SubResource("AtlasTexture_1dhmk")
-texture_focused = SubResource("AtlasTexture_a712v")
+texture_normal = SubResource("AtlasTexture_a712v")
 
 [node name="BtnQuit" type="TextureButton" parent="." unique_id=1000945232]
+self_modulate = Color(0.2, 0.2, 0.2, 1)
 layout_mode = 0
 offset_left = 479.0
 offset_top = 381.0
 offset_right = 542.0
 offset_bottom = 412.0
-texture_normal = SubResource("AtlasTexture_4elqj")
-texture_pressed = SubResource("AtlasTexture_ri767")
-texture_hover = SubResource("AtlasTexture_ri767")
-texture_disabled = SubResource("AtlasTexture_4elqj")
-texture_focused = SubResource("AtlasTexture_ri767")
+texture_normal = SubResource("AtlasTexture_ri767")
 
 [connection signal="pressed" from="BtnGameStart" to="." method="OnGameStartPressed"]
 [connection signal="pressed" from="BtnOpition" to="." method="OnOptionsPressed"]

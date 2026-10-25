@@ -1,6 +1,6 @@
 using TouhouFuujinroku.Global.Controllers;
 
-namespace TouhouFuujinroku.UI.Menu
+namespace TouhouFuujinroku.UI.Menu.MainMenu
 {
 	/// <summary>
 	/// Main menu screen. Maps each button to its scene transition or to quitting the game.

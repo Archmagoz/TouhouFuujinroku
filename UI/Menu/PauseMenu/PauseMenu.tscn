@@ -1,0 +1,71 @@
+[gd_scene format=3 uid="uid://chlonc6jy2if0"]
+
+[ext_resource type="Texture2D" uid="uid://bhesd5w5ub3or" path="res://UI/Hud/Assets/Hud.png" id="1_027lm"]
+[ext_resource type="Script" uid="uid://cmq10shapejqn" path="res://UI/Menu/PauseMenu/PauseMenu.cs" id="1_jyvbc"]
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_jotie"]
+atlas = ExtResource("1_027lm")
+region = Rect2(574, 30, 103, 34)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_027lm"]
+atlas = ExtResource("1_027lm")
+region = Rect2(588, 63, 203, 31)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_jyvbc"]
+atlas = ExtResource("1_027lm")
+region = Rect2(588, 96, 229, 31)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_hlgll"]
+atlas = ExtResource("1_027lm")
+region = Rect2(598, 128, 180, 30)
+
+[node name="PauseMenu" type="Control" unique_id=272337806 node_paths=PackedStringArray("_resumeButton")]
+z_index = 10
+layout_mode = 3
+anchors_preset = 0
+scale = Vector2(1.2, 1.2)
+script = ExtResource("1_jyvbc")
+_resumeButton = NodePath("CenterContainer/VBoxContainer/BtnResume")
+
+[node name="ColorRect" type="ColorRect" parent="." unique_id=594386949]
+layout_mode = 0
+offset_right = 443.67087
+offset_bottom = 456.962
+color = Color(1, 0, 0, 0.10980392)
+
+[node name="TextureRect" type="TextureRect" parent="ColorRect" unique_id=357711270]
+layout_mode = 0
+offset_left = 161.3924
+offset_top = 161.3924
+offset_right = 264.3924
+offset_bottom = 201.3924
+texture = SubResource("AtlasTexture_jotie")
+
+[node name="CenterContainer" type="CenterContainer" parent="." unique_id=639859750]
+layout_mode = 0
+offset_left = 112.658226
+offset_top = 255.0633
+offset_right = 341.65823
+offset_bottom = 355.0633
+
+[node name="VBoxContainer" type="VBoxContainer" parent="CenterContainer" unique_id=416302041]
+layout_mode = 2
+
+[node name="BtnResume" type="TextureButton" parent="CenterContainer/VBoxContainer" unique_id=1466312363]
+self_modulate = Color(0.2, 0.2, 0.2, 1)
+layout_mode = 2
+texture_normal = SubResource("AtlasTexture_027lm")
+
+[node name="BtnQuit" type="TextureButton" parent="CenterContainer/VBoxContainer" unique_id=378720413]
+self_modulate = Color(0.2, 0.2, 0.2, 1)
+layout_mode = 2
+texture_normal = SubResource("AtlasTexture_jyvbc")
+
+[node name="BtnRetry" type="TextureButton" parent="CenterContainer/VBoxContainer" unique_id=1325089252]
+self_modulate = Color(0.2, 0.2, 0.2, 1)
+layout_mode = 2
+texture_normal = SubResource("AtlasTexture_hlgll")
+
+[connection signal="pressed" from="CenterContainer/VBoxContainer/BtnResume" to="." method="OnResumePressed"]
+[connection signal="pressed" from="CenterContainer/VBoxContainer/BtnQuit" to="." method="OnQuitPressed"]
+[connection signal="pressed" from="CenterContainer/VBoxContainer/BtnRetry" to="." method="OnRetryPressed"]

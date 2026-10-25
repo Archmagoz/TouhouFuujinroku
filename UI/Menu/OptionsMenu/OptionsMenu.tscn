@@ -10,33 +10,21 @@
 atlas = ExtResource("2_ny034")
 region = Rect2(39.957764, 47.967968, 640.17786, 480.04315)
 
-[sub_resource type="AtlasTexture" id="AtlasTexture_0qgxi"]
+[sub_resource type="AtlasTexture" id="AtlasTexture_88qle"]
 atlas = ExtResource("2_ny034")
-region = Rect2(770.88855, 303.83066, 63.30603, 31.341919)
-
-[sub_resource type="AtlasTexture" id="AtlasTexture_b57bx"]
-atlas = ExtResource("2_ny034")
-region = Rect2(690.88257, 304.05157, 63.018982, 31.118988)
-
-[sub_resource type="AtlasTexture" id="AtlasTexture_8o0ho"]
-atlas = ExtResource("2_ny034")
-region = Rect2(869, 400, 168, 30)
-
-[sub_resource type="AtlasTexture" id="AtlasTexture_gcocc"]
-atlas = ExtResource("2_ny034")
-region = Rect2(693, 400, 168, 30)
+region = Rect2(692, 432, 135, 30)
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_e567t"]
 atlas = ExtResource("5_skddu")
 region = Rect2(368, 73, 160, 18)
 
-[sub_resource type="AtlasTexture" id="AtlasTexture_akv36"]
+[sub_resource type="AtlasTexture" id="AtlasTexture_gcocc"]
 atlas = ExtResource("2_ny034")
-region = Rect2(835, 432, 136, 30)
+region = Rect2(693, 400, 168, 30)
 
-[sub_resource type="AtlasTexture" id="AtlasTexture_88qle"]
+[sub_resource type="AtlasTexture" id="AtlasTexture_b57bx"]
 atlas = ExtResource("2_ny034")
-region = Rect2(692, 432, 135, 30)
+region = Rect2(690.88257, 304.05157, 63.018982, 31.118988)
 
 [node name="OptionsMenu" type="Control" unique_id=961730160]
 layout_mode = 3
@@ -50,66 +38,14 @@ offset_right = 648.64874
 offset_bottom = 486.48654
 texture = SubResource("AtlasTexture_2y1lw")
 
-[node name="BtnQuit" type="TextureButton" parent="." unique_id=1217271505]
-layout_mode = 0
-offset_left = 223.0
-offset_top = 344.0
-offset_right = 286.0
-offset_bottom = 375.0
-texture_normal = SubResource("AtlasTexture_0qgxi")
-texture_pressed = SubResource("AtlasTexture_b57bx")
-texture_hover = SubResource("AtlasTexture_b57bx")
-texture_disabled = SubResource("AtlasTexture_0qgxi")
-texture_focused = SubResource("AtlasTexture_b57bx")
-
-[node name="BtnBgmVolume" type="TextureButton" parent="." unique_id=1387440970 node_paths=PackedStringArray("_display")]
-layout_mode = 0
-offset_left = 162.83789
-offset_top = 287.16223
-offset_right = 330.8379
-offset_bottom = 317.16223
-texture_normal = SubResource("AtlasTexture_8o0ho")
-texture_pressed = SubResource("AtlasTexture_gcocc")
-texture_hover = SubResource("AtlasTexture_gcocc")
-texture_disabled = SubResource("AtlasTexture_8o0ho")
-texture_focused = SubResource("AtlasTexture_gcocc")
-script = ExtResource("3_essa6")
-_display = NodePath("DigitDisplay")
-
-[node name="DigitDisplay" type="Node2D" parent="BtnBgmVolume" unique_id=2084090289]
-position = Vector2(177.70273, -4.729731)
-script = ExtResource("4_xclcu")
-
-[node name="Digit_0" type="Sprite2D" parent="BtnBgmVolume/DigitDisplay" unique_id=206522383]
-position = Vector2(64.151375, 19.129726)
-scale = Vector2(1.6, 1.6)
-texture = SubResource("AtlasTexture_e567t")
-hframes = 10
-
-[node name="Digit_1" type="Sprite2D" parent="BtnBgmVolume/DigitDisplay" unique_id=2064608202]
-position = Vector2(35.773003, 19.129726)
-scale = Vector2(1.6, 1.6)
-texture = SubResource("AtlasTexture_e567t")
-hframes = 10
-
-[node name="Digit_2" type="Sprite2D" parent="BtnBgmVolume/DigitDisplay" unique_id=829147103]
-position = Vector2(8.070263, 19.805391)
-scale = Vector2(1.6, 1.6)
-texture = SubResource("AtlasTexture_e567t")
-hframes = 10
-frame = 1
-
 [node name="BtnSeVolume" type="TextureButton" parent="." unique_id=1689482436 node_paths=PackedStringArray("_display")]
+self_modulate = Color(0.2, 0.2, 0.2, 1)
 layout_mode = 0
 offset_left = 162.1622
 offset_top = 237.8379
 offset_right = 298.1622
 offset_bottom = 267.8379
-texture_normal = SubResource("AtlasTexture_akv36")
-texture_pressed = SubResource("AtlasTexture_88qle")
-texture_hover = SubResource("AtlasTexture_88qle")
-texture_disabled = SubResource("AtlasTexture_akv36")
-texture_focused = SubResource("AtlasTexture_88qle")
+texture_normal = SubResource("AtlasTexture_88qle")
 script = ExtResource("3_essa6")
 _channel = 1
 _display = NodePath("DigitDisplay")
@@ -119,22 +55,71 @@ position = Vector2(177.70273, -4.729731)
 script = ExtResource("4_xclcu")
 
 [node name="Digit_0" type="Sprite2D" parent="BtnSeVolume/DigitDisplay" unique_id=1942920646]
+self_modulate = Color(0.13333334, 0.13333334, 0.13333334, 1)
 position = Vector2(64.151375, 19.129726)
 scale = Vector2(1.6, 1.6)
 texture = SubResource("AtlasTexture_e567t")
 hframes = 10
 
 [node name="Digit_1" type="Sprite2D" parent="BtnSeVolume/DigitDisplay" unique_id=712853797]
+self_modulate = Color(0.13333334, 0.13333334, 0.13333334, 1)
 position = Vector2(35.773003, 19.129726)
 scale = Vector2(1.6, 1.6)
 texture = SubResource("AtlasTexture_e567t")
 hframes = 10
 
 [node name="Digit_2" type="Sprite2D" parent="BtnSeVolume/DigitDisplay" unique_id=359081818]
+self_modulate = Color(0.13333334, 0.13333334, 0.13333334, 1)
 position = Vector2(8.070263, 19.805391)
 scale = Vector2(1.6, 1.6)
 texture = SubResource("AtlasTexture_e567t")
 hframes = 10
 frame = 1
+
+[node name="BtnBgmVolume" type="TextureButton" parent="." unique_id=1387440970 node_paths=PackedStringArray("_display")]
+self_modulate = Color(0.2, 0.2, 0.2, 1)
+layout_mode = 0
+offset_left = 162.8379
+offset_top = 287.16223
+offset_right = 330.8379
+offset_bottom = 317.16223
+texture_normal = SubResource("AtlasTexture_gcocc")
+script = ExtResource("3_essa6")
+_display = NodePath("DigitDisplay")
+
+[node name="DigitDisplay" type="Node2D" parent="BtnBgmVolume" unique_id=2084090289]
+position = Vector2(177.70273, -4.729731)
+script = ExtResource("4_xclcu")
+
+[node name="Digit_0" type="Sprite2D" parent="BtnBgmVolume/DigitDisplay" unique_id=206522383]
+self_modulate = Color(0.13333334, 0.13333334, 0.13333334, 1)
+position = Vector2(64.151375, 19.129726)
+scale = Vector2(1.6, 1.6)
+texture = SubResource("AtlasTexture_e567t")
+hframes = 10
+
+[node name="Digit_1" type="Sprite2D" parent="BtnBgmVolume/DigitDisplay" unique_id=2064608202]
+self_modulate = Color(0.13333334, 0.13333334, 0.13333334, 1)
+position = Vector2(35.773003, 19.129726)
+scale = Vector2(1.6, 1.6)
+texture = SubResource("AtlasTexture_e567t")
+hframes = 10
+
+[node name="Digit_2" type="Sprite2D" parent="BtnBgmVolume/DigitDisplay" unique_id=829147103]
+self_modulate = Color(0.13333334, 0.13333334, 0.13333334, 1)
+position = Vector2(8.070263, 19.805391)
+scale = Vector2(1.6, 1.6)
+texture = SubResource("AtlasTexture_e567t")
+hframes = 10
+frame = 1
+
+[node name="BtnQuit" type="TextureButton" parent="." unique_id=1217271505]
+self_modulate = Color(0.2, 0.2, 0.2, 1)
+layout_mode = 0
+offset_left = 223.00002
+offset_top = 344.0
+offset_right = 286.0
+offset_bottom = 375.0
+texture_normal = SubResource("AtlasTexture_b57bx")
 
 [connection signal="pressed" from="BtnQuit" to="." method="OnQuitPressed"]
