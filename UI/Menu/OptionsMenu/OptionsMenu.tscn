@@ -1,48 +1,48 @@
 [gd_scene format=3 uid="uid://bsahi63r05vyc"]
 
-[ext_resource type="Texture2D" uid="uid://dmand0bis1vhi" path="res://UI/Assets/UISpritesheet.png" id="1_0qgxi"]
-[ext_resource type="Script" uid="uid://dr33txt28rbtv" path="res://UI/OptionsMenu/OptionsMenu.cs" id="1_2y1lw"]
-[ext_resource type="Script" uid="uid://dsnnysub1of6l" path="res://UI/OptionsMenu/BtnVolume.cs" id="3_b57bx"]
-[ext_resource type="Script" uid="uid://uebgfkxdyl8c" path="res://UI/OptionsMenu/DigitDisplay.cs" id="4_8o0ho"]
-[ext_resource type="Texture2D" uid="uid://bhesd5w5ub3or" path="res://UI/Hud/Assets/Hud.png" id="5_gcocc"]
+[ext_resource type="Script" uid="uid://dr33txt28rbtv" path="res://UI/Menu/OptionsMenu/OptionsMenu.cs" id="1_0ha3t"]
+[ext_resource type="Texture2D" uid="uid://dmand0bis1vhi" path="res://UI/Assets/UISpritesheet.png" id="2_ny034"]
+[ext_resource type="Script" uid="uid://dsnnysub1of6l" path="res://UI/Menu/OptionsMenu/BtnVolume.cs" id="3_essa6"]
+[ext_resource type="Script" uid="uid://uebgfkxdyl8c" path="res://UI/Menu/OptionsMenu/DigitDisplay.cs" id="4_xclcu"]
+[ext_resource type="Texture2D" uid="uid://bhesd5w5ub3or" path="res://UI/Hud/Assets/Hud.png" id="5_skddu"]
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_2y1lw"]
-atlas = ExtResource("1_0qgxi")
+atlas = ExtResource("2_ny034")
 region = Rect2(39.957764, 47.967968, 640.17786, 480.04315)
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_0qgxi"]
-atlas = ExtResource("1_0qgxi")
+atlas = ExtResource("2_ny034")
 region = Rect2(770.88855, 303.83066, 63.30603, 31.341919)
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_b57bx"]
-atlas = ExtResource("1_0qgxi")
+atlas = ExtResource("2_ny034")
 region = Rect2(690.88257, 304.05157, 63.018982, 31.118988)
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_8o0ho"]
-atlas = ExtResource("1_0qgxi")
+atlas = ExtResource("2_ny034")
 region = Rect2(869, 400, 168, 30)
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_gcocc"]
-atlas = ExtResource("1_0qgxi")
+atlas = ExtResource("2_ny034")
 region = Rect2(693, 400, 168, 30)
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_e567t"]
-atlas = ExtResource("5_gcocc")
+atlas = ExtResource("5_skddu")
 region = Rect2(368, 73, 160, 18)
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_akv36"]
-atlas = ExtResource("1_0qgxi")
+atlas = ExtResource("2_ny034")
 region = Rect2(835, 432, 136, 30)
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_88qle"]
-atlas = ExtResource("1_0qgxi")
+atlas = ExtResource("2_ny034")
 region = Rect2(692, 432, 135, 30)
 
 [node name="OptionsMenu" type="Control" unique_id=961730160]
 layout_mode = 3
 anchors_preset = 0
 scale = Vector2(1.4799997, 1.4799997)
-script = ExtResource("1_2y1lw")
+script = ExtResource("1_0ha3t")
 
 [node name="Background" type="TextureRect" parent="." unique_id=262523885]
 layout_mode = 0
@@ -73,12 +73,12 @@ texture_pressed = SubResource("AtlasTexture_gcocc")
 texture_hover = SubResource("AtlasTexture_gcocc")
 texture_disabled = SubResource("AtlasTexture_8o0ho")
 texture_focused = SubResource("AtlasTexture_gcocc")
-script = ExtResource("3_b57bx")
+script = ExtResource("3_essa6")
 _display = NodePath("DigitDisplay")
 
 [node name="DigitDisplay" type="Node2D" parent="BtnBgmVolume" unique_id=2084090289]
 position = Vector2(177.70273, -4.729731)
-script = ExtResource("4_8o0ho")
+script = ExtResource("4_xclcu")
 
 [node name="Digit_0" type="Sprite2D" parent="BtnBgmVolume/DigitDisplay" unique_id=206522383]
 position = Vector2(64.151375, 19.129726)
@@ -110,13 +110,13 @@ texture_pressed = SubResource("AtlasTexture_88qle")
 texture_hover = SubResource("AtlasTexture_88qle")
 texture_disabled = SubResource("AtlasTexture_akv36")
 texture_focused = SubResource("AtlasTexture_88qle")
-script = ExtResource("3_b57bx")
+script = ExtResource("3_essa6")
 _channel = 1
 _display = NodePath("DigitDisplay")
 
 [node name="DigitDisplay" type="Node2D" parent="BtnSeVolume" unique_id=75269924]
 position = Vector2(177.70273, -4.729731)
-script = ExtResource("4_8o0ho")
+script = ExtResource("4_xclcu")
 
 [node name="Digit_0" type="Sprite2D" parent="BtnSeVolume/DigitDisplay" unique_id=1942920646]
 position = Vector2(64.151375, 19.129726)

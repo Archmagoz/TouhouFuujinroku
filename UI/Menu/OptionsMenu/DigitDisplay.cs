@@ -2,7 +2,7 @@ using Godot;
 
 using System.Collections.Generic;
 
-namespace TouhouFuujinroku.UI.OptionsMenu
+namespace TouhouFuujinroku.UI.Menu.OptionsMenu
 {
 	/// <summary>
 	/// Displays a non-negative integer with digit sprites placed by hand in the scene, in a bright or a dimmed look.

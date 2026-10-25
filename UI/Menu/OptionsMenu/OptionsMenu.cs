@@ -1,6 +1,6 @@
 using TouhouFuujinroku.Global.Controllers;
 
-namespace TouhouFuujinroku.UI.OptionsMenu
+namespace TouhouFuujinroku.UI.Menu.OptionsMenu
 {
     /// <summary>
     /// Options menu screen. Currently only provides the way back to the main menu.

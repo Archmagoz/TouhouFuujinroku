@@ -3,7 +3,7 @@ using Godot;
 using TouhouFuujinroku.Global.Controllers;
 using TouhouFuujinroku.Global.Settings.Audio;
 
-namespace TouhouFuujinroku.UI.OptionsMenu
+namespace TouhouFuujinroku.UI.Menu.OptionsMenu
 {
 	/// <summary>
 	/// Button that shows and edits the volume of one audio channel (background music or sound effects).

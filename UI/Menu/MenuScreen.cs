@@ -4,7 +4,7 @@ using Godot;
 
 using TouhouFuujinroku.Global.Controllers;
 
-namespace TouhouFuujinroku.UI
+namespace TouhouFuujinroku.UI.Menu
 {
     /// <summary>
     /// Base class for menu screens. Provides the shared button focus behavior: a squash and stretch

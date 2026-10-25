@@ -92,8 +92,8 @@ namespace TouhouFuujinroku.Global.Controllers
 		/// </summary>
 		private readonly Dictionary<Scene, string> _scenePaths = new()
 		{
-			{ Scene.MainMenu,    "res://UI/MainMenu/MainMenu.tscn" },
-			{ Scene.OptionsMenu, "res://UI/OptionsMenu/OptionsMenu.tscn" },
+			{ Scene.MainMenu,    "res://UI/Menu/MainMenu/MainMenu.tscn" },
+			{ Scene.OptionsMenu, "res://UI/Menu/OptionsMenu/OptionsMenu.tscn" },
 			{ Scene.DebugLevel,  "res://Levels/DebugLevel/DebugLevel.tscn" },
 			{ Scene.Level01,     "res://Levels/Level01/Level01.tscn" },
 		};
