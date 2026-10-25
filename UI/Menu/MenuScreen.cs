@@ -125,7 +125,6 @@ namespace TouhouFuujinroku.UI.Menu
             button.FocusEntered += OnButtonFocusEntered;
             button.FocusExited += OnButtonFocusExited;
             button.MouseEntered += OnButtonMouseEntered;
-            button.MouseExited += OnButtonMouseExited;
 
             _registeredButtons.Add(button);
         }
@@ -146,7 +145,6 @@ namespace TouhouFuujinroku.UI.Menu
             button.FocusEntered -= OnButtonFocusEntered;
             button.FocusExited -= OnButtonFocusExited;
             button.MouseEntered -= OnButtonMouseEntered;
-            button.MouseExited -= OnButtonMouseExited;
 
             // Stops any running tween so a button that outlives the screen is not left scaled or lit up.
             KillTween(button);
@@ -201,21 +199,6 @@ namespace TouhouFuujinroku.UI.Menu
             // Grabbing focus manually keeps mouse and keyboard/gamepad navigation in sync.
             if (GetHoveredButton() is BaseButton button)
                 button.GrabFocus();
-        }
-
-        /// <summary>
-        /// Handles a button's <c>mouse_exited</c> signal by releasing the focused button,
-        /// but only if the mouse is no longer over it.
-        /// </summary>
-        private void OnButtonMouseExited()
-        {
-            if (_focusedButton == null)
-                return;
-
-            // Releases focus only if the mouse is no longer over the focused button. If keyboard or
-            // gamepad navigation already moved focus elsewhere, this prevents releasing the new owner.
-            if (!_focusedButton.GetGlobalRect().HasPoint(GetGlobalMousePosition()))
-                _focusedButton.ReleaseFocus();
         }
 
         #endregion // Event handlers
