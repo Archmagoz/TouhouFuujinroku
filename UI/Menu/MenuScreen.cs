@@ -39,7 +39,7 @@ namespace TouhouFuujinroku.UI.Menu
         /// Multiplicative tint of an unfocused button (#333333). Each channel scales the texture color:
         /// 1 keeps it unchanged, 0 turns it fully black. Must match the value stored in the scenes.
         /// </summary>
-        private static readonly Color UnfocusedTint = new(0.2f, 0.2f, 0.2f);
+        private static readonly Color UnfocusedTint = new(0.3f, 0.3f, 0.3f);
 
         /// <summary>Tint of a focused button: white leaves the texture colors unchanged.</summary>
         private static readonly Color FocusedTint = Colors.White;
