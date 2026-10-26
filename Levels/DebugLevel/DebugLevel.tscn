@@ -11,6 +11,7 @@
 [ext_resource type="PackedScene" uid="uid://cljfb1nrmidxw" path="res://UI/Hud/Hud.tscn" id="7_ljaqd"]
 [ext_resource type="PackedScene" uid="uid://dr1xqi874edgh" path="res://Entities/Enemies/GenericEnemies/Fairies/SmallFairy.tscn" id="9_kpwub"]
 [ext_resource type="PackedScene" uid="uid://66mmcvf5xih1" path="res://Entities/Projectile/ProjectilePool.tscn" id="10_amjf5"]
+[ext_resource type="PackedScene" uid="uid://chlonc6jy2if0" path="res://UI/Menu/PauseMenu/PauseMenu.tscn" id="11_1ro0i"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_3beo8"]
 size = Vector2(26, 422)
@@ -84,6 +85,13 @@ offset_right = -142.0
 offset_bottom = -155.0
 text = "DEBUG
 FPS: 666"
+
+[node name="PauseMenu" parent="." unique_id=272337806 instance=ExtResource("11_1ro0i")]
+visible = false
+offset_left = -357.0
+offset_top = -295.0
+offset_right = -357.0
+offset_bottom = -295.0
 
 [node name="Hud" parent="." unique_id=1689239087 instance=ExtResource("7_ljaqd")]
 offset_left = -293.0
