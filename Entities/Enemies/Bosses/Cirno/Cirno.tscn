@@ -1,0 +1,53 @@
+[gd_scene format=3 uid="uid://br0xs61i5sfab"]
+
+[ext_resource type="Texture2D" uid="uid://bpo2qsweic4wa" path="res://Entities/Enemies/Bosses/Cirno/Assets/Spritesheet.png" id="1_pn5w4"]
+
+[sub_resource type="Animation" id="Animation_xcw1q"]
+length = 0.001
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("Sprite:frame")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [0]
+}
+
+[sub_resource type="Animation" id="Animation_pn5w4"]
+resource_name = "default"
+step = 0.2
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("Sprite:frame")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 0.2, 0.4, 0.6),
+"transitions": PackedFloat32Array(1, 1, 1, 1),
+"update": 1,
+"values": [0, 1, 2, 3]
+}
+
+[sub_resource type="AnimationLibrary" id="AnimationLibrary_xcw1q"]
+_data = {
+&"RESET": SubResource("Animation_xcw1q"),
+&"default": SubResource("Animation_pn5w4")
+}
+
+[node name="Cirno" type="Node2D" unique_id=1006615867]
+
+[node name="Sprite" type="Sprite2D" parent="." unique_id=1958648167]
+texture = ExtResource("1_pn5w4")
+hframes = 4
+vframes = 3
+region_enabled = true
+region_rect = Rect2(167, 159, 256, 190)
+
+[node name="AnimationPlayer" type="AnimationPlayer" parent="." unique_id=1708550361]
+libraries/ = SubResource("AnimationLibrary_xcw1q")
+autoplay = &"default"
