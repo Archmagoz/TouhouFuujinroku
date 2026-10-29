@@ -17,7 +17,7 @@ namespace TouhouFuujinroku.Components
     /// </para>
     /// </summary>
     [GlobalClass]
-    public partial class DamageFlashComponent : Node
+    public partial class DamageFlashComponent : Component
     {
         #region Fields
 
