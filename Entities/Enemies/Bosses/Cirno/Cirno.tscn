@@ -1,6 +1,7 @@
 [gd_scene format=3 uid="uid://br0xs61i5sfab"]
 
 [ext_resource type="Texture2D" uid="uid://bpo2qsweic4wa" path="res://Entities/Enemies/Bosses/Cirno/Assets/Spritesheet.png" id="1_pn5w4"]
+[ext_resource type="PackedScene" uid="uid://dxj0lkshro5gy" path="res://Components/SpeedComponent/SpeedComponent.tscn" id="2_xcw1q"]
 
 [sub_resource type="Animation" id="Animation_xcw1q"]
 length = 0.001
@@ -60,3 +61,6 @@ autoplay = &"default"
 [node name="CollisionShape" type="CollisionShape2D" parent="." unique_id=814275933]
 shape = SubResource("CircleShape2D_6rwum")
 debug_color = Color(0.99999994, 0.017124055, 0.016496334, 0.41960785)
+
+[node name="SpeedComponent" parent="." unique_id=1458467243 instance=ExtResource("2_xcw1q")]
+_defaultSpeed = 20.0

@@ -207,9 +207,9 @@ namespace TouhouFuujinroku.Entities.PlayableCharacters.Reimu
 		/// </summary>
 		/// <param name="current">Remaining lives after the change.</param>
 		/// <param name="max">Maximum number of lives.</param>
-		private void OnLivesChanged(int current, int max)
+		private void OnLivesChanged(int current)
 		{
-			EmitSignal(SignalName.LivesChanged, current, max);
+			EmitSignal(SignalName.LivesChanged, current);
 		}
 
 		/// <summary>

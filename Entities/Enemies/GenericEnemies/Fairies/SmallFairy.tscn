@@ -140,7 +140,7 @@ _bulletPrefab = ExtResource("2_ohic1")
 _shotCount = 3
 
 [node name="SpeedComponent" parent="." unique_id=1899239882 instance=ExtResource("6_ft0qj")]
-_currentSpeed = 100.0
+_defaultSpeed = 100.0
 
 [node name="HealthComponent" parent="." unique_id=1821635083 instance=ExtResource("7_gveti")]
 _maxHealth = 10

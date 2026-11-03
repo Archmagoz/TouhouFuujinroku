@@ -7,7 +7,8 @@ namespace TouhouFuujinroku.Components
 	/// <para>
 	/// The component owns the health state and enforces its invariants (value always within
 	/// 0 and <see cref="MaxHealth"/>, death reported exactly once per alive-to-dead transition).
-	/// Owners react through signals and never write the state directly.
+	/// Owners read <see cref="CurrentHealth"/> and react to <see cref="HealthChanged"/> and
+	/// <see cref="Death"/>, and never write the state directly.
 	/// </para>
 	/// </summary>
 	[GlobalClass]
@@ -22,7 +23,6 @@ namespace TouhouFuujinroku.Components
 		/// <param name="current">Health value after the change.</param>
 		/// <param name="max">Maximum health value.</param>
 		[Signal] public delegate void HealthChangedEventHandler(int current, int max);
-
 		/// <summary>
 		/// Emitted exactly once each time health transitions from alive to dead.
 		/// Emitted after <see cref="HealthChanged"/> for the same change.
@@ -34,7 +34,8 @@ namespace TouhouFuujinroku.Components
 		#region Fields
 
 		/// <summary>
-		/// Maximum health value, assigned via the editor. Also the initial value on spawn.
+		/// Maximum health value, assigned via the editor. Also the initial value on spawn
+		/// and the baseline restored by <see cref="Reset"/>. Validated to be at least 1 on ready.
 		/// </summary>
 		[Export] protected int _maxHealth = 100;
 
@@ -43,10 +44,10 @@ namespace TouhouFuujinroku.Components
 		/// </summary>
 		private int _currentHealth;
 
-		/// <summary>Maximum health value.</summary>
+		/// <summary>Public property for accessing the maximum health.</summary>
 		public int MaxHealth => _maxHealth;
 
-		/// <summary>Current health value, always between 0 and <see cref="MaxHealth"/>.</summary>
+		/// <summary>Public property for accessing the current health, always between 0 and <see cref="MaxHealth"/>.</summary>
 		public int CurrentHealth => _currentHealth;
 
 		/// <summary>True once health has reached zero.</summary>
@@ -58,6 +59,9 @@ namespace TouhouFuujinroku.Components
 
 		public override void _Ready()
 		{
+			// Clamp the configured value to a valid range so the component never spawns dead by misconfiguration.
+			_maxHealth = Mathf.Max(1, _maxHealth);
+
 			// Initialize directly (not through UpdateHealth) so no signal is emitted during setup.
 			_currentHealth = _maxHealth;
 		}
@@ -67,7 +71,7 @@ namespace TouhouFuujinroku.Components
 		#region Public API
 
 		/// <summary>
-		/// Restores the entity to full health. Also revives a dead entity,
+		/// Restores the entity to full health, undoing any runtime modification. Also revives a dead entity,
 		/// so <see cref="Death"/> may be emitted again on a later lethal hit.
 		/// </summary>
 		public void Reset()
@@ -85,24 +89,25 @@ namespace TouhouFuujinroku.Components
 		}
 
 		/// <summary>
-		/// Reduces health by the given amount. Ignored if the entity is already dead.
+		/// Reduces health by the given amount. Negative values are ignored.
+		/// Ignored if the entity is already dead.
 		/// </summary>
-		/// <param name="damage">Amount of damage to apply. Expected to be non-negative.</param>
+		/// <param name="damage">Amount of damage to apply.</param>
 		public void ApplyDamage(int damage)
 		{
 			if (IsDead) return;
-			UpdateHealth(_currentHealth - damage);
+			UpdateHealth(_currentHealth - Mathf.Max(0, damage));
 		}
 
 		/// <summary>
-		/// Increases health by the given amount, capped at <see cref="MaxHealth"/>.
+		/// Increases health by the given amount, capped at <see cref="MaxHealth"/>. Negative values are ignored.
 		/// Ignored if the entity is already dead; use <see cref="Reset"/> or <see cref="SetHealth"/> to revive.
 		/// </summary>
-		/// <param name="amount">Amount of health to restore. Expected to be non-negative.</param>
+		/// <param name="amount">Amount of health to restore.</param>
 		public void Heal(int amount)
 		{
 			if (IsDead) return;
-			UpdateHealth(_currentHealth + amount);
+			UpdateHealth(_currentHealth + Mathf.Max(0, amount));
 		}
 
 		/// <summary>
@@ -121,7 +126,7 @@ namespace TouhouFuujinroku.Components
 
 		/// <summary>
 		/// Single write point for the health state. Clamps the value, emits <see cref="HealthChanged"/>
-		/// when it actually changed, and triggers <see cref="OnDeath"/> on the alive-to-dead transition.
+		/// only when it actually changed, and triggers <see cref="OnDeath"/> on the alive-to-dead transition.
 		/// </summary>
 		/// <param name="value">Requested health value, clamped to 0 and <see cref="MaxHealth"/>.</param>
 		private void UpdateHealth(int value)

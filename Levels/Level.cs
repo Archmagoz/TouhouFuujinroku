@@ -112,8 +112,7 @@ namespace TouhouFuujinroku.Levels
         /// Connected in the editor to <c>Reimu.LivesChanged</c>, which is emitted after the new value is in effect.
         /// </summary>
         /// <param name="current">Remaining lives after the change.</param>
-        /// <param name="max">Maximum number of lives.</param>
-        private void OnPlayerLivesChanged(int current, int max)
+        private void OnPlayerLivesChanged(int current)
         {
             if (_hud == null) return;
 

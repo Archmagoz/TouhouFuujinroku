@@ -20,8 +20,7 @@ namespace TouhouFuujinroku.Components
         /// Not emitted on initialization, so listeners should read <see cref="CurrentLives"/> once when connecting.
         /// </summary>
         /// <param name="current">Remaining lives after the change.</param>
-        /// <param name="max">Maximum number of lives.</param>
-        [Signal] public delegate void LivesChangedEventHandler(int current, int max);
+        [Signal] public delegate void LivesChangedEventHandler(int current);
 
         /// <summary>
         /// Emitted after the respawn delay, once health has been fully restored.
@@ -29,7 +28,8 @@ namespace TouhouFuujinroku.Components
         [Signal] public delegate void RespawnedEventHandler();
 
         /// <summary>
-        /// Emitted when the last life is lost. No respawn follows and the entity stays dead.
+        /// Emitted when the last life is lost. No respawn follows and the entity stays dead
+        /// until <see cref="Restart"/> is called.
         /// </summary>
         [Signal] public delegate void GameOverEventHandler();
 
@@ -38,18 +38,20 @@ namespace TouhouFuujinroku.Components
         #region Fields
 
         /// <summary>
-        /// Seconds the entity stays dead before reviving.
+        /// Seconds the entity stays dead before reviving, assigned via the editor.
+        /// Negative values are treated as zero.
         /// </summary>
         [Export] private float _respawnDelay = 1.5f;
 
         /// <summary>
-        /// Number of lives the player starts with.
+        /// Number of lives the player starts with, assigned via the editor.
+        /// Validated to be at least 1 on ready.
         /// </summary>
         [Export] private int _maxLives = 5;
 
         /// <summary>
         /// Fixed per-life health. The player is always one-shot per life,
-        /// regardless of the value set on the inherited <c>_maxHealth</c> field in the editor.
+        /// regardless of the max health value set in the editor.
         /// </summary>
         private const int PlayerMaxHealth = 1;
 
@@ -58,10 +60,10 @@ namespace TouhouFuujinroku.Components
         /// </summary>
         private int _currentLives;
 
-        /// <summary>Maximum number of lives.</summary>
+        /// <summary>Public property for accessing the maximum number of lives.</summary>
         public int MaxLives => _maxLives;
 
-        /// <summary>Remaining lives, including the one currently in play.</summary>
+        /// <summary>Public property for accessing the remaining lives, including the one currently in play.</summary>
         public int CurrentLives => _currentLives;
 
         #endregion // Fields
@@ -71,17 +73,35 @@ namespace TouhouFuujinroku.Components
         public override void _Ready()
         {
             // Must run before base._Ready(), which consumes _maxHealth to initialize the
-            // current health — this enforces the one-hit-per-life rule unconditionally.
+            // current health. This enforces the one-hit-per-life rule unconditionally.
             _maxHealth = PlayerMaxHealth;
 
             base._Ready();
 
+            // Clamp the configured value to a valid range and initialize the runtime state.
+            _maxLives = Mathf.Max(1, _maxLives);
             _currentLives = _maxLives;
         }
 
         #endregion // Godot overrides
 
-        #region Event handlers
+        #region Public API
+
+        /// <summary>
+        /// Starts over with all lives and full health. Meant for retrying after <see cref="GameOver"/>
+        /// or starting a new run. <see cref="HealthComponent.Reset"/> alone only revives and leaves the lives untouched.
+        /// </summary>
+        public void Restart()
+        {
+            _currentLives = _maxLives;
+            EmitSignal(SignalName.LivesChanged, _currentLives);
+
+            Reset();
+        }
+
+        #endregion // Public API
+
+        #region Overrides
 
         /// <summary>
         /// Extends the base death hook with the lives and respawn flow.
@@ -98,7 +118,7 @@ namespace TouhouFuujinroku.Components
             base.OnDeath();
 
             _currentLives--;
-            EmitSignal(SignalName.LivesChanged, _currentLives, _maxLives);
+            EmitSignal(SignalName.LivesChanged, _currentLives);
 
             if (_currentLives <= 0)
             {
@@ -108,12 +128,16 @@ namespace TouhouFuujinroku.Components
 
             // IsDead stays true for the whole delay, giving the death animation time to play
             // and keeping the entity locked out of damage and control until it revives.
-            await ToSignal(GetTree().CreateTimer(_respawnDelay), SceneTreeTimer.SignalName.Timeout);
+            await ToSignal(GetTree().CreateTimer(Mathf.Max(0f, _respawnDelay)), SceneTreeTimer.SignalName.Timeout);
+
+            // The node may have been freed (e.g. scene change) or revived externally while waiting.
+            if (!IsInstanceValid(this) || !IsDead)
+                return;
 
             Reset();
             EmitSignal(SignalName.Respawned);
         }
 
-        #endregion // Event handlers
+        #endregion // Overrides
     }
 }

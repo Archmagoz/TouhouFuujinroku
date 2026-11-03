@@ -3,7 +3,7 @@ using Godot;
 namespace TouhouFuujinroku.Components
 {
 	/// <summary>
-	/// Reusable speed container for any entity that moves.
+	/// Reusable speed component for any entity that moves.
 	/// <para>
 	/// The component owns the speed state and enforces its invariants (value always within
 	/// 0 and <see cref="MaxSpeed"/>). Owners read <see cref="CurrentSpeed"/> to move and react
@@ -20,8 +20,7 @@ namespace TouhouFuujinroku.Components
 		/// Not emitted on initialization, so listeners should read <see cref="CurrentSpeed"/> once when connecting.
 		/// </summary>
 		/// <param name="current">Speed value after the change.</param>
-		/// <param name="max">Maximum speed value.</param>
-		[Signal] public delegate void SpeedChangedEventHandler(float current, float max);
+		[Signal] public delegate void SpeedChangedEventHandler(float current);
 
 		#endregion // Signals
 
@@ -30,7 +29,7 @@ namespace TouhouFuujinroku.Components
 		/// <summary>
 		/// Initial speed, assigned via the editor. Also the baseline restored by <see cref="Reset"/>.
 		/// </summary>
-		[Export] private float _currentSpeed = 10f;
+		[Export] private float _defaultSpeed = 10f;
 
 		/// <summary>
 		/// Upper bound for the speed value, assigned via the editor.
@@ -38,15 +37,15 @@ namespace TouhouFuujinroku.Components
 		[Export] private float _maxSpeed = 100f;
 
 		/// <summary>
-		/// Speed captured on spawn, used as the baseline for <see cref="Reset"/>.
+		/// Runtime speed state, managed exclusively by this component.
 		/// </summary>
-		private float _defaultSpeed;
+		private float _currentSpeed;
 
-		/// <summary>Current speed value, always between 0 and <see cref="MaxSpeed"/>.</summary>
-		public float CurrentSpeed => _currentSpeed;
-
-		/// <summary>Maximum speed value.</summary>
+		/// <summary>Public property for accessing the maximum speed.</summary>
 		public float MaxSpeed => _maxSpeed;
+
+		/// <summary>Public property for accessing the current speed.</summary>
+		public float CurrentSpeed => _currentSpeed;
 
 		#endregion // Fields
 
@@ -54,8 +53,12 @@ namespace TouhouFuujinroku.Components
 
 		public override void _Ready()
 		{
-			// Captured here (not at field initialization) so the editor-assigned value is the one stored.
-			_defaultSpeed = _currentSpeed;
+			// Clamp the configured values to valid ranges and initialize the runtime state.
+			_maxSpeed = Mathf.Max(0f, _maxSpeed);
+			_defaultSpeed = Mathf.Clamp(_defaultSpeed, 0f, _maxSpeed);
+
+			// Initialize the runtime state to the configured default speed.
+			_currentSpeed = _defaultSpeed;
 		}
 
 		#endregion // Godot overrides
@@ -63,7 +66,7 @@ namespace TouhouFuujinroku.Components
 		#region Public API
 
 		/// <summary>
-		/// Restores the speed configured in the editor, undoing any runtime modification.
+		/// Restores the default speed configured in the editor, undoing any runtime modification.
 		/// </summary>
 		public void Reset()
 		{
@@ -80,21 +83,21 @@ namespace TouhouFuujinroku.Components
 		}
 
 		/// <summary>
-		/// Increases the speed relative to its current value, capped at <see cref="MaxSpeed"/>.
+		/// Increases the current speed by the given amount. Negative values are ignored.
 		/// </summary>
-		/// <param name="amount">Amount to add. Expected to be non-negative; use <see cref="ReduceSpeed"/> to decrease.</param>
+		/// <param name="amount">Amount to add.</param>
 		public void AddSpeed(float amount)
 		{
-			UpdateSpeed(_currentSpeed + amount);
+			UpdateSpeed(_currentSpeed + Mathf.Max(0f, amount));
 		}
 
 		/// <summary>
-		/// Decreases the speed relative to its current value, floored at 0.
+		/// Decreases the current speed by the given amount. Negative values are ignored.
 		/// </summary>
-		/// <param name="amount">Amount to subtract. Expected to be non-negative; use <see cref="AddSpeed"/> to increase.</param>
+		/// <param name="amount">Amount to subtract.</param>
 		public void ReduceSpeed(float amount)
 		{
-			UpdateSpeed(_currentSpeed - amount);
+			UpdateSpeed(_currentSpeed - Mathf.Max(0f, amount));
 		}
 
 		#endregion // Public API
@@ -114,7 +117,7 @@ namespace TouhouFuujinroku.Components
 
 			// Approximate comparison avoids spurious signals from float rounding noise.
 			if (!Mathf.IsEqualApprox(_currentSpeed, oldSpeed))
-				EmitSignal(SignalName.SpeedChanged, _currentSpeed, _maxSpeed);
+				EmitSignal(SignalName.SpeedChanged, _currentSpeed);
 		}
 
 		#endregion // Helpers

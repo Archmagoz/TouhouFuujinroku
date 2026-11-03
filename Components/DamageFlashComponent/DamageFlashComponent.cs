@@ -22,24 +22,6 @@ namespace TouhouFuujinroku.Components
         #region Fields
 
         /// <summary>
-        /// Visual node that blinks. Typically the enemy's <see cref="AnimatedSprite2D"/>.
-        /// </summary>
-        [ExportGroup("Target")]
-        [Export] private CanvasItem _target;
-
-        /// <summary>
-        /// Color the target blends toward at the peak of the flash. Its alpha channel is ignored.
-        /// </summary>
-        [ExportGroup("Flash")]
-        [Export] private Color _flashColor = Colors.White;
-
-        /// <summary>
-        /// Seconds the flash takes to fade back to the normal look. Keep it short so rapid hits stay readable.
-        /// </summary>
-        [Export(PropertyHint.Range, "0.02,0.5,0.01")]
-        private float _duration = 0.08f;
-
-        /// <summary>
         /// Shader source: blends the sprite color toward <c>flash_color</c> by <c>flash_amount</c>
         /// (0 = untouched, 1 = solid color) without touching alpha.
         /// </summary>
@@ -57,6 +39,24 @@ namespace TouhouFuujinroku.Components
         /// Name of the shader uniform animated by the flash, as a property path for tweening.
         /// </summary>
         private const string FlashAmountPath = "shader_parameter/flash_amount";
+
+        /// <summary>
+        /// Visual node that blinks. Typically the enemy's <see cref="AnimatedSprite2D"/>.
+        /// </summary>
+        [ExportGroup("Target")]
+        [Export] private CanvasItem _target;
+
+        /// <summary>
+        /// Color the target blends toward at the peak of the flash. Its alpha channel is ignored.
+        /// </summary>
+        [ExportGroup("Flash")]
+        [Export] private Color _flashColor = Colors.White;
+
+        /// <summary>
+        /// Seconds the flash takes to fade back to the normal look. Keep it short so rapid hits stay readable.
+        /// </summary>
+        [Export(PropertyHint.Range, "0.02,0.5,0.01")]
+        private float _duration = 0.08f;
 
         /// <summary>
         /// Compiled shader shared by every component. Each component still owns its own material,
