@@ -253,7 +253,8 @@ volume_db = -8.0
 bus = &"SE"
 
 [node name="SpeedComponent" parent="." unique_id=1899239882 instance=ExtResource("3_buwra")]
-_maxSpeed = 180.0
+DefaultSpeed = 160.0
+MaxSpeed = 160.0
 
 [node name="PlayerHealthComponent" parent="." unique_id=1355624808 instance=ExtResource("2_6xvey")]
 
