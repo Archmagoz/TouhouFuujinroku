@@ -14,8 +14,6 @@ namespace TouhouFuujinroku.Components
 	[GlobalClass]
 	public partial class HealthComponent : Component
 	{
-		#region Signals
-
 		/// <summary>
 		/// Emitted whenever the current health value actually changes.
 		/// Not emitted on initialization, so listeners should read <see cref="CurrentHealth"/> once when connecting.
@@ -23,70 +21,51 @@ namespace TouhouFuujinroku.Components
 		/// <param name="current">Health value after the change.</param>
 		/// <param name="max">Maximum health value.</param>
 		[Signal] public delegate void HealthChangedEventHandler(int current, int max);
+
 		/// <summary>
 		/// Emitted exactly once each time health transitions from alive to dead.
 		/// Emitted after <see cref="HealthChanged"/> for the same change.
 		/// </summary>
 		[Signal] public delegate void DeathEventHandler();
 
-		#endregion // Signals
-
-		#region Fields
-
 		/// <summary>
 		/// Maximum health value, assigned via the editor. Also the initial value on spawn
-		/// and the baseline restored by <see cref="Reset"/>. Validated to be at least 1 on ready.
+		/// and the baseline restored by <see cref="Reset"/>. Clamped to at least 1 on ready.
+		/// Derived components may override it before <c>base._Ready()</c> runs.
 		/// </summary>
-		[Export] protected int _maxHealth = 100;
+		[Export] public int MaxHealth { get; protected set; } = 100;
 
 		/// <summary>
 		/// Runtime health state, managed exclusively by this component.
+		/// Always between 0 and <see cref="MaxHealth"/>.
 		/// </summary>
-		private int _currentHealth;
+		public int CurrentHealth { get; private set; }
 
-		/// <summary>Public property for accessing the maximum health.</summary>
-		public int MaxHealth => _maxHealth;
-
-		/// <summary>Public property for accessing the current health, always between 0 and <see cref="MaxHealth"/>.</summary>
-		public int CurrentHealth => _currentHealth;
-
-		/// <summary>True once health has reached zero.</summary>
-		public bool IsDead => _currentHealth <= 0;
-
-		#endregion // Fields
-
-		#region Godot overrides
+		/// <summary> True once health has reached zero. </summary>
+		public bool IsDead => CurrentHealth <= 0;
 
 		public override void _Ready()
 		{
 			// Clamp the configured value to a valid range so the component never spawns dead by misconfiguration.
-			_maxHealth = Mathf.Max(1, _maxHealth);
+			MaxHealth = Mathf.Max(1, MaxHealth);
 
 			// Initialize directly (not through UpdateHealth) so no signal is emitted during setup.
-			_currentHealth = _maxHealth;
+			CurrentHealth = MaxHealth;
 		}
-
-		#endregion // Godot overrides
-
-		#region Public API
 
 		/// <summary>
 		/// Restores the entity to full health, undoing any runtime modification. Also revives a dead entity,
 		/// so <see cref="Death"/> may be emitted again on a later lethal hit.
 		/// </summary>
-		public void Reset()
-		{
-			UpdateHealth(_maxHealth);
-		}
+		public void Reset() =>
+			UpdateHealth(MaxHealth);
 
 		/// <summary>
 		/// Overrides the current health value directly. Works on dead entities too, acting as a revive when above zero.
 		/// </summary>
 		/// <param name="value">New health value. Clamped to 0 and <see cref="MaxHealth"/>.</param>
-		public void SetHealth(int value)
-		{
+		public void SetHealth(int value) =>
 			UpdateHealth(value);
-		}
 
 		/// <summary>
 		/// Reduces health by the given amount. Negative values are ignored.
@@ -96,7 +75,8 @@ namespace TouhouFuujinroku.Components
 		public void ApplyDamage(int damage)
 		{
 			if (IsDead) return;
-			UpdateHealth(_currentHealth - Mathf.Max(0, damage));
+
+			UpdateHealth(CurrentHealth - Mathf.Max(0, damage));
 		}
 
 		/// <summary>
@@ -107,7 +87,8 @@ namespace TouhouFuujinroku.Components
 		public void Heal(int amount)
 		{
 			if (IsDead) return;
-			UpdateHealth(_currentHealth + Mathf.Max(0, amount));
+
+			UpdateHealth(CurrentHealth + Mathf.Max(0, amount));
 		}
 
 		/// <summary>
@@ -117,12 +98,9 @@ namespace TouhouFuujinroku.Components
 		public void Kill()
 		{
 			if (IsDead) return;
+
 			UpdateHealth(0);
 		}
-
-		#endregion // Public API
-
-		#region Helpers
 
 		/// <summary>
 		/// Single write point for the health state. Clamps the value, emits <see cref="HealthChanged"/>
@@ -131,17 +109,17 @@ namespace TouhouFuujinroku.Components
 		/// <param name="value">Requested health value, clamped to 0 and <see cref="MaxHealth"/>.</param>
 		private void UpdateHealth(int value)
 		{
-			var oldHealth = _currentHealth;
+			var oldHealth = CurrentHealth;
 
-			_currentHealth = Mathf.Clamp(value, 0, _maxHealth);
+			CurrentHealth = Mathf.Clamp(value, 0, MaxHealth);
 
 			// No-op writes (e.g. damaging at zero, healing at full) must stay silent.
-			if (_currentHealth == oldHealth)
+			if (CurrentHealth == oldHealth)
 				return;
 
-			EmitSignal(SignalName.HealthChanged, _currentHealth, _maxHealth);
+			EmitSignal(SignalName.HealthChanged, CurrentHealth, MaxHealth);
 
-			if (_currentHealth == 0 && oldHealth > 0)
+			if (CurrentHealth == 0 && oldHealth > 0)
 				OnDeath();
 		}
 
@@ -150,11 +128,7 @@ namespace TouhouFuujinroku.Components
 		/// Derived components must call <c>base.OnDeath()</c> first so <see cref="Death"/>
 		/// is always emitted before any derived logic runs.
 		/// </summary>
-		protected virtual void OnDeath()
-		{
+		protected virtual void OnDeath() =>
 			EmitSignal(SignalName.Death);
-		}
-
-		#endregion // Helpers
 	}
 }

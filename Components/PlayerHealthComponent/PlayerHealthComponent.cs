@@ -13,10 +13,8 @@ namespace TouhouFuujinroku.Components
     [GlobalClass]
     public partial class PlayerHealthComponent : HealthComponent
     {
-        #region Signals
-
         /// <summary>
-        /// Emitted whenever the number of remaining lives changes.
+        /// Emitted whenever the number of remaining lives actually changes.
         /// Not emitted on initialization, so listeners should read <see cref="CurrentLives"/> once when connecting.
         /// </summary>
         /// <param name="current">Remaining lives after the change.</param>
@@ -33,75 +31,70 @@ namespace TouhouFuujinroku.Components
         /// </summary>
         [Signal] public delegate void GameOverEventHandler();
 
-        #endregion // Signals
-
-        #region Fields
-
         /// <summary>
         /// Seconds the entity stays dead before reviving, assigned via the editor.
         /// Negative values are treated as zero.
         /// </summary>
-        [Export] private float _respawnDelay = 1.5f;
+        [Export] public float RespawnDelay { get; private set; } = 1.5f;
 
         /// <summary>
         /// Number of lives the player starts with, assigned via the editor.
-        /// Validated to be at least 1 on ready.
+        /// Also the baseline restored by <see cref="Restart"/>. Clamped to at least 1 on ready.
         /// </summary>
-        [Export] private int _maxLives = 5;
-
-        /// <summary>
-        /// Fixed per-life health. The player is always one-shot per life,
-        /// regardless of the max health value set in the editor.
-        /// </summary>
-        private const int PlayerMaxHealth = 1;
+        [Export] public int MaxLives { get; private set; } = 5;
 
         /// <summary>
         /// Runtime lives state, managed exclusively by this component.
+        /// Includes the life currently in play.
         /// </summary>
-        private int _currentLives;
+        public int CurrentLives { get; private set; }
 
-        /// <summary>Public property for accessing the maximum number of lives.</summary>
-        public int MaxLives => _maxLives;
-
-        /// <summary>Public property for accessing the remaining lives, including the one currently in play.</summary>
-        public int CurrentLives => _currentLives;
-
-        #endregion // Fields
-
-        #region Godot overrides
+        /// <summary>
+        /// Identifies the latest death or restart. A pending respawn only proceeds if its
+        /// token is still current, so a stale timer can never revive the entity early.
+        /// </summary>
+        private int _respawnToken;
 
         public override void _Ready()
         {
-            // Must run before base._Ready(), which consumes _maxHealth to initialize the
-            // current health. This enforces the one-hit-per-life rule unconditionally.
-            _maxHealth = PlayerMaxHealth;
-
             base._Ready();
 
-            // Clamp the configured value to a valid range and initialize the runtime state.
-            _maxLives = Mathf.Max(1, _maxLives);
-            _currentLives = _maxLives;
+            // Clamp the configured values to valid ranges and initialize the runtime state.
+            MaxLives = Mathf.Max(1, MaxLives);
+            RespawnDelay = Mathf.Max(0f, RespawnDelay);
+
+            // Initialize directly (not through UpdateLives) so no signal is emitted during setup.
+            CurrentLives = MaxLives;
         }
-
-        #endregion // Godot overrides
-
-        #region Public API
 
         /// <summary>
         /// Starts over with all lives and full health. Meant for retrying after <see cref="GameOver"/>
         /// or starting a new run. <see cref="HealthComponent.Reset"/> alone only revives and leaves the lives untouched.
+        /// Also cancels any pending respawn.
         /// </summary>
         public void Restart()
         {
-            _currentLives = _maxLives;
-            EmitSignal(SignalName.LivesChanged, _currentLives);
+            // Invalidate any respawn still waiting on its timer.
+            _respawnToken++;
 
+            UpdateLives(MaxLives);
             Reset();
         }
 
-        #endregion // Public API
+        /// <summary>
+        /// Single write point for the lives state. Clamps the value and emits
+        /// <see cref="LivesChanged"/> only when it actually changed.
+        /// </summary>
+        /// <param name="value">Requested lives value, clamped to 0 and <see cref="MaxLives"/>.</param>
+        private void UpdateLives(int value)
+        {
+            var oldLives = CurrentLives;
 
-        #region Overrides
+            CurrentLives = Mathf.Clamp(value, 0, MaxLives);
+
+            if (CurrentLives != oldLives)
+                EmitSignal(SignalName.LivesChanged, CurrentLives);
+        }
 
         /// <summary>
         /// Extends the base death hook with the lives and respawn flow.
@@ -109,7 +102,7 @@ namespace TouhouFuujinroku.Components
         /// <c>base.OnDeath()</c> runs first so <see cref="HealthComponent.Death"/> is emitted before
         /// the lives are decremented, letting listeners (e.g. the death animation) react to the death itself.
         /// Without lives left, <see cref="GameOver"/> is emitted and the entity stays dead.
-        /// Otherwise the entity stays dead for <c>_respawnDelay</c> seconds, then is restored
+        /// Otherwise the entity stays dead for <see cref="RespawnDelay"/> seconds, then is restored
         /// and <see cref="Respawned"/> is emitted.
         /// </para>
         /// </summary>
@@ -117,10 +110,11 @@ namespace TouhouFuujinroku.Components
         {
             base.OnDeath();
 
-            _currentLives--;
-            EmitSignal(SignalName.LivesChanged, _currentLives);
+            var token = ++_respawnToken;
 
-            if (_currentLives <= 0)
+            UpdateLives(CurrentLives - 1);
+
+            if (CurrentLives <= 0)
             {
                 EmitSignal(SignalName.GameOver);
                 return;
@@ -128,16 +122,15 @@ namespace TouhouFuujinroku.Components
 
             // IsDead stays true for the whole delay, giving the death animation time to play
             // and keeping the entity locked out of damage and control until it revives.
-            await ToSignal(GetTree().CreateTimer(Mathf.Max(0f, _respawnDelay)), SceneTreeTimer.SignalName.Timeout);
+            await ToSignal(GetTree().CreateTimer(RespawnDelay), SceneTreeTimer.SignalName.Timeout);
 
-            // The node may have been freed (e.g. scene change) or revived externally while waiting.
-            if (!IsInstanceValid(this) || !IsDead)
+            // Abort if the node was freed (e.g. scene change), the respawn was superseded
+            // by a newer death or a restart, or the entity was revived externally while waiting.
+            if (!IsInstanceValid(this) || token != _respawnToken || !IsDead)
                 return;
 
             Reset();
             EmitSignal(SignalName.Respawned);
         }
-
-        #endregion // Overrides
     }
 }

@@ -19,8 +19,6 @@ namespace TouhouFuujinroku.Components
     [GlobalClass]
     public partial class DamageFlashComponent : Component
     {
-        #region Fields
-
         /// <summary>
         /// Shader source: blends the sprite color toward <c>flash_color</c> by <c>flash_amount</c>
         /// (0 = untouched, 1 = solid color) without touching alpha.
@@ -74,10 +72,6 @@ namespace TouhouFuujinroku.Components
         /// </summary>
         private Tween _tween;
 
-        #endregion // Fields
-
-        #region Godot overrides
-
         public override void _Ready()
         {
             if (_target == null) return;
@@ -90,10 +84,6 @@ namespace TouhouFuujinroku.Components
 
             _target.Material = _material;
         }
-
-        #endregion // Godot overrides
-
-        #region Public API
 
         /// <summary>
         /// Plays the flash. It starts at full intensity immediately and fades out over the configured duration.
@@ -111,7 +101,5 @@ namespace TouhouFuujinroku.Components
             _tween = CreateTween();
             _tween.TweenProperty(_material, FlashAmountPath, 0f, _duration);
         }
-
-        #endregion // Public API
     }
 }

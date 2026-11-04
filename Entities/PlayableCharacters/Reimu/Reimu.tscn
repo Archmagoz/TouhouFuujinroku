@@ -257,6 +257,7 @@ DefaultSpeed = 160.0
 MaxSpeed = 160.0
 
 [node name="PlayerHealthComponent" parent="." unique_id=1355624808 instance=ExtResource("2_6xvey")]
+MaxHealth = 1
 
 [node name="ReimuAnimatedSprite" type="AnimatedSprite2D" parent="." unique_id=1329335674]
 position = Vector2(1, 0)
