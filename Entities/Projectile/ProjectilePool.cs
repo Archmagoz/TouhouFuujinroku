@@ -19,8 +19,6 @@ namespace TouhouFuujinroku.Entities.Projectile
 	[GlobalClass]
 	public partial class ProjectilePool : Node
 	{
-		#region Fields
-
 		/// <summary>
 		/// Pool of the currently loaded level. Set when the pool enters the tree and cleared when it leaves,
 		/// so it never points at a freed node.
@@ -43,10 +41,6 @@ namespace TouhouFuujinroku.Entities.Projectile
 		/// </summary>
 		private bool _initialized;
 
-		#endregion // Fields
-
-		#region Godot overrides
-
 		public override void _Ready()
 		{
 			// Evict duplicates rather than silently overwriting the existing instance.
@@ -66,10 +60,6 @@ namespace TouhouFuujinroku.Entities.Projectile
 			if (Instance == this)
 				Instance = null;
 		}
-
-		#endregion // Godot overrides
-
-		#region Public API
 
 		/// <summary>
 		/// Marks the pool as ready to serve projectiles. Calls <see cref="Clear"/> first,
@@ -179,10 +169,6 @@ namespace TouhouFuujinroku.Entities.Projectile
 				Return(projectile);
 		}
 
-		#endregion // Public API
-
-		#region Helpers
-
 		/// <summary>
 		/// Pops from the existing queue, or falls through to <see cref="CreateProjectile"/> if the queue is empty.
 		/// </summary>
@@ -242,7 +228,5 @@ namespace TouhouFuujinroku.Entities.Projectile
 			projectile.Monitoring = active;
 			projectile.Monitorable = active;
 		}
-
-		#endregion // Helpers
 	}
 }

@@ -19,8 +19,6 @@ namespace TouhouFuujinroku.Levels.Tools
     [GlobalClass]
     public partial class PlayfieldClearer : CanvasLayer
     {
-        #region Fields
-
         /// <summary>
         /// Player whose death triggers the clear and flash.
         /// </summary>
@@ -69,10 +67,6 @@ namespace TouhouFuujinroku.Levels.Tools
         /// </summary>
         private Tween _tween;
 
-        #endregion // Fields
-
-        #region Godot overrides
-
         public override void _Ready()
         {
             Layer = OverlayLayerIndex;
@@ -91,10 +85,6 @@ namespace TouhouFuujinroku.Levels.Tools
             _tween?.Kill();
         }
 
-        #endregion // Godot overrides
-
-        #region Event handlers
-
         /// <summary>
         /// Handles the player's death. Defers the clear because death can occur inside
         /// a collision callback, where changing collision state is restricted.
@@ -104,10 +94,6 @@ namespace TouhouFuujinroku.Levels.Tools
             Flash();
             Callable.From(ClearPlayfield).CallDeferred();
         }
-
-        #endregion // Event handlers
-
-        #region Public API
 
         /// <summary>
         /// Plays the flash. An existing flash is restarted from transparent.
@@ -144,10 +130,6 @@ namespace TouhouFuujinroku.Levels.Tools
             );
         }
 
-        #endregion // Public API
-
-        #region Helpers
-
         /// <summary>
         /// Cancels the current wave, removes every enemy, and returns every projectile,
         /// including the player's, to the pool.
@@ -177,7 +159,5 @@ namespace TouhouFuujinroku.Levels.Tools
 
             AddChild(_overlay);
         }
-
-        #endregion // Helpers
     }
 }

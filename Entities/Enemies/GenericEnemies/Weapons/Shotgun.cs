@@ -15,8 +15,6 @@ namespace TouhouFuujinroku.Entities.Enemies.GenericEnemies.Weapons
 	/// </summary>
 	public partial class Shotgun : EnemyWeapon
 	{
-		#region Protected API
-
 		/// <summary>
 		/// Fires one projectile toward each <see cref="Marker2D"/> child, all spawning at the weapon's
 		/// global position. The angle from the origin to a marker defines that projectile's travel direction.
@@ -27,10 +25,6 @@ namespace TouhouFuujinroku.Entities.Enemies.GenericEnemies.Weapons
 			foreach (var (position, angle) in GetFireData())
 				ProjectilePool.Instance.Rent(prefab, position, angle);
 		}
-
-		#endregion // Protected API
-
-		#region Helpers
 
 		/// <summary>
 		/// Enumerates the spawn position and direction angle for each <see cref="Marker2D"/> child.
@@ -46,7 +40,5 @@ namespace TouhouFuujinroku.Entities.Enemies.GenericEnemies.Weapons
 				if (child is Marker2D marker)
 					yield return (GlobalPosition, marker.Position.Angle());
 		}
-
-		#endregion // Helpers
 	}
 }

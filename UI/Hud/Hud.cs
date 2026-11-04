@@ -15,8 +15,6 @@ namespace TouhouFuujinroku.UI.Hud
     /// </summary>
     public partial class Hud : Control
     {
-        #region Fields
-
         /// <summary>
         /// Widget that displays and accumulates the player's score.
         /// </summary>
@@ -27,10 +25,6 @@ namespace TouhouFuujinroku.UI.Hud
         /// Widget that displays the player's remaining lives as stars.
         /// </summary>
         [Export] private Lives.Lives _lives;
-
-        #endregion // Fields
-
-        #region Public API
 
         /// <summary>
         /// Forwards points to the score widget. Call this from anywhere an enemy dies.
@@ -51,7 +45,5 @@ namespace TouhouFuujinroku.UI.Hud
         /// push the new value with <see cref="ReportLives"/>.
         /// </summary>
         public void Reset() => _score.Reset();
-
-        #endregion // Public API
     }
 }

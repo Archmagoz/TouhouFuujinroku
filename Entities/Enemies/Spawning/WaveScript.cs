@@ -17,14 +17,9 @@ namespace TouhouFuujinroku.Entities.Enemies.Spawning
     /// </summary>
     public abstract class WaveScript
     {
-        #region Fields
 
         /// <summary>Events collected while <see cref="Compose"/> runs.</summary>
         private readonly List<WaveEvent> _events = [];
-
-        #endregion // Fields
-
-        #region Public API
 
         /// <summary>
         /// Composes the script and returns its events ordered by spawn time.
@@ -39,10 +34,6 @@ namespace TouhouFuujinroku.Entities.Enemies.Spawning
             // OrderBy is stable, so events sharing the same time keep their authored order.
             return _events.OrderBy(e => e.Time).ToList();
         }
-
-        #endregion // Public API
-
-        #region Authoring API
 
         /// <summary>
         /// Describes the script timeline. Override and call <see cref="Spawn"/> for each spawn group.
@@ -61,7 +52,5 @@ namespace TouhouFuujinroku.Entities.Enemies.Spawning
         {
             _events.Add(new WaveEvent(time, count, interval, path, enemyId));
         }
-
-        #endregion // Authoring API
     }
 }

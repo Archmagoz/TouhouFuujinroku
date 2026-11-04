@@ -17,30 +17,16 @@ namespace TouhouFuujinroku.UI.Menu.PauseMenu
     /// </summary>
     public partial class PauseMenu : MenuScreen
     {
-        #region Constants
-
         /// <summary>Name of the Input Map action that toggles the pause menu.</summary>
         private static readonly StringName PauseAction = "pause";
-
-        #endregion // Constants
-
-        #region Fields
 
         /// <summary>
         /// Button that receives focus when the menu opens, so keyboard and gamepad navigation work immediately.
         /// </summary>
         [Export] private TextureButton _resumeButton;
 
-        #endregion // Fields
-
-        #region Properties
-
         /// <summary>Whether the pause menu is currently open and the game is paused by it.</summary>
         public bool IsOpen => Visible;
-
-        #endregion // Properties
-
-        #region Godot overrides
 
         public override void _Ready()
         {
@@ -71,10 +57,6 @@ namespace TouhouFuujinroku.UI.Menu.PauseMenu
             }
         }
 
-        #endregion // Godot overrides
-
-        #region Public API
-
         /// <summary>
         /// Opens the menu, pauses the game and focuses the resume button. Does nothing if it is already open.
         /// </summary>
@@ -97,10 +79,6 @@ namespace TouhouFuujinroku.UI.Menu.PauseMenu
             Visible = false;
             GetTree().Paused = false;
         }
-
-        #endregion // Public API
-
-        #region Signal handlers
 
         /// <summary>
         /// Resumes the game. Connected in the editor to the resume button's <c>Pressed</c> signal.
@@ -132,10 +110,6 @@ namespace TouhouFuujinroku.UI.Menu.PauseMenu
             GetTree().ReloadCurrentScene();
         }
 
-        #endregion // Signal handlers
-
-        #region Helpers
-
         /// <summary>
         /// Opens the menu if it is closed, closes it otherwise.
         /// </summary>
@@ -150,7 +124,5 @@ namespace TouhouFuujinroku.UI.Menu.PauseMenu
                 Open();
             }
         }
-
-        #endregion // Helpers
     }
 }

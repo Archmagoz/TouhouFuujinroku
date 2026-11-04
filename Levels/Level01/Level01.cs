@@ -8,11 +8,7 @@ namespace TouhouFuujinroku.Levels.Level01
     /// </summary>
     public partial class Level01 : Level
     {
-        #region Extension points
-
         /// <inheritdoc/>
         protected override WaveScript CreateWaveScript() => new Level01WaveScript();
-
-        #endregion // Extension points
     }
 }

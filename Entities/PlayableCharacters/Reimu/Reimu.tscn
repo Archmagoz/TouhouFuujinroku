@@ -237,14 +237,14 @@ animations = [{
 [sub_resource type="CircleShape2D" id="CircleShape2D_118g0"]
 radius = 5.0
 
-[node name="Reimu" type="CharacterBody2D" unique_id=2024202319 node_paths=PackedStringArray("_health", "_speed", "_sprite", "_weapon", "_hitbox", "_deathSound")]
+[node name="Reimu" type="CharacterBody2D" unique_id=2024202319 node_paths=PackedStringArray("_sprite", "_weapon", "_hitbox", "_health", "_speed", "_deathSound")]
 collision_mask = 26
 script = ExtResource("1_v87c3")
-_health = NodePath("PlayerHealthComponent")
-_speed = NodePath("SpeedComponent")
 _sprite = NodePath("ReimuAnimatedSprite")
 _weapon = NodePath("ReimuWeapon")
 _hitbox = NodePath("ReimuHitbox")
+_health = NodePath("PlayerHealthComponent")
+_speed = NodePath("SpeedComponent")
 _deathSound = NodePath("DeadSFX")
 
 [node name="DeadSFX" type="AudioStreamPlayer2D" parent="." unique_id=1136081441]

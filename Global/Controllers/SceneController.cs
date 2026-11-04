@@ -47,8 +47,6 @@ namespace TouhouFuujinroku.Global.Controllers
 		/// </summary>
 		public static SceneController Instance { get; private set; }
 
-		#region Configuration
-
 		// Kept as plain properties because this script is typically registered as a script-only
 		// autoload, where [Export] values cannot be edited in the inspector.
 
@@ -66,10 +64,6 @@ namespace TouhouFuujinroku.Global.Controllers
 		/// </summary>
 		private const int FadeLayerIndex = 128;
 
-		#endregion // Configuration
-
-		#region Events
-
 		/// <summary>
 		/// Raised on the main thread when a transition begins, with the target scene.
 		/// Useful for pausing gameplay, disabling input, and so on.
@@ -80,10 +74,6 @@ namespace TouhouFuujinroku.Global.Controllers
 		/// Raised on the main thread when a transition ends, successfully or not, with the target scene.
 		/// </summary>
 		public event Action<Scene> TransitionFinished;
-
-		#endregion // Events
-
-		#region Fields
 
 		/// <summary>
 		/// Single source of truth for scene paths. Every scene is loaded the same way (threaded request),
@@ -123,16 +113,8 @@ namespace TouhouFuujinroku.Global.Controllers
 		/// <summary>True while a transition (or a quit) is running. Further requests are rejected.</summary>
 		private bool _isTransitioning;
 
-		#endregion // Fields
-
-		#region Properties
-
 		/// <summary>True while a scene transition is in progress.</summary>
 		public bool IsTransitioning => _isTransitioning;
-
-		#endregion // Properties
-
-		#region Godot overrides
 
 		public override void _Ready()
 		{
@@ -162,10 +144,6 @@ namespace TouhouFuujinroku.Global.Controllers
 			if (Instance == this)
 				Instance = null;
 		}
-
-		#endregion // Godot overrides
-
-		#region Public API
 
 		/// <summary>
 		/// Fire-and-forget entry point, convenient for signal handlers and button callbacks.
@@ -256,10 +234,6 @@ namespace TouhouFuujinroku.Global.Controllers
 		/// <param name="id">Scene to load in advance.</param>
 		public void Preload(Scene id) => _ = GetSceneAsync(id);
 
-		#endregion // Public API
-
-		#region Scene resolution
-
 		/// <summary>
 		/// Returns a cached scene, joins a load already in progress, or starts a new one.
 		/// </summary>
@@ -346,10 +320,6 @@ namespace TouhouFuujinroku.Global.Controllers
 			}
 		}
 
-		#endregion // Scene resolution
-
-		#region Scene swapping
-
 		/// <summary>
 		/// Replaces the current scene with a new instance of the given one.
 		/// The current scene is removed from the tree BEFORE the incoming one is added.
@@ -375,10 +345,6 @@ namespace TouhouFuujinroku.Global.Controllers
 			tree.Root.AddChild(incoming);
 			tree.CurrentScene = incoming;
 		}
-
-		#endregion // Scene swapping
-
-		#region Fade overlay
 
 		/// <summary>
 		/// Creates the overlay nodes in code so the controller has no dependency on an extra .tscn file.
@@ -454,7 +420,5 @@ namespace TouhouFuujinroku.Global.Controllers
 
 			await ToSignal(tween, Tween.SignalName.Finished);
 		}
-
-		#endregion // Fade overlay
 	}
 }

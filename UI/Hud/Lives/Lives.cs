@@ -12,26 +12,16 @@ namespace TouhouFuujinroku.UI.Hud.Lives
     /// </summary>
     public partial class Lives : Control
     {
-        #region Fields
-
         /// <summary>
         /// Star sprites in child order. Index 0 is the first star to appear and the last one to be hidden.
         /// Entries are null for container children that are not <see cref="Sprite2D"/>.
         /// </summary>
         private Sprite2D[] _stars;
 
-        #endregion // Fields
-
-        #region Godot overrides
-
         public override void _Ready()
         {
             LoadStars();
         }
-
-        #endregion // Godot overrides
-
-        #region Public API
 
         /// <summary>
         /// Shows exactly <paramref name="lives"/> stars and hides the rest.
@@ -50,10 +40,6 @@ namespace TouhouFuujinroku.UI.Hud.Lives
                 _stars[i].Visible = i < lives;
             }
         }
-
-        #endregion // Public API
-
-        #region Helpers
 
         /// <summary>
         /// Locates the <see cref="HBoxContainer"/> child and collects its <see cref="Sprite2D"/> children in child order.
@@ -79,7 +65,5 @@ namespace TouhouFuujinroku.UI.Hud.Lives
                 if (children[i] is Sprite2D sprite)
                     _stars[i] = sprite;
         }
-
-        #endregion // Helpers
     }
 }

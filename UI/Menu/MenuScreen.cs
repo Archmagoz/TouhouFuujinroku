@@ -24,8 +24,6 @@ namespace TouhouFuujinroku.UI.Menu
     /// </summary>
     public abstract partial class MenuScreen : Control
     {
-        #region Constants
-
         // Focus animation tuning. The stretch phase exaggerates the horizontal axis while squashing
         // the vertical one (squash & stretch), then settles into a slightly enlarged resting scale.
 
@@ -59,10 +57,6 @@ namespace TouhouFuujinroku.UI.Menu
         /// </summary>
         private const string TweenMetaKey = "focus_tween";
 
-        #endregion // Constants
-
-        #region Fields
-
         /// <summary>
         /// Button currently displaying the focused visual state. The signal handlers take no arguments,
         /// so this field is how they know which button to animate.
@@ -74,10 +68,6 @@ namespace TouhouFuujinroku.UI.Menu
         /// on exit, without depending on a new tree search.
         /// </summary>
         private readonly List<TextureButton> _registeredButtons = [];
-
-        #endregion // Fields
-
-        #region Godot overrides
 
         /// <summary>
         /// Links every <see cref="TextureButton"/> under this screen to the focus behavior.
@@ -105,10 +95,6 @@ namespace TouhouFuujinroku.UI.Menu
 
             _focusedButton = null;
         }
-
-        #endregion // Godot overrides
-
-        #region Registration
 
         /// <summary>
         /// Links a button to the focus behavior. Called automatically for the buttons present when the
@@ -151,10 +137,6 @@ namespace TouhouFuujinroku.UI.Menu
             button.Scale = Vector2.One;
             button.SelfModulate = UnfocusedTint;
         }
-
-        #endregion // Registration
-
-        #region Event handlers
 
         /// <summary>
         /// Handles a button's <c>focus_entered</c> signal: resets the previously focused button,
@@ -201,10 +183,6 @@ namespace TouhouFuujinroku.UI.Menu
                 button.GrabFocus();
         }
 
-        #endregion // Event handlers
-
-        #region Focus tracking
-
         /// <summary>
         /// Resets the tracked button to its unfocused state if it no longer owns focus.
         /// Runs deferred, so it also tolerates the button having been freed in the meantime.
@@ -223,10 +201,6 @@ namespace TouhouFuujinroku.UI.Menu
         /// </summary>
         /// <returns>The hovered <see cref="BaseButton"/>, or null if the hovered control is not a button.</returns>
         private BaseButton GetHoveredButton() => GetViewport().GuiGetHoveredControl() as BaseButton;
-
-        #endregion // Focus tracking
-
-        #region Animation
 
         /// <summary>
         /// Animates a button to its focused or unfocused look, cancelling any animation already running on it.
@@ -284,7 +258,5 @@ namespace TouhouFuujinroku.UI.Menu
             if (tween != null && tween.IsValid())
                 tween.Kill();
         }
-
-        #endregion // Animation
     }
 }

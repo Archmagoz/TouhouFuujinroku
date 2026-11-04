@@ -31,8 +31,6 @@ namespace TouhouFuujinroku.Levels
     /// </summary>
     public abstract partial class Level : Node2D
     {
-        #region Fields
-
         /// <summary>
         /// Plays the level's enemy script. The level only chooses WHICH script runs.
         /// </summary>
@@ -70,10 +68,6 @@ namespace TouhouFuujinroku.Levels
         [ExportGroup("Flow")]
         [Export] private float _clearDelay = 6f;
 
-        #endregion // Fields
-
-        #region Godot overrides
-
         public override void _Ready()
         {
             PrewarmProjectilePool();
@@ -82,10 +76,6 @@ namespace TouhouFuujinroku.Levels
             _waveDirector.ScriptFinished += OnScriptFinished;
             _waveDirector.Play(CreateWaveScript());
         }
-
-        #endregion // Godot overrides
-
-        #region Extension points
 
         /// <summary>
         /// Creates the enemy script this level plays. Called once, at the end of <c>_Ready</c>.
@@ -102,10 +92,6 @@ namespace TouhouFuujinroku.Levels
         {
             SceneController.Instance.TransitionTo(Scene.MainMenu);
         }
-
-        #endregion // Extension points
-
-        #region Signal handlers
 
         /// <summary>
         /// Mirrors the player's remaining lives on the HUD.
@@ -142,10 +128,6 @@ namespace TouhouFuujinroku.Levels
             LeaveLevel();
         }
 
-        #endregion // Signal handlers
-
-        #region Helpers
-
         /// <summary>
         /// Populates the projectile pool with inactive instances of each prefab, so the first shots
         /// do not allocate during gameplay.
@@ -171,7 +153,5 @@ namespace TouhouFuujinroku.Levels
 
             _hud.ReportLives(_player.Lives);
         }
-
-        #endregion // Helpers
     }
 }

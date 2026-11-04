@@ -21,8 +21,6 @@ namespace TouhouFuujinroku.UI.Menu.OptionsMenu
 	[GlobalClass]
 	public partial class DigitDisplay : Node2D
 	{
-		#region Fields
-
 		/// <summary>
 		/// Number of digits, counted from the units, that are always visible. Digits beyond this count are hidden
 		/// while they would be a leading zero. With 2, 5 is shown as "05", 50 as "50" and 100 as "100".
@@ -53,10 +51,6 @@ namespace TouhouFuujinroku.UI.Menu.OptionsMenu
 		/// <summary>True for the bright look, false for the dimmed one.</summary>
 		private bool _highlighted;
 
-		#endregion // Fields
-
-		#region Godot overrides
-
 		public override void _Ready()
 		{
 			var digits = new List<Sprite2D>();
@@ -72,10 +66,6 @@ namespace TouhouFuujinroku.UI.Menu.OptionsMenu
 
 			Render();
 		}
-
-		#endregion // Godot overrides
-
-		#region Public API
 
 		/// <summary>
 		/// Sets the displayed value.
@@ -96,10 +86,6 @@ namespace TouhouFuujinroku.UI.Menu.OptionsMenu
 			_highlighted = highlighted;
 			Render();
 		}
-
-		#endregion // Public API
-
-		#region Helpers
 
 		/// <summary>
 		/// Decomposes the value into digits and applies the visibility and look of every sprite.
@@ -165,7 +151,5 @@ namespace TouhouFuujinroku.UI.Menu.OptionsMenu
 
 			return result;
 		}
-
-		#endregion // Helpers
 	}
 }

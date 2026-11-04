@@ -11,16 +11,10 @@ namespace TouhouFuujinroku.Levels.DebugLevel
 	public partial class DebugLevel : Level
 	{
 
-		#region Godot overrides
-
 		public override void _Ready()
 		{
 			MenuAudioController.Instance.StopMusic();
 		}
-
-		#endregion // Godot overrides
-
-		#region Extension points
 
 		/// <inheritdoc/>
 		protected override WaveScript CreateWaveScript() => new EmptyWaveScript();
@@ -30,7 +24,5 @@ namespace TouhouFuujinroku.Levels.DebugLevel
 		/// so systems can keep being tested.
 		/// </summary>
 		protected override void LeaveLevel() { }
-
-		#endregion // Extension points
 	}
 }

@@ -27,8 +27,6 @@ namespace TouhouFuujinroku.Global.Settings.Audio
     /// </summary>
     public static class AudioSettings
     {
-        #region Constants
-
         /// <summary>Highest volume percentage.</summary>
         public const int MaxVolume = 100;
 
@@ -43,10 +41,6 @@ namespace TouhouFuujinroku.Global.Settings.Audio
         /// so silence is handled by muting the bus instead.
         /// </summary>
         private const float MinLinearVolume = 0.0001f;
-
-        #endregion // Constants
-
-        #region Fields
 
         /// <summary>
         /// Name of the audio bus of each channel. Every player of a channel must be routed to its bus,
@@ -75,10 +69,6 @@ namespace TouhouFuujinroku.Global.Settings.Audio
             { VolumeChannel.Bgm, MaxVolume },
             { VolumeChannel.Se,  MaxVolume },
         };
-
-        #endregion // Fields
-
-        #region Public API
 
         /// <summary>
         /// Reads the saved settings (if any) and applies them to the audio buses.
@@ -117,10 +107,6 @@ namespace TouhouFuujinroku.Global.Settings.Audio
             ApplyVolume(channel);
             Save();
         }
-
-        #endregion // Public API
-
-        #region Helpers
 
         /// <summary>
         /// Pushes the volume of a channel to its bus. Zero mutes the bus; any other value is converted
@@ -162,7 +148,5 @@ namespace TouhouFuujinroku.Global.Settings.Audio
             if (error != Error.Ok)
                 GD.PushError($"[AudioSettings] Failed to save '{SettingsPath}': {error}.");
         }
-
-        #endregion // Helpers
     }
 }

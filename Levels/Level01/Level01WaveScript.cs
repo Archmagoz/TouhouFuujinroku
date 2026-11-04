@@ -18,17 +18,11 @@ namespace TouhouFuujinroku.Levels.Level01
     /// </summary>
     public sealed class Level01WaveScript : WaveScript
     {
-        #region Constants
-
         // Normalized coordinates just outside each playfield edge, where enemies enter and leave.
         private const float OffLeft = -0.1f;
         private const float OffRight = 1.1f;
         private const float OffTop = -0.1f;
         private const float OffBottom = 1.1f;
-
-        #endregion // Constants
-
-        #region Composition
 
         protected override void Compose()
         {
@@ -161,10 +155,6 @@ namespace TouhouFuujinroku.Levels.Level01
             Spawn(time: 80f, count: 12, interval: 0.3f, path: orbit.Mirrored());
         }
 
-        #endregion // Composition
-
-        #region Helpers
-
         /// <summary>
         /// Orbit around the screen center, entering from the left and exiting to the right.
         /// A half-integer number of turns ends the orbit on the right edge of the circle, so the exit is a clean line.
@@ -177,7 +167,5 @@ namespace TouhouFuujinroku.Levels.Level01
             radius: 0.2f,
             turns: turns,
             to: new Vector2(OffRight, 0.4f));
-
-        #endregion // Helpers
     }
 }

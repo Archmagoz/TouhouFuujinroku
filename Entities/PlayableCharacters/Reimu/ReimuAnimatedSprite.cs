@@ -13,8 +13,6 @@ namespace TouhouFuujinroku.Entities.PlayableCharacters.Reimu
 	[GlobalClass]
 	public partial class ReimuAnimatedSprite : AnimatedSprite2D
 	{
-		#region Fields
-
 		/// <summary>Idle animation, played while there is no horizontal input.</summary>
 		private const string DefaultAnimation = "default";
 
@@ -32,10 +30,6 @@ namespace TouhouFuujinroku.Entities.PlayableCharacters.Reimu
 
 		/// <summary>Death animation, played once when the player dies.</summary>
 		private const string DeathAnimation = "death";
-
-		#endregion // Fields
-
-		#region Public API
 
 		/// <summary>
 		/// Selects the animation that matches the current horizontal input.
@@ -58,10 +52,6 @@ namespace TouhouFuujinroku.Entities.PlayableCharacters.Reimu
 			Play(DeathAnimation);
 		}
 
-		#endregion // Public API
-
-		#region Event handlers
-
 		/// <summary>
 		/// Handles the <c>animation_finished</c> signal, connected in the editor.
 		/// Transitions an intro clip into its corresponding loop.
@@ -71,10 +61,6 @@ namespace TouhouFuujinroku.Entities.PlayableCharacters.Reimu
 			if (Animation == LeftAnimation) Play(LeftLoopAnimation);
 			else if (Animation == RightAnimation) Play(RightLoopAnimation);
 		}
-
-		#endregion // Event handlers
-
-		#region Helpers
 
 		/// <summary>
 		/// Plays the idle animation.
@@ -103,7 +89,5 @@ namespace TouhouFuujinroku.Entities.PlayableCharacters.Reimu
 			if (Animation == RightAnimation || Animation == RightLoopAnimation) return;
 			Play(RightAnimation);
 		}
-
-		#endregion // Helpers
 	}
 }

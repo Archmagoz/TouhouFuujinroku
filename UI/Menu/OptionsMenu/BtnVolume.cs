@@ -21,8 +21,6 @@ namespace TouhouFuujinroku.UI.Menu.OptionsMenu
 	[GlobalClass]
 	public partial class BtnVolume : TextureButton
 	{
-		#region Fields
-
 		/// <summary>
 		/// Audio channel whose volume this button edits.
 		/// </summary>
@@ -37,10 +35,6 @@ namespace TouhouFuujinroku.UI.Menu.OptionsMenu
 		/// Percentage added or removed per step.
 		/// </summary>
 		[Export(PropertyHint.Range, "1,100,1")] private int _step = 5;
-
-		#endregion // Fields
-
-		#region Godot overrides
 
 		public override void _Ready()
 		{
@@ -66,10 +60,6 @@ namespace TouhouFuujinroku.UI.Menu.OptionsMenu
 			AcceptEvent();
 		}
 
-		#endregion // Godot overrides
-
-		#region Event handlers
-
 		/// <summary>
 		/// Handles a click or confirm press: raises the volume one step and wraps to 0 past the maximum.
 		/// </summary>
@@ -79,10 +69,6 @@ namespace TouhouFuujinroku.UI.Menu.OptionsMenu
 
 			ChangeVolume(next > AudioSettings.MaxVolume ? 0 : next);
 		}
-
-		#endregion // Event handlers
-
-		#region Helpers
 
 		/// <summary>
 		/// Applies a new volume, refreshes the digits, and plays the selection sound as feedback.
@@ -107,7 +93,5 @@ namespace TouhouFuujinroku.UI.Menu.OptionsMenu
 			_display.SetValue(AudioSettings.GetVolume(_channel));
 			_display.SetHighlighted(HasFocus());
 		}
-
-		#endregion // Helpers
 	}
 }

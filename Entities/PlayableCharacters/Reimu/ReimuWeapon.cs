@@ -23,8 +23,6 @@ namespace TouhouFuujinroku.Entities.PlayableCharacters.Reimu
 	[GlobalClass]
 	public partial class ReimuWeapon : Node2D
 	{
-		#region Fields
-
 		/// <summary>
 		/// How fast each sprite chases its target position. Higher is snappier.
 		/// </summary>
@@ -103,10 +101,6 @@ namespace TouhouFuujinroku.Entities.PlayableCharacters.Reimu
 		/// </summary>
 		private float _cooldown;
 
-		#endregion // Fields
-
-		#region Godot overrides
-
 		public override void _Ready()
 		{
 			// Cache sprites and their editor offsets as the normal formation.
@@ -159,10 +153,6 @@ namespace TouhouFuujinroku.Entities.PlayableCharacters.Reimu
 			}
 		}
 
-		#endregion // Godot overrides
-
-		#region Public API
-
 		/// <summary>
 		/// Smoothly shifts the sprite offsets toward the focused or normal formation.
 		/// Call every frame while the focus state may be changing.
@@ -210,10 +200,6 @@ namespace TouhouFuujinroku.Entities.PlayableCharacters.Reimu
 			}
 		}
 
-		#endregion // Public API
-
-		#region Helpers
-
 		/// <summary>
 		/// Enumerates the current global position of every cached fire-origin marker.
 		/// </summary>
@@ -232,7 +218,5 @@ namespace TouhouFuujinroku.Entities.PlayableCharacters.Reimu
 		/// <returns>A weight between 0 and 1 to pass to <c>Lerp</c>.</returns>
 		private static float ExponentialLerp(float speed, float delta) =>
 			1f - Mathf.Exp(-speed * delta);
-
-		#endregion // Helpers
 	}
 }

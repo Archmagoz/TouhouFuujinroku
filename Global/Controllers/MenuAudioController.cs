@@ -12,8 +12,6 @@ namespace TouhouFuujinroku.Global.Controllers
     /// </summary>
     public partial class MenuAudioController : Node
     {
-        #region Fields
-
         /// <summary>
         /// Singleton instance, assigned in <c>_Ready</c>. Not guarded against duplicates, so the controller
         /// must exist exactly once (e.g. as an Autoload).
@@ -26,10 +24,6 @@ namespace TouhouFuujinroku.Global.Controllers
         /// <summary>Selection sound effect player, resolved from the <c>SelectSFX</c> child.</summary>
         private AudioStreamPlayer _selectSfxPlayer;
 
-        #endregion // Fields
-
-        #region Godot overrides
-
         public override void _Ready()
         {
             Instance = this;
@@ -37,10 +31,6 @@ namespace TouhouFuujinroku.Global.Controllers
             _menuBgmPlayer = GetNode<AudioStreamPlayer>("MenuBGM");
             _selectSfxPlayer = GetNode<AudioStreamPlayer>("SelectSFX");
         }
-
-        #endregion // Godot overrides
-
-        #region Public API
 
         /// <summary>
         /// Plays the menu selection sound effect, restarting it if it is already playing.
@@ -63,7 +53,5 @@ namespace TouhouFuujinroku.Global.Controllers
         /// Stops the menu background music, typically when leaving the menu for a level.
         /// </summary>
         public void StopMusic() => _menuBgmPlayer.Stop();
-
-        #endregion // Public API
     }
 }

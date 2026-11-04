@@ -18,8 +18,6 @@ namespace TouhouFuujinroku.Entities.Enemies.Spawning
     /// </summary>
     public sealed class PathPattern
     {
-        #region Fields
-
         /// <summary>Sampling density of circular arcs, in points per full revolution.</summary>
         private const int PointsPerTurn = 48;
 
@@ -29,10 +27,6 @@ namespace TouhouFuujinroku.Entities.Enemies.Spawning
         /// <summary>Deferred point generator that resolves the pattern for a given playfield.</summary>
         private readonly Func<Rect2, Vector2[]> _generator;
 
-        #endregion // Fields
-
-        #region Construction
-
         /// <summary>
         /// Creates a pattern from a deferred point generator. Use the static factories instead.
         /// </summary>
@@ -41,10 +35,6 @@ namespace TouhouFuujinroku.Entities.Enemies.Spawning
         {
             _generator = generator;
         }
-
-        #endregion // Construction
-
-        #region Public API
 
         /// <summary>
         /// Resolves the pattern into world-space points for the given playfield.
@@ -68,10 +58,6 @@ namespace TouhouFuujinroku.Entities.Enemies.Spawning
 
             return points;
         });
-
-        #endregion // Public API
-
-        #region Factories
 
         /// <summary>
         /// Straight segment from one point to another.
@@ -168,10 +154,6 @@ namespace TouhouFuujinroku.Entities.Enemies.Spawning
             });
         }
 
-        #endregion // Factories
-
-        #region Helpers
-
         /// <summary>
         /// Maps a playfield-normalized coordinate into world space.
         /// </summary>
@@ -182,7 +164,5 @@ namespace TouhouFuujinroku.Entities.Enemies.Spawning
         {
             return playfield.Position + normalized * playfield.Size;
         }
-
-        #endregion // Helpers
     }
 }

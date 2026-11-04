@@ -15,8 +15,6 @@ namespace TouhouFuujinroku.Entities.Projectile
 	[GlobalClass]
 	public partial class Projectile : Area2D
 	{
-		#region Fields
-
 		/// <summary>
 		/// Prefab this instance was created from. Stamped by <c>ProjectilePool.CreateProjectile()</c> and used to
 		/// route <c>Return()</c> to the correct queue. Pool-internal state: never set it manually.
@@ -47,10 +45,6 @@ namespace TouhouFuujinroku.Entities.Projectile
 		/// </summary>
 		private const float CullBoundary = 1000f;
 
-		#endregion // Fields
-
-		#region Godot overrides
-
 		public override void _Process(double delta)
 		{
 			Position += _direction * _speed * (float)delta;
@@ -60,10 +54,6 @@ namespace TouhouFuujinroku.Entities.Projectile
 			if (Mathf.Abs(Position.X) > CullBoundary || Mathf.Abs(Position.Y) > CullBoundary)
 				ProjectilePool.Instance.Return(this);
 		}
-
-		#endregion // Godot overrides
-
-		#region Public API
 
 		/// <summary>
 		/// Prepares the projectile for a new flight. Called by <c>ProjectilePool.Rent()</c> immediately after
@@ -77,10 +67,6 @@ namespace TouhouFuujinroku.Entities.Projectile
 			Rotation = angle;
 			_direction = Vector2.FromAngle(angle);
 		}
-
-		#endregion // Public API
-
-		#region Event handlers
 
 		/// <summary>
 		/// Applies damage to any <see cref="IDamageable"/> area that overlaps the projectile.
@@ -104,7 +90,5 @@ namespace TouhouFuujinroku.Entities.Projectile
 			if (body is IDamageable damageable)
 				damageable.ApplyDamage(_damage);
 		}
-
-		#endregion // Event handlers
 	}
 }

@@ -19,15 +19,16 @@ namespace TouhouFuujinroku.Entities.Enemies.GenericEnemies
 	[GlobalClass]
 	public partial class GenericEnemy : Area2D, IDamageable, IScoreable
 	{
-		#region Fields
+		/// <summary>
+		/// Raised once on death, carrying the point value. Subscribed to by score listeners (e.g. the HUD).
+		/// Not raised when the enemy despawns by reaching the end of its path.
+		/// </summary>
+		public event Action<long> Died;
 
 		/// <summary>
 		/// Points awarded to the player on death. Each variant declares its own value directly in the scene.
 		/// </summary>
 		[Export] private long _pointValue;
-
-		/// <summary>Points awarded to the player on death.</summary>
-		public long PointValue => _pointValue;
 
 		/// <summary>
 		/// Weapon node composed directly into this scene — configured entirely on the weapon side.
@@ -50,6 +51,9 @@ namespace TouhouFuujinroku.Entities.Enemies.GenericEnemies
 		/// </summary>
 		[Export] private DamageFlashComponent _damageFlash;
 
+		/// <summary>Points awarded to the player on death.</summary>
+		public long PointValue => _pointValue;
+
 		/// <summary>
 		/// PathFollow2D owned exclusively by this enemy, created by the spawner together with its Path2D.
 		/// Freed alongside the enemy on despawn or death.
@@ -59,11 +63,7 @@ namespace TouhouFuujinroku.Entities.Enemies.GenericEnemies
 		/// <summary>
 		/// Locks movement and firing during the death animation. Set when the Death signal is handled.
 		/// </summary>
-		private bool _dying = false;
-
-		#endregion // Fields
-
-		#region Godot overrides
+		private bool _dying;
 
 		public override void _PhysicsProcess(double delta)
 		{
@@ -72,16 +72,6 @@ namespace TouhouFuujinroku.Entities.Enemies.GenericEnemies
 			HandleMovement(delta);
 			_weapon.TryFire();
 		}
-
-		#endregion // Godot overrides
-
-		#region Public API
-
-		/// <summary>
-		/// Raised once on death, carrying the point value. Subscribed to by score listeners (e.g. the HUD).
-		/// Not raised when the enemy despawns by reaching the end of its path.
-		/// </summary>
-		public event Action<long> Died;
 
 		/// <summary>
 		/// Forwards damage to the <see cref="HealthComponent"/> and, if the enemy survives the hit,
@@ -110,10 +100,6 @@ namespace TouhouFuujinroku.Entities.Enemies.GenericEnemies
 			GlobalPosition = _pathFollow.GlobalPosition;
 		}
 
-		#endregion // Public API
-
-		#region Event handlers
-
 		/// <summary>
 		/// Handles <see cref="HealthComponent"/>'s Death signal: locks movement, reports the score,
 		/// plays the death animation, and queues the node for removal once the animation finishes.
@@ -129,10 +115,6 @@ namespace TouhouFuujinroku.Entities.Enemies.GenericEnemies
 			_sprite.Play("death");
 			_sprite.AnimationFinished += QueueFree;
 		}
-
-		#endregion // Event handlers
-
-		#region Helpers
 
 		/// <summary>
 		/// Advances along the path at the current speed and despawns once the path is fully traversed.
@@ -152,7 +134,5 @@ namespace TouhouFuujinroku.Entities.Enemies.GenericEnemies
 				QueueFree();
 			}
 		}
-
-		#endregion // Helpers
 	}
 }

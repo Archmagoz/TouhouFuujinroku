@@ -11,8 +11,6 @@ namespace TouhouFuujinroku.UI.Hud.Score
     /// </summary>
     public partial class Score : Control
     {
-        #region Fields
-
         /// <summary>
         /// Current score value.
         /// </summary>
@@ -23,10 +21,6 @@ namespace TouhouFuujinroku.UI.Hud.Score
         /// Entries are null for container children that are not <see cref="Sprite2D"/>.
         /// </summary>
         private Sprite2D[] _digits;
-
-        #endregion // Fields
-
-        #region Public API
 
         /// <summary>
         /// Adds points to the score and refreshes the display. Call this on enemy death.
@@ -47,19 +41,11 @@ namespace TouhouFuujinroku.UI.Hud.Score
             UpdateDisplay();
         }
 
-        #endregion // Public API
-
-        #region Godot overrides
-
         public override void _Ready()
         {
             LoadDigits();
             UpdateDisplay();
         }
-
-        #endregion // Godot overrides
-
-        #region Helpers
 
         /// <summary>
         /// Locates the <see cref="HBoxContainer"/> child and collects its <see cref="Sprite2D"/> children in child order.
@@ -110,7 +96,5 @@ namespace TouhouFuujinroku.UI.Hud.Score
                 _digits[i].Visible = true;
             }
         }
-
-        #endregion // Helpers
     }
 }

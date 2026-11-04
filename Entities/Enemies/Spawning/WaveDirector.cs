@@ -23,8 +23,6 @@ namespace TouhouFuujinroku.Entities.Enemies.Spawning
     /// </summary>
     public partial class WaveDirector : Node
     {
-        #region Types
-
         /// <summary>
         /// Runtime state of a group that has started but has not yet spawned all of its enemies.
         /// </summary>
@@ -42,10 +40,6 @@ namespace TouhouFuujinroku.Entities.Enemies.Spawning
             /// </summary>
             public float NextDueTime => Event.Time + Spawned * Event.Interval;
         }
-
-        #endregion // Types
-
-        #region Fields
 
         /// <summary>
         /// Reports kills through the Hud's public API — the director has no knowledge
@@ -83,10 +77,6 @@ namespace TouhouFuujinroku.Entities.Enemies.Spawning
         /// <summary>Seconds elapsed since <see cref="Play"/>, driven by physics delta.</summary>
         private float _elapsed;
 
-        #endregion // Fields
-
-        #region Godot overrides
-
         public override void _Ready()
         {
             // Idle until a script is started.
@@ -101,10 +91,6 @@ namespace TouhouFuujinroku.Entities.Enemies.Spawning
             SpawnDueEnemies();
             CheckCompletion();
         }
-
-        #endregion // Godot overrides
-
-        #region Public API
 
         /// <summary>
         /// Starts (or restarts) the timeline with the given script.
@@ -150,10 +136,6 @@ namespace TouhouFuujinroku.Entities.Enemies.Spawning
                 if (child is GenericEnemy enemy)
                     enemy.QueueFree();
         }
-
-        #endregion // Public API
-
-        #region Helpers
 
         /// <summary>
         /// Moves every event whose start time has been reached into the active list.
@@ -252,7 +234,5 @@ namespace TouhouFuujinroku.Entities.Enemies.Spawning
 
             return curve;
         }
-
-        #endregion // Helpers
     }
 }

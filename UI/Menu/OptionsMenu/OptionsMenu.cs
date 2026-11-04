@@ -11,14 +11,10 @@ namespace TouhouFuujinroku.UI.Menu.OptionsMenu
     /// </summary>
     public partial class OptionsMenu : MenuScreen
     {
-        #region Event handlers
-
         /// <summary>
         /// Handles the exit button: transitions back to the main menu.
         /// Despite its name, it does not quit the game.
         /// </summary>
         private static void OnQuitPressed() => SceneController.Instance.TransitionTo(Scene.MainMenu);
-
-        #endregion // Event handlers
     }
 }

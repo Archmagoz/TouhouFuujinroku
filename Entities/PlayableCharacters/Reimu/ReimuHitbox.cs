@@ -19,49 +19,29 @@ namespace TouhouFuujinroku.Entities.PlayableCharacters.Reimu
 	/// </summary>
 	public partial class ReimuHitbox : CollisionShape2D
 	{
-		#region Fields
-
-		/// <summary>
-		/// Color of the core, which matches the real collision shape.
-		/// </summary>
+		/// <summary> Color of the core, which matches the real collision shape. </summary>
 		[ExportGroup("Appearance")]
-		[Export] private Color _fillColor = Colors.White;
+		[Export] public Color FillColor { get; private set; } = Colors.White;
 
-		/// <summary>
-		/// Color of the border drawn around the core.
-		/// </summary>
-		[Export] private Color _borderColor = new(1f, 0.1f, 0.1f);
+		/// <summary> Color of the border drawn around the core. </summary>
+		[Export] public Color BorderColor { get; private set; } = new(1f, 0.1f, 0.1f);
 
-		/// <summary>
-		/// Thickness of the border in pixels, measured outward from the collision shape's edge.
-		/// </summary>
+		/// <summary> Thickness of the border in pixels, measured outward from the collision shape's edge. </summary>
 		[Export(PropertyHint.Range, "0,8,0.25")]
-		private float _borderThickness = 2f;
+		public float BorderThickness { get; private set; } = 2f;
 
-		/// <summary>
-		/// Seconds to fade in and out when focus starts or ends.
-		/// </summary>
+		/// <summary> Seconds to fade in and out when focus starts or ends. </summary>
 		[ExportGroup("Animation")]
-		[Export] private float _fadeDuration = 0.1f;
+		[Export] public float FadeDuration { get; private set; } = 0.1f;
 
-		/// <summary>
-		/// Whether focus mode is active, meaning the shape is shown or fading in.
-		/// </summary>
+		/// <summary> Whether focus mode is active, meaning the shape is shown or fading in. </summary>
 		private bool _focused;
 
-		/// <summary>
-		/// Current fade animation, retained so a new one can take over from the current opacity.
-		/// </summary>
+		/// <summary> Current fade animation, retained so a new one can take over from the current opacity. </summary>
 		private Tween _tween;
 
-		#endregion // Fields
-
-		#region Godot overrides
-
-		public override void _Ready()
-		{
+		public override void _Ready() =>
 			HideImmediately();
-		}
 
 		public override void _Draw()
 		{
@@ -72,12 +52,8 @@ namespace TouhouFuujinroku.Entities.PlayableCharacters.Reimu
 			if (Shape is CircleShape2D circle)
 				DrawCircleHitbox(circle.Radius);
 			else
-				Shape.Draw(GetCanvasItem(), _fillColor);
+				Shape.Draw(GetCanvasItem(), FillColor);
 		}
-
-		#endregion // Godot overrides
-
-		#region Public API
 
 		/// <summary>
 		/// Fades the drawn shape in or out. Does nothing if the state is unchanged, so it can be called
@@ -95,11 +71,11 @@ namespace TouhouFuujinroku.Entities.PlayableCharacters.Reimu
 			if (focused)
 			{
 				Visible = true;
-				_tween.TweenProperty(this, "modulate:a", 1f, _fadeDuration);
+				_tween.TweenProperty(this, "modulate:a", 1f, FadeDuration);
 			}
 			else
 			{
-				_tween.TweenProperty(this, "modulate:a", 0f, _fadeDuration);
+				_tween.TweenProperty(this, "modulate:a", 0f, FadeDuration);
 				_tween.TweenCallback(Callable.From(Conceal));
 			}
 		}
@@ -116,29 +92,21 @@ namespace TouhouFuujinroku.Entities.PlayableCharacters.Reimu
 			Conceal();
 		}
 
-		#endregion // Public API
-
-		#region Helpers
-
 		/// <summary>
 		/// Stops drawing once the shape is fully transparent.
 		/// </summary>
-		private void Conceal()
-		{
+		private void Conceal() =>
 			Visible = false;
-		}
 
 		/// <summary>
 		/// Draws the dot: a larger border-colored disc first, then the core on top, so only a ring of
-		/// <see cref="_borderThickness"/> pixels remains visible around the core.
+		/// <see cref="BorderThickness"/> pixels remains visible around the core.
 		/// </summary>
 		/// <param name="radius">Radius of the collision circle, which becomes the radius of the core.</param>
 		private void DrawCircleHitbox(float radius)
 		{
-			DrawCircle(Vector2.Zero, radius + _borderThickness, _borderColor);
-			DrawCircle(Vector2.Zero, radius, _fillColor);
+			DrawCircle(Vector2.Zero, radius + BorderThickness, BorderColor);
+			DrawCircle(Vector2.Zero, radius, FillColor);
 		}
-
-		#endregion // Helpers
 	}
 }
