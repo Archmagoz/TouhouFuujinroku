@@ -26,7 +26,6 @@ namespace TouhouFuujinroku.Entities.PlayableCharacters
         /// Not emitted on initialization, so listeners should read <see cref="Lives"/> once when connecting.
         /// </summary>
         /// <param name="current">Remaining lives after the change.</param>
-        /// <param name="max">Maximum number of lives.</param>
         [Signal] public delegate void LivesChangedEventHandler(int current);
 
         /// <summary>
