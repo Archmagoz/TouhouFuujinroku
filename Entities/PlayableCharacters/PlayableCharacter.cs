@@ -22,6 +22,14 @@ namespace TouhouFuujinroku.Entities.PlayableCharacters
     public abstract partial class PlayableCharacter : CharacterBody2D, IDamageable
     {
         /// <summary>
+        /// Emitted whenever the number of remaining lives changes, after the new value is already in effect.
+        /// Not emitted on initialization, so listeners should read <see cref="Lives"/> once when connecting.
+        /// </summary>
+        /// <param name="current">Remaining lives after the change.</param>
+        /// <param name="max">Maximum number of lives.</param>
+        [Signal] public delegate void LivesChangedEventHandler(int current);
+
+        /// <summary>
         /// Emitted when the player is hit and dies, before the respawn delay. Listeners typically clear the
         /// playfield. It may be emitted from inside a physics callback, so listeners that change collision
         /// state must connect with the Deferred flag.
@@ -37,14 +45,6 @@ namespace TouhouFuujinroku.Entities.PlayableCharacters
         /// Emitted when the last life is lost. The player stays dead.
         /// </summary>
         [Signal] public delegate void GameOverEventHandler();
-
-        /// <summary>
-        /// Emitted whenever the number of remaining lives changes, after the new value is already in effect.
-        /// Not emitted on initialization, so listeners should read <see cref="Lives"/> once when connecting.
-        /// </summary>
-        /// <param name="current">Remaining lives after the change.</param>
-        /// <param name="max">Maximum number of lives.</param>
-        [Signal] public delegate void LivesChangedEventHandler(int current);
 
         /// <summary>Lives and one-hit health state. Its signals drive the death, respawn, lives, and game over handlers.</summary>
         [ExportGroup("Components")]
@@ -96,11 +96,6 @@ namespace TouhouFuujinroku.Entities.PlayableCharacters
         private Vector2 _movementInput;
 
         /// <summary>
-        /// Frames remaining on the shoot buffer. Absorbs brief input gaps so shots are not skipped.
-        /// </summary>
-        private int _shootBuffer;
-
-        /// <summary>
         /// Position the player had when the level started. Every respawn returns here.
         /// </summary>
         private Vector2 _spawnPosition;
@@ -109,6 +104,11 @@ namespace TouhouFuujinroku.Entities.PlayableCharacters
         /// Seconds of invincibility remaining. Zero or less means the player can be hurt.
         /// </summary>
         private float _invincibilityTimeLeft;
+
+        /// <summary>
+        /// Frames remaining on the shoot buffer. Absorbs brief input gaps so shots are not skipped.
+        /// </summary>
+        private int _shootBuffer;
 
         public override void _Ready()
         {
