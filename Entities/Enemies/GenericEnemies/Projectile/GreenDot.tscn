@@ -2,6 +2,7 @@
 
 [ext_resource type="Script" uid="uid://c5fkupb13gquw" path="res://Entities/Projectile/Projectile.cs" id="1_bccv5"]
 [ext_resource type="Texture2D" uid="uid://denrm6c45kvrm" path="res://Entities/Assets/Projectiles.png" id="2_66tj1"]
+[ext_resource type="PackedScene" uid="uid://dxj0lkshro5gy" path="res://Components/SpeedComponent/SpeedComponent.tscn" id="3_5afww"]
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_5afww"]
 atlas = ExtResource("2_66tj1")
@@ -10,10 +11,11 @@ region = Rect2(124, 258, 12, 12)
 [sub_resource type="CircleShape2D" id="CircleShape2D_66tj1"]
 radius = 5.0990195
 
-[node name="GreenDot" type="Area2D" unique_id=1961630398]
+[node name="GreenDot" type="Area2D" unique_id=1961630398 node_paths=PackedStringArray("_speed")]
 z_index = 1
 collision_layer = 8
 script = ExtResource("1_bccv5")
+_speed = NodePath("SpeedComponent")
 metadata/_custom_type_script = "uid://c5fkupb13gquw"
 
 [node name="Sprite" type="Sprite2D" parent="." unique_id=671896005]
@@ -22,5 +24,9 @@ texture = SubResource("AtlasTexture_5afww")
 [node name="Hitbox" type="CollisionShape2D" parent="." unique_id=1750529550]
 shape = SubResource("CircleShape2D_66tj1")
 debug_color = Color(0.98913294, 0, 0.29938826, 0.41960785)
+
+[node name="SpeedComponent" parent="." unique_id=1458467243 instance=ExtResource("3_5afww")]
+DefaultSpeed = 300.0
+MaxSpeed = 300.0
 
 [connection signal="body_entered" from="." to="." method="OnBodyEntered"]

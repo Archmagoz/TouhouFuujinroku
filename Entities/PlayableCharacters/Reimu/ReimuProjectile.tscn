@@ -2,6 +2,7 @@
 
 [ext_resource type="Texture2D" uid="uid://jveli1y7vv" path="res://Entities/PlayableCharacters/Assets/Spritesheet.png" id="1_70rho"]
 [ext_resource type="Script" uid="uid://c5fkupb13gquw" path="res://Entities/Projectile/Projectile.cs" id="1_r1q6k"]
+[ext_resource type="PackedScene" uid="uid://dxj0lkshro5gy" path="res://Components/SpeedComponent/SpeedComponent.tscn" id="3_c0ix7"]
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_r1q6k"]
 atlas = ExtResource("1_70rho")
@@ -10,13 +11,13 @@ region = Rect2(67.87124, 176.94495, 56.172707, 6.1097565)
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_70rho"]
 size = Vector2(29, 6)
 
-[node name="ReimuProjectile" type="Area2D" unique_id=1837741841]
+[node name="ReimuProjectile" type="Area2D" unique_id=1837741841 node_paths=PackedStringArray("_speed")]
 z_index = 2
 rotation = -1.5707964
 collision_layer = 4
 collision_mask = 16
 script = ExtResource("1_r1q6k")
-_speed = 800.0
+_speed = NodePath("SpeedComponent")
 metadata/_custom_type_script = "uid://c5fkupb13gquw"
 
 [node name="Sprite" type="Sprite2D" parent="." unique_id=1961293480]
@@ -25,5 +26,9 @@ texture = SubResource("AtlasTexture_r1q6k")
 [node name="Hitbox" type="CollisionShape2D" parent="." unique_id=943714919]
 position = Vector2(12.5, 0)
 shape = SubResource("RectangleShape2D_70rho")
+
+[node name="SpeedComponent" parent="." unique_id=1458467243 instance=ExtResource("3_c0ix7")]
+DefaultSpeed = 1000.0
+MaxSpeed = 1000.0
 
 [connection signal="area_entered" from="." to="." method="OnAreaEntered"]

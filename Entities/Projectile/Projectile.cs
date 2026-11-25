@@ -1,6 +1,7 @@
 using Godot;
 
 using TouhouFuujinroku.Interfaces;
+using TouhouFuujinroku.Components;
 
 namespace TouhouFuujinroku.Entities.Projectile
 {
@@ -25,7 +26,7 @@ namespace TouhouFuujinroku.Entities.Projectile
 		/// Travel speed in pixels per second.
 		/// </summary>
 		[ExportGroup("Configuration")]
-		[Export] private float _speed = 300f;
+		[Export] private SpeedComponent _speed;
 
 		/// <summary>
 		/// Damage applied to each <see cref="IDamageable"/> on contact.

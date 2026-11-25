@@ -232,7 +232,7 @@ namespace TouhouFuujinroku.Entities.PlayableCharacters
             if (Input.IsActionPressed("left")) _movementInput.X -= 1;
             if (Input.IsActionPressed("right")) _movementInput.X += 1;
 
-            Velocity = _movementInput.Normalized() * _speed.CurrentSpeed;
+            Velocity = _movementInput.Normalized() * _speed;
             MoveAndSlide();
         }
 
