@@ -122,7 +122,7 @@ namespace TouhouFuujinroku.Components
 
             // IsDead stays true for the whole delay, giving the death animation time to play
             // and keeping the entity locked out of damage and control until it revives.
-            await ToSignal(GetTree().CreateTimer(RespawnDelay), SceneTreeTimer.SignalName.Timeout);
+            await ToSignal(GetTree().CreateTimer(RespawnDelay, processAlways: false), SceneTreeTimer.SignalName.Timeout);
 
             // Abort if the node was freed (e.g. scene change), the respawn was superseded
             // by a newer death or a restart, or the entity was revived externally while waiting.

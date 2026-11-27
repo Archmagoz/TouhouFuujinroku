@@ -2,8 +2,8 @@ using Godot;
 
 using System;
 
-using TouhouFuujinroku.Components;
 using TouhouFuujinroku.Entities.Enemies.GenericEnemies.Weapons;
+using TouhouFuujinroku.Components;
 using TouhouFuujinroku.Interfaces;
 
 namespace TouhouFuujinroku.Entities.Enemies.GenericEnemies
@@ -64,6 +64,8 @@ namespace TouhouFuujinroku.Entities.Enemies.GenericEnemies
 		/// Locks movement and firing during the death animation. Set when the Death signal is handled.
 		/// </summary>
 		private bool _dying;
+
+		public void SetProjectilePool(IProjectilePool projectilePool) => _weapon.SetProjectilePool(projectilePool);
 
 		public override void _PhysicsProcess(double delta)
 		{

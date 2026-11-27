@@ -29,6 +29,7 @@ namespace TouhouFuujinroku.Levels.Tools
         /// Director that owns the level's enemies.
         /// </summary>
         [Export] private WaveDirector _waveDirector;
+        [Export] private ProjectilePool _projectilePool;
 
         /// <summary>
         /// Color of the flash. Its alpha channel is ignored.
@@ -139,7 +140,7 @@ namespace TouhouFuujinroku.Levels.Tools
             _waveDirector.CancelCurrentWave();
             _waveDirector.ClearEnemies();
 
-            ProjectilePool.Instance.ReturnAll();
+            _projectilePool?.ReturnAll();
         }
 
         /// <summary>

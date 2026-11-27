@@ -22,6 +22,8 @@ namespace TouhouFuujinroku.Entities.Projectile
 		/// </summary>
 		public PackedScene Prefab { get; set; }
 
+		internal IProjectilePool Pool { get; set; }
+
 		/// <summary>
 		/// Travel speed in pixels per second.
 		/// </summary>
@@ -53,7 +55,7 @@ namespace TouhouFuujinroku.Entities.Projectile
 			// Cull in world space — immune to viewport resizes, fullscreen toggles, and
 			// camera transforms. 1000 units comfortably exceeds any expected play area.
 			if (Mathf.Abs(Position.X) > CullBoundary || Mathf.Abs(Position.Y) > CullBoundary)
-				ProjectilePool.Instance.Return(this);
+				Pool?.Return(this);
 		}
 
 		/// <summary>

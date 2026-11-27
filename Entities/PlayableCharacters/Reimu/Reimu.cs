@@ -1,5 +1,7 @@
 using Godot;
 
+using TouhouFuujinroku.Interfaces;
+
 namespace TouhouFuujinroku.Entities.PlayableCharacters.Reimu
 {
 	/// <summary>
@@ -8,6 +10,7 @@ namespace TouhouFuujinroku.Entities.PlayableCharacters.Reimu
 	/// </summary>
 	public partial class Reimu : PlayableCharacter
 	{
+		public void SetProjectilePool(IProjectilePool projectilePool) => _weapon.SetProjectilePool(projectilePool);
 		/// <summary>Sprite that reflects movement direction and plays the death animation.</summary>
 		[ExportGroup("Reimu")]
 		[Export] private ReimuAnimatedSprite _sprite;

@@ -243,7 +243,7 @@ namespace TouhouFuujinroku.Entities.PlayableCharacters
         private void HandleFocus(double delta)
         {
             bool focused = Input.IsActionPressed("focus");
-            _speed.SetSpeed(focused ? _speed.MaxSpeed / 2 : _speed.MaxSpeed);
+            _speed.SetMultiplier(focused ? 0.5f : 1f);
             ApplyFocus(focused, delta);
         }
 

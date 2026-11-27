@@ -3,7 +3,7 @@ using Godot.Collections;
 
 using System.Collections.Generic;
 
-using TouhouFuujinroku.Entities.Projectile;
+using TouhouFuujinroku.Interfaces;
 
 namespace TouhouFuujinroku.Entities.PlayableCharacters.Reimu
 {
@@ -100,6 +100,9 @@ namespace TouhouFuujinroku.Entities.PlayableCharacters.Reimu
 		/// Seconds remaining before the next shot is allowed.
 		/// </summary>
 		private float _cooldown;
+		private IProjectilePool _projectilePool;
+
+		public void SetProjectilePool(IProjectilePool projectilePool) => _projectilePool = projectilePool;
 
 		public override void _Ready()
 		{
@@ -182,7 +185,7 @@ namespace TouhouFuujinroku.Entities.PlayableCharacters.Reimu
 
 			// Angle fixed at -π/2 — straight up, matching Touhou's vertical scrolling convention.
 			foreach (var origin in GetFireOrigins())
-				ProjectilePool.Instance.Rent(_bulletPrefab, origin, angle: -Mathf.Pi / 2f);
+				_projectilePool?.Rent(_bulletPrefab, origin, angle: -Mathf.Pi / 2f);
 
 			_shotSound?.Play();
 		}

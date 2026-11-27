@@ -1,5 +1,7 @@
 using Godot;
 
+using TouhouFuujinroku.Interfaces;
+
 namespace TouhouFuujinroku.Entities.Enemies.GenericEnemies.Weapons
 {
     /// <summary>
@@ -44,6 +46,10 @@ namespace TouhouFuujinroku.Entities.Enemies.GenericEnemies.Weapons
         /// Seconds until the next shot is allowed. Starts at 0, so the first shot is available immediately.
         /// </summary>
         private float _cooldown;
+
+        protected IProjectilePool ProjectilePool { get; private set; }
+
+        public void SetProjectilePool(IProjectilePool projectilePool) => ProjectilePool = projectilePool;
 
         public override void _Ready()
         {

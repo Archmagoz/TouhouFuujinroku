@@ -13,6 +13,7 @@ namespace TouhouFuujinroku.Levels.DebugLevel
 
 		public override void _Ready()
 		{
+			base._Ready();
 			MenuAudioController.Instance.StopMusic();
 		}
 

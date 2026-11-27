@@ -2,6 +2,8 @@ using Godot;
 
 using System.Collections.Generic;
 
+using TouhouFuujinroku.Interfaces;
+
 namespace TouhouFuujinroku.Entities.Projectile
 {
 	/// <summary>
@@ -17,14 +19,11 @@ namespace TouhouFuujinroku.Entities.Projectile
 	/// </para>
 	/// </summary>
 	[GlobalClass]
-	public partial class ProjectilePool : Node
+	public partial class ProjectilePool : Node, IProjectilePool
 	{
 		/// <summary>
-		/// Pool of the currently loaded level. Set when the pool enters the tree and cleared when it leaves,
-		/// so it never points at a freed node.
+		/// Pool owned by the currently loaded level. Consumers receive it from the level through an interface.
 		/// </summary>
-		public static ProjectilePool Instance { get; private set; }
-
 		/// <summary>
 		/// One queue per prefab. Each projectile type maintains its own recycling bin.
 		/// </summary>
@@ -40,26 +39,6 @@ namespace TouhouFuujinroku.Entities.Projectile
 		/// Guards <see cref="Rent"/> against being called outside a level context.
 		/// </summary>
 		private bool _initialized;
-
-		public override void _Ready()
-		{
-			// Evict duplicates rather than silently overwriting the existing instance.
-			if (Instance != null)
-			{
-				QueueFree();
-				return;
-			}
-
-			Instance = this;
-		}
-
-		public override void _ExitTree()
-		{
-			// Clears the static reference when the level unloads — without this, Instance
-			// would keep pointing at a freed node after the level (and this pool) is gone.
-			if (Instance == this)
-				Instance = null;
-		}
 
 		/// <summary>
 		/// Marks the pool as ready to serve projectiles. Calls <see cref="Clear"/> first,
@@ -202,6 +181,7 @@ namespace TouhouFuujinroku.Entities.Projectile
 			}
 
 			projectile.Prefab = prefab;
+			projectile.Pool = this;
 
 			// Freshly created projectiles aren't in any queue yet — mark them as "out"
 			// so the first Return() call (prewarm or otherwise) is accepted, not flagged

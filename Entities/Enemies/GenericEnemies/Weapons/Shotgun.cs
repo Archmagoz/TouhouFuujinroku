@@ -23,7 +23,7 @@ namespace TouhouFuujinroku.Entities.Enemies.GenericEnemies.Weapons
 		protected override void Fire(PackedScene prefab)
 		{
 			foreach (var (position, angle) in GetFireData())
-				ProjectilePool.Instance.Rent(prefab, position, angle);
+				ProjectilePool?.Rent(prefab, position, angle);
 		}
 
 		/// <summary>

@@ -47,6 +47,7 @@ namespace TouhouFuujinroku.Levels
         /// Single entry point for everything displayed on the HUD. Optional. The level never reaches into its widgets.
         /// </summary>
         [Export] private Hud _hud;
+        [Export] private ProjectilePool _projectilePool;
 
         /// <summary>Player bullet prefab, prewarmed in the projectile pool.</summary>
         [ExportGroup("Projectiles")]
@@ -71,6 +72,10 @@ namespace TouhouFuujinroku.Levels
         public override void _Ready()
         {
             PrewarmProjectilePool();
+            _player?.SetProjectilePool(_projectilePool);
+            _waveDirector.SetProjectilePool(_projectilePool);
+            _waveDirector.EnemyDefeated += OnEnemyDefeated;
+            _waveDirector.AllEnemiesCleared += OnEnemiesCleared;
             ReportInitialLives();
 
             _waveDirector.ScriptFinished += OnScriptFinished;
@@ -115,12 +120,22 @@ namespace TouhouFuujinroku.Levels
             LeaveLevel();
         }
 
+        private bool _waitingForEnemies;
+
+        private void OnEnemiesCleared()
+        {
+            if (_waitingForEnemies)
+                LeaveLevel();
+        }
+
+        private void OnEnemyDefeated(long points) => _hud?.ReportScore(points);
+
         /// <summary>
         /// Handles the end of the wave script: waits for the playfield to clear, then leaves the level.
         /// </summary>
         private async void OnScriptFinished()
         {
-            await ToSignal(GetTree().CreateTimer(_clearDelay), SceneTreeTimer.SignalName.Timeout);
+            await ToSignal(GetTree().CreateTimer(_clearDelay, processAlways: false), SceneTreeTimer.SignalName.Timeout);
 
             // The level may have been left in the meantime (e.g. by a game over transition).
             if (!IsInsideTree()) return;
@@ -140,7 +155,7 @@ namespace TouhouFuujinroku.Levels
                 { _greenDotBulletPrefab, _greenDotBulletPoolSize }
             };
 
-            ProjectilePool.Instance.Initialize(prewarmConfig);
+            _projectilePool.Initialize(prewarmConfig);
         }
 
         /// <summary>

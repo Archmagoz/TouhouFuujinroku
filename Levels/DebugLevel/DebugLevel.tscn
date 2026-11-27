@@ -22,26 +22,27 @@ size = Vector2(20, 422)
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_4tne8"]
 size = Vector2(314, 20)
 
-[node name="DebugLevel" type="Node2D" unique_id=641409104 node_paths=PackedStringArray("_waveDirector", "_player", "_hud")]
+[node name="DebugLevel" type="Node2D" unique_id=641409104 node_paths=PackedStringArray("_waveDirector", "_player", "_hud", "_projectilePool")]
 script = ExtResource("1_r64kg")
 _waveDirector = NodePath("WaveDirector")
 _player = NodePath("Reimu")
 _hud = NodePath("Hud")
+_projectilePool = NodePath("ProjectilePool")
 _reimuBulletPrefab = ExtResource("2_amjf5")
 _greenDotBulletPrefab = ExtResource("3_axnee")
 
 [node name="ProjectilePool" parent="." unique_id=93427511 instance=ExtResource("10_amjf5")]
 
-[node name="WaveDirector" parent="." unique_id=1417191657 node_paths=PackedStringArray("_hud") instance=ExtResource("5_r64kg")]
-_hud = NodePath("../Hud")
+[node name="WaveDirector" parent="." unique_id=1417191657 instance=ExtResource("5_r64kg")]
 _enemyPrefabs = Dictionary[String, PackedScene]({
 "SmallFairy": ExtResource("9_kpwub"),
 "generic": ExtResource("9_kpwub")
 })
 
-[node name="PlayfieldClearer" parent="." unique_id=246317081 node_paths=PackedStringArray("_reimu", "_waveDirector") instance=ExtResource("7_axnee")]
+[node name="PlayfieldClearer" parent="." unique_id=246317081 node_paths=PackedStringArray("_reimu", "_waveDirector", "_projectilePool") instance=ExtResource("7_axnee")]
 _reimu = NodePath("../Reimu")
 _waveDirector = NodePath("../WaveDirector")
+_projectilePool = NodePath("../ProjectilePool")
 
 [node name="Background" parent="." unique_id=1237811369 instance=ExtResource("8_n0rhh")]
 z_index = -10

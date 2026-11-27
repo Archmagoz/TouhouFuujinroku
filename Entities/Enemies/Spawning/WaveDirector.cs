@@ -4,9 +4,8 @@ using Godot;
 
 using GodotPrefabDict = Godot.Collections.Dictionary<string, Godot.PackedScene>;
 
-using TouhouFuujinroku.Interfaces;
-using TouhouFuujinroku.UI.Hud;
 using TouhouFuujinroku.Entities.Enemies.GenericEnemies;
+using TouhouFuujinroku.Interfaces;
 
 namespace TouhouFuujinroku.Entities.Enemies.Spawning
 {
@@ -42,11 +41,9 @@ namespace TouhouFuujinroku.Entities.Enemies.Spawning
         }
 
         /// <summary>
-        /// Reports kills through the Hud's public API — the director has no knowledge
-        /// of Score or any other internal HUD widget.
+        /// Pool supplied by the owning level. The director does not resolve global services.
         /// </summary>
-        [ExportGroup("Dependencies")]
-        [Export] private Hud _hud;
+        private IProjectilePool _projectilePool;
 
         /// <summary>
         /// Maps <see cref="EnemyIds"/> keys to prefabs. Every id used by a script must be registered here.
@@ -64,6 +61,10 @@ namespace TouhouFuujinroku.Entities.Enemies.Spawning
         /// Raised once the last enemy of the script has been spawned (not when the last one dies).
         /// </summary>
         public event Action ScriptFinished;
+        public event Action AllEnemiesCleared;
+        public event Action<long> EnemyDefeated;
+
+        public bool HasLiveEnemies => _liveEnemies > 0;
 
         /// <summary>Current script timeline, sorted by time.</summary>
         private IReadOnlyList<WaveEvent> _events = [];
@@ -76,6 +77,11 @@ namespace TouhouFuujinroku.Entities.Enemies.Spawning
 
         /// <summary>Seconds elapsed since <see cref="Play"/>, driven by physics delta.</summary>
         private float _elapsed;
+        private int _liveEnemies;
+        private bool _scriptFinished;
+        private bool _clearedReported;
+
+        public void SetProjectilePool(IProjectilePool projectilePool) => _projectilePool = projectilePool;
 
         public override void _Ready()
         {
@@ -103,6 +109,9 @@ namespace TouhouFuujinroku.Entities.Enemies.Spawning
             _nextEventIndex = 0;
             _elapsed = 0f;
             _activeGroups.Clear();
+            _liveEnemies = 0;
+            _scriptFinished = false;
+            _clearedReported = false;
 
             SetPhysicsProcess(true);
         }
@@ -181,7 +190,11 @@ namespace TouhouFuujinroku.Entities.Enemies.Spawning
             if (_nextEventIndex < _events.Count || _activeGroups.Count > 0) return;
 
             SetPhysicsProcess(false);
+            if (_scriptFinished) return;
+
+            _scriptFinished = true;
             ScriptFinished?.Invoke();
+            TryReportCleared();
         }
 
         /// <summary>
@@ -208,16 +221,30 @@ namespace TouhouFuujinroku.Entities.Enemies.Spawning
             var enemy = prefab.Instantiate<GenericEnemy>();
             AddChild(enemy);
             enemy.SetPath(follow);
+            enemy.SetProjectilePool(_projectilePool);
+            _liveEnemies++;
 
             // The validity check guards against scene teardown, where the Path2D may already be gone.
             enemy.TreeExited += () =>
             {
                 if (GodotObject.IsInstanceValid(path))
                     path.QueueFree();
+
+                _liveEnemies = Mathf.Max(0, _liveEnemies - 1);
+                TryReportCleared();
             };
 
-            if (_hud != null && enemy is IScoreable scoreable)
-                scoreable.Died += _hud.ReportScore;
+            if (enemy is IScoreable scoreable)
+                scoreable.Died += points => EnemyDefeated?.Invoke(points);
+        }
+
+        private void TryReportCleared()
+        {
+            if (_scriptFinished && _liveEnemies == 0 && !_clearedReported)
+            {
+                _clearedReported = true;
+                AllEnemiesCleared?.Invoke();
+            }
         }
 
         /// <summary>

@@ -31,6 +31,11 @@ namespace TouhouFuujinroku.Components
 		/// <summary> Runtime speed state, managed exclusively by this component. </summary>
 		public float CurrentSpeed { get; private set; }
 
+		/// <summary>Current speed multiplier applied to the configured base speed.</summary>
+		public float SpeedMultiplier { get; private set; } = 1f;
+
+		private float _baseSpeed;
+
 		public override void _Ready()
 		{
 			// Clamp the configured values to valid ranges and initialize the runtime state.
@@ -38,35 +43,49 @@ namespace TouhouFuujinroku.Components
 			DefaultSpeed = Mathf.Clamp(DefaultSpeed, 0f, MaxSpeed);
 
 			// Initialize the runtime state to the configured default speed.
-			CurrentSpeed = DefaultSpeed;
+			_baseSpeed = DefaultSpeed;
+			CurrentSpeed = _baseSpeed;
 		}
 
 		/// <summary>
 		/// Restores the default speed configured in the editor, undoing any runtime modification.
 		/// </summary>
-		public void Reset() =>
-			UpdateSpeed(DefaultSpeed);
+		public void Reset()
+		{
+			_baseSpeed = DefaultSpeed;
+			SetMultiplier(1f);
+		}
+
+		/// <summary>Applies a multiplicative modifier without erasing the configured base speed.</summary>
+		public void SetMultiplier(float multiplier)
+		{
+			SpeedMultiplier = Mathf.Max(0f, multiplier);
+			UpdateSpeed(_baseSpeed * SpeedMultiplier);
+		}
 
 		/// <summary>
 		/// Overrides the current speed directly.
 		/// </summary>
 		/// <param name="value">New speed value. Clamped to 0 and <see cref="MaxSpeed"/>.</param>
-		public void SetSpeed(float value) =>
-			UpdateSpeed(value);
+		public void SetSpeed(float value)
+		{
+			_baseSpeed = Mathf.Clamp(value, 0f, MaxSpeed);
+			UpdateSpeed(_baseSpeed * SpeedMultiplier);
+		}
 
 		/// <summary>
 		/// Increases the current speed by the given amount. Negative values are ignored.
 		/// </summary>
 		/// <param name="amount">Amount to add.</param>
 		public void AddSpeed(float amount) =>
-			UpdateSpeed(CurrentSpeed + Mathf.Max(0f, amount));
+			SetSpeed(_baseSpeed + Mathf.Max(0f, amount));
 
 		/// <summary>
 		/// Decreases the current speed by the given amount. Negative values are ignored.
 		/// </summary>
 		/// <param name="amount">Amount to subtract.</param>
 		public void ReduceSpeed(float amount) =>
-			UpdateSpeed(CurrentSpeed - Mathf.Max(0f, amount));
+			SetSpeed(_baseSpeed - Mathf.Max(0f, amount));
 
 		/// <summary>
 		/// Single write point for the speed state. Clamps the value and emits
