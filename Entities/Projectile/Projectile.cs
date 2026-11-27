@@ -48,7 +48,7 @@ namespace TouhouFuujinroku.Entities.Projectile
 
 		public override void _Process(double delta)
 		{
-			Position += _direction * _speed * (float)delta;
+			Position += _direction * _speed.CurrentSpeed * (float)delta;
 
 			// Cull in world space — immune to viewport resizes, fullscreen toggles, and
 			// camera transforms. 1000 units comfortably exceeds any expected play area.

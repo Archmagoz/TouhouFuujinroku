@@ -42,12 +42,6 @@ namespace TouhouFuujinroku.Components
 		}
 
 		/// <summary>
-		/// Gets the current speed value directly from a <see cref="SpeedComponent"/> instance.
-		/// </summary>
-		/// <param name="speed"></param>
-		public static implicit operator float(SpeedComponent speed) => speed.CurrentSpeed;
-
-		/// <summary>
 		/// Restores the default speed configured in the editor, undoing any runtime modification.
 		/// </summary>
 		public void Reset() =>

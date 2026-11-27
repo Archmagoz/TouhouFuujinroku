@@ -54,12 +54,6 @@ namespace TouhouFuujinroku.Components
 		}
 
 		/// <summary>
-		/// Gets the current health value directly from a <see cref="HealthComponent"/> instance.
-		/// </summary>
-		/// <param name="health"></param>
-		public static implicit operator int(HealthComponent health) => health.CurrentHealth;
-
-		/// <summary>
 		/// Restores the entity to full health, undoing any runtime modification. Also revives a dead entity,
 		/// so <see cref="Death"/> may be emitted again on a later lethal hit.
 		/// </summary>
